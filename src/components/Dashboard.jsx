@@ -2,9 +2,12 @@ import React from "react";
 import Navbar from "./Navbar";
 
 function Dashboard({ sidebarToggle, setSidebarToggle }) {
+
+  
   return (
     // <div className="w-full" en el desarrollo>
-    <div className={`${sidebarToggle ? "ml-0" : "ml-64"} w-full`}>
+    //className={`${sidebarToggle ? "ml-0" : "ml-64"} w-full`} esto se quita segun cgpt
+    <div>
       <Navbar
         sidebarToggle={sidebarToggle}
         setSidebarToggle={setSidebarToggle}
