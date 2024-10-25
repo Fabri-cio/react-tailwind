@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { getProducto, updateProducto } from "../../api/producto.api"; // Cambia la importación aquí
+import {
+  getProducto,
+  updateProducto,
+  getAllCategorias,
+} from "../../api/producto.api"; // Cambia la importación aquí
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const BotonActualizar = ({ productoId }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [categorias, setCategorias] = useState([]); // Inicializa el estado para categorias
+
   const {
     register,
     handleSubmit,
@@ -24,7 +30,15 @@ const BotonActualizar = ({ productoId }) => {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    await updateProducto(productoId, data);
+    // Convierte los valores necesarios a los tipos correctos
+    const payload = {
+      ...data,
+      precio: parseFloat(data.precio), // Convierte precio a número
+      cantidad_stock: parseInt(data.cantidad_stock, 10), // Convierte cantidad_stock a número
+      categoria: parseInt(data.categoria, 10), // Convierte id_categoria a número
+    };
+    console.log("Datos a enviar:", payload); // Imprime los datos aquí
+    await updateProducto(productoId, payload);
     toast.success("Producto Actualizado", {
       position: "bottom-center",
       duration: 5000,
@@ -34,7 +48,7 @@ const BotonActualizar = ({ productoId }) => {
       },
     });
     setIsOpen(false); // Cierra el modal tras actualizar
-    navigate("/"); // Redirige a la tabla de productos
+    navigate("/inventario/productos"); // Redirige a la tabla de productos
   });
 
   useEffect(() => {
@@ -42,13 +56,26 @@ const BotonActualizar = ({ productoId }) => {
       if (productoId) {
         const { data } = await getProducto(productoId); // Cambia aquí para usar el nuevo método
         setValue("nombre", data.nombre);
-        setValue("categoria", data.categoria.nombre_categoria); // Ajusta según tu API
-        setValue("stock", data.stock);
-        setValue("precio_venta", data.precio_venta);
+        setValue("descripcion", data.descripcion);
+        setValue("precio", data.precio);
+        setValue("cantidad_stock", data.cantidad_stock);
+        setValue("unidad_medida", data.unidad_medida);
+        setValue("categoria", data.categoria);
+        console.log(data);
       }
     }
     loadProducto();
   }, [productoId, setValue]);
+
+  useEffect(() => {
+    async function loadCategorias() {
+      const { data } = await getAllCategorias(); // Obtén las categorías
+      console.log(data); // Verifica si las categorías se cargan correctamente
+      setCategorias(data); // Almacena las categorías en el estado
+      console.log(data);
+    }
+    loadCategorias();
+  }, []);
 
   return (
     <div>
@@ -78,47 +105,86 @@ const BotonActualizar = ({ productoId }) => {
                 {errors.nombre && <span>El nombre es obligatorio</span>}
               </div>
 
-              {/* Categoría */}
+              {/* Descripcion */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Categoría
+                  Descripcion
                 </label>
-                <input
+                <textarea
                   type="text"
-                  {...register("categoria", { required: true })}
+                  {...register("descripcion", { required: true })}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                  placeholder="Categoría"
+                  placeholder="Descripcion"
                 />
-                {errors.categoria && <span>La categoría es obligatoria</span>}
+                {errors.descripcion && <span>El texto es obligatorio</span>}
               </div>
 
-              {/* Cantidad */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Cantidad
-                </label>
-                <input
-                  type="number"
-                  {...register("stock", { required: true })}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                  placeholder="Cantidad en stock"
-                />
-                {errors.stock && <span>La cantidad es obligatoria</span>}
-              </div>
-
-              {/* Precio */}
+              {/* precio */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Precio
                 </label>
                 <input
                   type="number"
-                  step="0.01"
-                  {...register("precio_venta", { required: true })}
+                  {...register("precio", { required: true })}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-                  placeholder="Precio de venta"
+                  placeholder="Codigo de Barras"
                 />
-                {errors.precio_venta && <span>El precio es obligatorio</span>}
+                {errors.precio && <span>El precio es obligatorio</span>}
+              </div>
+
+              {/* stock */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Stock
+                </label>
+                <input
+                  type="number"
+                  {...register("cantidad_stock", { required: true })}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                  placeholder="Stock"
+                />
+                {errors.precio && <span>El stock es obligatorio</span>}
+              </div>
+
+              {/* unidad de medida */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Unidad de Medida
+                </label>
+                <input
+                  type="text"
+                  {...register("unidad_medida", { required: true })}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                  placeholder="Unidad de Medida"
+                />
+                {errors.precio && (
+                  <span>La unidad de Medida es obligatorio</span>
+                )}
+              </div>
+
+              {/* Categoría */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Categoría
+                </label>
+                <select
+                  {...register("categoria", { required: true })}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                >
+                  <option value="id_categoria">Seleccione una categoría</option>
+                  {categorias.map((categoria) => (
+                    <option
+                      key={categoria.id_categoria}
+                      value={categoria.id_categoria}
+                    >
+                      {categoria.nombre_categoria}
+                    </option>
+                  ))}
+                </select>
+                {errors.id_categoria && (
+                  <span>La categoría es obligatoria</span>
+                )}
               </div>
 
               {/* Botón para guardar */}

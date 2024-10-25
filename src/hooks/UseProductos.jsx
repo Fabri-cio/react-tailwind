@@ -1,25 +1,26 @@
+// useProductos.js
 import { useState, useEffect } from "react";
-import { getAllProductos } from "../api/producto.api"; // Llamada a la API
+import { getAllProductos } from "../api/producto.api";
 
 export function useProductos() {
-  const [producto, setProductos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [productos, setProductos] = useState([]);
+  const [loadingProductos, setLoadingProductos] = useState(true);
+  const [errorProductos, setErrorProductos] = useState(null);
 
   useEffect(() => {
     async function fetchProductos() {
       try {
-        const res = await getAllProductos(); // Llamada a la API
-        setProductos(res.data); // Guardar productos en el estado
+        const res = await getAllProductos();
+        setProductos(res.data);
       } catch (err) {
-        setError(err.message); // Capturar error en caso de que ocurra
+        setErrorProductos(err.message);
       } finally {
-        setLoading(false); // Finalizar loading
+        setLoadingProductos(false);
       }
     }
 
     fetchProductos();
   }, []);
 
-  return { producto, loading, error }; // Retorna los productos, loading y el error
+  return { productos, loadingProductos, errorProductos };
 }
