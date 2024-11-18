@@ -3,6 +3,7 @@ import Dashboard from "./components/Dashboard";
 import Sidebar from "./components/Sidebar";
 import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [sidebarToggle, setSidebarToggle] = useState(false);
@@ -22,6 +23,7 @@ function App() {
           <AppRoutes />
         </div>
       </div>
+      <Toaster/>
     </Router>
   );
 }

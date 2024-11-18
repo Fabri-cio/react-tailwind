@@ -12,6 +12,8 @@ const Api = axios.create({
 
 // export const createProducto = (producto) => Api.post("productos/", producto);
 
+// export const deleteProducto = (id) => Api.delete(`productos/${id}/`);
+
 export const getAllProductos = async () => {
   try {
     return await Api.get("productos/");
@@ -48,6 +50,15 @@ export const createProducto = async (producto) => {
   }
 };
 
+export const deleteProducto = async (id) => {
+  try {
+    return await Api.delete(`productos/${id}/`);
+  } catch (error) {
+    console.error("Error eliminando producto:", error);
+    throw error;
+  }
+};
+
 // categorias
 
 // export const getAllCategorias = () => Api.get("categorias/");
@@ -57,6 +68,8 @@ export const createProducto = async (producto) => {
 // export const updateCategoria = (id, categoria) => Api.put(`categorias/${id}/`, categoria);
 
 // export const createCategoria = (categoria) => Api.post("categorias/", categoria);
+
+// export const deleteCategoria = (id) => Api.delete(`categorias/${id}/`);
 
 export const getAllCategorias = async () => {
   try {
@@ -90,6 +103,15 @@ export const createCategoria = async (categoria) => {
     return await Api.post("categorias/", categoria);
   } catch (error) {
     console.error("Error creating categoria:", error);
+    throw error;
+  }
+};
+
+export const deleteCategoria = async (id) => {
+  try {
+    return await Api.delete(`categorias/${id}/`);
+  } catch (error) {
+    console.error("Error eliminando categoria:", error);
     throw error;
   }
 };

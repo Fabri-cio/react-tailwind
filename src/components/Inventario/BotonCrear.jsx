@@ -42,7 +42,7 @@ const BotonCrear = () => {
         },
       });
       setIsOpen(false);
-      navigate("/inventarios");
+      navigate("/inventario/productos");
     } catch (error) {
       toast.error("Error al crear el producto");
     }

@@ -7,7 +7,7 @@ const PuntoVenta = lazy(() => import("../pages/PuntoVenta"));
 const Inventario = lazy(() => import("../pages/Inventario"));
 const GProductos = lazy(() => import("../pages/Inventarios/GProductos"));
 const Salidas = lazy(() => import("../pages/Inventarios/Salidas"));
-const Entradas = lazy(() => import("../pages/Inventarios/Entradas"));
+const ProductoPage = lazy(() => import("../pages/Inventarios/ProductoPage"));
 
 const Reportes = lazy(() => import("../pages/Reportes"));
 const Usuarios = lazy(() => import("../pages/Usuarios"));
@@ -22,7 +22,7 @@ const AppRoutes = () => {
         <Route path="/inventario" element={<Inventario />} />
         <Route path="/inventario/productos" element={<GProductos />} />
         <Route path="/inventario/salidas" element={<Salidas />} />
-        <Route path="/inventario/entradas" element={<Entradas />} />
+        <Route path="/inventario/entradas" element={<ProductoPage />} />
 
         <Route path="/reportes" element={<Reportes />} />
         <Route path="/usuarios" element={<Usuarios />} />
