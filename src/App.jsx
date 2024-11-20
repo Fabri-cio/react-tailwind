@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Dashboard from "./components/Dashboard";
 import Sidebar from "./components/Sidebar";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter, BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 import { Toaster } from "react-hot-toast";
 
@@ -12,7 +12,7 @@ function App() {
   const mainClass = `${sidebarToggle ? "ml-0" : "ml-64"} w-full`;
 
   return (
-    <Router>
+    <BrowserRouter>
       <div className="flex">
         <Sidebar sidebarToggle={sidebarToggle} />
         <div className={mainClass}>
@@ -23,8 +23,8 @@ function App() {
           <AppRoutes />
         </div>
       </div>
-      <Toaster/>
-    </Router>
+      <Toaster />
+    </BrowserRouter>
   );
 }
 

@@ -7,7 +7,9 @@ function BotonEliminar({ productoId }) {
   const navigate = useNavigate();
 
   const handleDelete = async () => {
-    const confirmar = window.confirm("¿Estás seguro de que quieres eliminar este producto?");
+    const confirmar = window.confirm(
+      "¿Estás seguro de que quieres eliminar este producto?"
+    );
     if (confirmar) {
       try {
         await deleteProducto(productoId); // Llama a la API para eliminar el producto

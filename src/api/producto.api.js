@@ -1,117 +1,35 @@
 import axios from "axios";
 
+// Configuración base de Axios
 const Api = axios.create({
   baseURL: "http://localhost:8000/api/v1/productos/",
 });
 
-// export const getAllProductos = () => Api.get("productos/");
-
-// export const getProducto = (id) => Api.get(`productos/${id}`)
-
-// export const updateProducto = (id, producto) => Api.put(`productos/${id}/`, producto);
-
-// export const createProducto = (producto) => Api.post("productos/", producto);
-
-// export const deleteProducto = (id) => Api.delete(`productos/${id}/`);
-
-export const getAllProductos = async () => {
+// Función base para manejar peticiones y errores
+const request = async (method, url, data = null) => {
   try {
-    return await Api.get("productos/");
+    const response = await Api.request({ method, url, data });
+    return response;
   } catch (error) {
-    console.error("Error fetching productos:", error);
-    throw error; // O maneja el error de otra manera
+    console.error(`Error en ${method.toUpperCase()} ${url}:`, error);
+    throw error; // Propagar el error para manejarlo en otro lugar si es necesario
   }
 };
 
-export const getProducto = async (id) => {
-  try {
-    return await Api.get(`productos/${id}`);
-  } catch (error) {
-    console.error("Error fetching producto:", error);
-    throw error;
-  }
-};
+// Productos
+export const getAllProductos = () => request("get", "productos/");
+export const getProducto = (id) => request("get", `productos/${id}`);
+export const createProducto = (producto) =>
+  request("post", "productos/", producto);
+export const updateProducto = (id, producto) =>
+  request("put", `productos/${id}/`, producto);
+export const deleteProducto = (id) => request("delete", `productos/${id}/`);
 
-export const updateProducto = async (id, producto) => {
-  try {
-    return await Api.put(`productos/${id}/`, producto);
-  } catch (error) {
-    console.error("Error updating producto:", error);
-    throw error;
-  }
-};
-
-export const createProducto = async (producto) => {
-  try {
-    return await Api.post("productos/", producto);
-  } catch (error) {
-    console.error("Error creating producto:", error);
-    throw error;
-  }
-};
-
-export const deleteProducto = async (id) => {
-  try {
-    return await Api.delete(`productos/${id}/`);
-  } catch (error) {
-    console.error("Error eliminando producto:", error);
-    throw error;
-  }
-};
-
-// categorias
-
-// export const getAllCategorias = () => Api.get("categorias/");
-
-// export const getCategoria = (id) => Api.get(`categorias/${id}`)
-
-// export const updateCategoria = (id, categoria) => Api.put(`categorias/${id}/`, categoria);
-
-// export const createCategoria = (categoria) => Api.post("categorias/", categoria);
-
-// export const deleteCategoria = (id) => Api.delete(`categorias/${id}/`);
-
-export const getAllCategorias = async () => {
-  try {
-    return await Api.get("categorias/");
-  } catch (error) {
-    console.error("Error fetching categorias:", error);
-    throw error;
-  }
-};
-
-export const getCategoria = async (id) => {
-  try {
-    return await Api.get(`categorias/${id}`);
-  } catch (error) {
-    console.error("Error fetching categoria:", error);
-    throw error;
-  }
-};
-
-export const updateCategoria = async (id, categoria) => {
-  try {
-    return await Api.put(`categorias/${id}/`, categoria);
-  } catch (error) {
-    console.error("Error updating categoria:", error);
-    throw error;
-  }
-};
-
-export const createCategoria = async (categoria) => {
-  try {
-    return await Api.post("categorias/", categoria);
-  } catch (error) {
-    console.error("Error creating categoria:", error);
-    throw error;
-  }
-};
-
-export const deleteCategoria = async (id) => {
-  try {
-    return await Api.delete(`categorias/${id}/`);
-  } catch (error) {
-    console.error("Error eliminando categoria:", error);
-    throw error;
-  }
-};
+// Categorías
+export const getAllCategorias = () => request("get", "categorias/");
+export const getCategoria = (id) => request("get", `categorias/${id}`);
+export const createCategoria = (categoria) =>
+  request("post", "categorias/", categoria);
+export const updateCategoria = (id, categoria) =>
+  request("put", `categorias/${id}/`, categoria);
+export const deleteCategoria = (id) => request("delete", `categorias/${id}/`);
