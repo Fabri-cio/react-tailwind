@@ -1,58 +1,88 @@
 import React from "react";
 import { FaBars, FaBell, FaSearch, FaUserCircle } from "react-icons/fa";
 
-function Navbar({ sidebarToggle, setSidebarToggle }) {
+const NavbarButton = ({ icon: Icon, onClick, label, className }) => (
+  <button
+    onClick={onClick}
+    aria-label={label}
+    className={`p-1 focus:outline-none ${className}`}
+  >
+    <Icon className="w-6 h-6" />
+  </button>
+);
+
+const ProfileMenu = () => (
+  <div className="relative">
+    <button
+      className="text-white group"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      <FaUserCircle className="w-6 h-6 mt-1" />
+    </button>
+    <div className="z-10 hidden absolute bg-white rounded-lg shadow w-32 group-focus:block top-full right-0">
+      <ul className="py-2 text-sm text-gray-950">
+        <li>
+          <a href="#" className="block px-4 py-2 hover:bg-gray-200">
+            Perfil
+          </a>
+        </li>
+        <li>
+          <a href="#" className="block px-4 py-2 hover:bg-gray-200">
+            Configuración
+          </a>
+        </li>
+        <li>
+          <a href="#" className="block px-4 py-2 hover:bg-gray-200">
+            Cerrar Sesión
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+);
+
+const Navbar = ({ sidebarToggle, setSidebarToggle }) => {
   return (
-    // ml-64 esto es cuando se adecua a la derecha y se mueve a la condicion de dashboard
-    <nav className="bg-gray-700 px-4 py-3 flex justify-between">
-      {/* caja 1 */}
+    <nav className="bg-gray-700 px-4 py-3 flex justify-between items-center">
+      {/* Menú lateral y título */}
       <div className="flex items-center text-xl">
-        <FaBars
-          className="text-white me-4 cursor-pointer"
+        <NavbarButton
+          icon={FaBars}
           onClick={() => setSidebarToggle(!sidebarToggle)}
+          label="Toggle Sidebar"
+          className="text-white me-4"
         />
         <span className="text-white font-semibold">Panel de Navegación</span>
       </div>
-      {/* caja 2 */}
+
+      {/* Barra de búsqueda */}
       <div className="flex items-center gap-x-5">
-        <div className="relative md:w-65">
-          <span className="relative md:absolute inset-y-0 left-0 flex items-center pl-2">
-            <button className="p-1 focus-outline-none text-white md:text-black">
-              <FaSearch />
-            </button>
-          </span>
+        <div className="relative md:w-64">
+          <NavbarButton
+            icon={FaSearch}
+            label="Buscar"
+            className="absolute inset-y-0 left-0 pl-2 text-white"
+          />
           <input
             type="text"
-            className="w-full px-4 py-1 pl-12 rounded shadow outline-none hidden md:block"
+            placeholder="Buscar..."
+            className="w-full px-4 py-1 pl-10 rounded shadow outline-none hidden md:block"
           />
         </div>
       </div>
-      {/* caja 3 */}
-      <div className="text-white">
-        <FaBell className="w-6 h-6" />
-      </div>
 
-      {/* caja 4 */}
-      <div className="relative">
-        <button className="text-white group">
-          <FaUserCircle className="w-6 h-6 mt-1" />
-          <div className="z-10 hidden absolute bg-white rounded-lg shadow w-32 group-focus:block top-full right-0">
-            <ul className="py-2 text-sm text-gray-950">
-              <li>
-                <a href="">Perfil</a>
-              </li>
-              <li>
-                <a href="">Configuración</a>
-              </li>
-              <li>
-                <a href="">Cerrar Sesión</a>
-              </li>
-            </ul>
-          </div>
-        </button>
-      </div>
+      {/* Notificación */}
+      <NavbarButton
+        icon={FaBell}
+        label="Notificaciones"
+        className="text-white"
+      />
+
+      {/* Menú de perfil */}
+      <ProfileMenu />
     </nav>
   );
-}
+};
 
 export default Navbar;
