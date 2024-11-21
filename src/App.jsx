@@ -1,15 +1,19 @@
 import { useState } from "react";
 import Dashboard from "./components/Dashboard";
 import Sidebar from "./components/Sidebar";
-import { BrowserRouter, BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 import { Toaster } from "react-hot-toast";
+import clsx from "clsx";
 
 function App() {
   const [sidebarToggle, setSidebarToggle] = useState(false);
 
   //esto deberia ir en className
-  const mainClass = `${sidebarToggle ? "ml-0" : "ml-64"} w-full`;
+  const mainClass = clsx("w-full", {
+    "ml-0": sidebarToggle,
+    "ml-64": !sidebarToggle,
+  });
 
   return (
     <BrowserRouter>

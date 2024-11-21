@@ -2,8 +2,8 @@ import React from 'react'
 
 function Home() {
   return (
-    <div>Home</div>
+    <div className=''>Pagina Principal</div>
   )
 }
 
-export default Home
+export default Home     

@@ -1,30 +1,27 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+
+const FallbackComponent = () => <div>Hubo un error al cargar la página</div>;
 
 // Lazy loading pages
-const Home = lazy(() => import("../pages/Home"));
-const PuntoVenta = lazy(() => import("../pages/PuntoVenta"));
-const Inventario = lazy(() => import("../pages/Inventario"));
-const GProductos = lazy(() => import("../pages/Inventarios/GProductos"));
-const Salidas = lazy(() => import("../pages/Inventarios/Salidas"));
-const Reportes = lazy(() => import("../pages/Reportes"));
-const Usuarios = lazy(() => import("../pages/Usuarios"));
-const Configuracion = lazy(() => import("../pages/Configuracion"));
+const Home = lazy(() => import("@/pages/Home"));
+const Productos = lazy(() => import("@/pages/almacen/Productos"));
+const FormProducto = lazy(() => import("@/components/almacen/FormProducto"));
 
 const AppRoutes = () => {
   return (
-    <Suspense fallback={<div>Cargando Pagina Espere</div>}>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/punto-de-venta" element={<PuntoVenta />} />
-        <Route path="/inventario" element={<Inventario />} />
-        <Route path="/inventario/productos" element={<GProductos />} />
-        <Route path="/inventario/salidas" element={<Salidas />} />
-        <Route path="/reportes" element={<Reportes />} />
-        <Route path="/usuarios" element={<Usuarios />} />
-        <Route path="/configuracion" element={<Configuracion />} />
-      </Routes>
-    </Suspense>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
+      <Suspense
+        fallback={<div className="spinner">Cargando Pagina Espere</div>}
+      >
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/almacen/productos" element={<Productos />} />
+          <Route path="/almacen/formProducto" element={<FormProducto />} />
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 
