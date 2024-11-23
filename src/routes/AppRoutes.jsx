@@ -8,6 +8,7 @@ const FallbackComponent = () => <div>Hubo un error al cargar la página</div>;
 const Home = lazy(() => import("@/pages/Home"));
 const Productos = lazy(() => import("@/pages/almacen/Productos"));
 const FormProducto = lazy(() => import("@/components/almacen/FormProducto"));
+const RealizarVenta = lazy(() => import("../components/ventas/RealizarVenta"));
 
 const AppRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/almacen/productos" element={<Productos />} />
           <Route path="/almacen/formProducto" element={<FormProducto />} />
+          <Route path="/ventas/realizar" element={<RealizarVenta />} />
         </Routes>
       </Suspense>
     </ErrorBoundary>

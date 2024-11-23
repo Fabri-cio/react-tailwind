@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useProductos } from "@/hooks/useProductos";
 import { useCategorias } from "@/hooks/useCategorias";
@@ -37,20 +37,22 @@ function Productos() {
     const {
       id_producto,
       nombre,
-      descripcion,
+      marca,
       precio,
-      cantidad_stock,
-      unidad_medida,
+      stock,
+      codigo_barras,
       categoria,
     } = producto;
 
     return (
       <tr className="bg-gray-100 hover:bg-gray-200">
         <td className="py-2 px-4 border-b border-gray-200">{nombre}</td>
-        <td className="py-2 px-4 border-b border-gray-200">{descripcion}</td>
-        <td className="py-2 px-4 border-b border-gray-200">Bs.{precio}</td>
-        <td className="py-2 px-4 border-b border-gray-200">{cantidad_stock}</td>
-        <td className="py-2 px-4 border-b border-gray-200">{unidad_medida}</td>
+        <td className="py-2 px-4 border-b border-gray-200">{marca}</td>
+        <td className="py-2 px-4 border-b border-gray-200">
+          Bs {parseFloat(precio).toFixed(2)}
+        </td>
+        <td className="py-2 px-4 border-b border-gray-200">{stock}</td>
+        <td className="py-2 px-4 border-b border-gray-200">{codigo_barras}</td>
         <td className="py-2 px-4 border-b border-gray-200">
           {getNombreCategoria(categoria)}
         </td>
@@ -73,13 +75,11 @@ function Productos() {
         <thead>
           <tr>
             <th className="py-2 px-4 border-b border-gray-200">Nombre</th>
-            <th className="py-2 px-4 border-b border-gray-200">Descripción</th>
+            <th className="py-2 px-4 border-b border-gray-200">Marca</th>
             <th className="py-2 px-4 border-b border-gray-200">Precio</th>
+            <th className="py-2 px-4 border-b border-gray-200">Stock</th>
             <th className="py-2 px-4 border-b border-gray-200">
-              Cantidad en Stock
-            </th>
-            <th className="py-2 px-4 border-b border-gray-200">
-              Unidad de Medida
+              Código de Barras
             </th>
             <th className="py-2 px-4 border-b border-gray-200">Categoría</th>
             <th className="py-2 px-4 border-b border-gray-200">Actualizar</th>

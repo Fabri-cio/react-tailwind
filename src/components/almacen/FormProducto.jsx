@@ -10,73 +10,68 @@ import {
 import { toast } from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-// Componente genérico para los campos del formulario
+// Componente reutilizable para campos de entrada
 const InputField = React.memo(
-  ({ label, type = "text", register, name, errors, placeholder, rules }) => {
-    return (
-      <div className="mb-4">
-        <label htmlFor={name} className="block text-sm font-medium">
-          {label}
-        </label>
-        <input
-          id={name}
-          type={type}
-          {...register(name, rules)}
-          placeholder={placeholder}
-          className={`mt-1 block w-full px-3 py-2 rounded ${
-            errors[name] ? "border-red-500" : "border-gray-300"
-          }`}
-        />
-        {errors[name] && (
-          <span className="text-red-500">{errors[name]?.message}</span>
-        )}
-      </div>
-    );
-  }
+  ({ label, type = "text", register, name, errors, placeholder, rules }) => (
+    <div className="mb-4">
+      <label htmlFor={name} className="block text-sm font-medium">
+        {label}
+      </label>
+      <input
+        id={name}
+        type={type}
+        {...register(name, rules)}
+        placeholder={placeholder}
+        className={`mt-1 block w-full px-3 py-2 rounded ${
+          errors[name] ? "border-red-500" : "border-gray-300"
+        }`}
+      />
+      {errors[name] && (
+        <span className="text-red-500 text-sm">{errors[name]?.message}</span>
+      )}
+    </div>
+  )
 );
 
+// Componente principal del formulario
 export function FormProducto() {
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-    unregister,
-  } = useForm({
-    shouldUnregister: true, // Asegura que se desregistren campos no necesarios
-  });
+  } = useForm({ shouldUnregister: true });
+
   const navigate = useNavigate();
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
-  // 1. Consolidación de la lógica de carga de datos (Producto y Categorías)
+  // Lógica de carga de datos (categorías y producto)
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      // Verificar si las categorías ya están en cache
+      // Verificar si las categorías ya están en caché
       const cachedCategorias = localStorage.getItem("categorias");
       if (cachedCategorias) {
         setCategorias(JSON.parse(cachedCategorias));
-      } else {
-        const categoriasData = await getAllCategorias();
-        setCategorias(categoriasData.data);
-        localStorage.setItem("categorias", JSON.stringify(categoriasData.data)); // Cachear categorías
       }
 
-      // Si existe un ID, cargar datos del producto
-      if (id) {
-        const productoData = await getProducto(id);
-        const producto = productoData.data;
+      // Cargar categorías desde la API y actualizar el caché
+      const { data: categoriasData } = await getAllCategorias();
+      setCategorias(categoriasData);
+      localStorage.setItem("categorias", JSON.stringify(categoriasData));
 
-        // Asignar los valores al formulario
+      // Cargar datos del producto si se edita
+      if (id) {
+        const { data: producto } = await getProducto(id);
         setValue("nombre", producto.nombre);
-        setValue("descripcion", producto.descripcion);
+        setValue("marca", producto.marca);
         setValue("precio", producto.precio);
-        setValue("cantidad_stock", producto.cantidad_stock);
-        setValue("unidad_medida", producto.unidad_medida);
-        setValue("categoria", producto.categoria.toString()); // Convertir a string para el select
+        setValue("stock", producto.stock);
+        setValue("codigo_barras", producto.codigo_barras);
+        setValue("categoria", producto.categoria.toString());
       }
     } catch (error) {
       console.error(error);
@@ -86,28 +81,37 @@ export function FormProducto() {
     }
   }, [id, setValue]);
 
-  // Cargar los datos del producto y categorías al montar el componente
   useEffect(() => {
-    loadData(); // Llamada unificada para cargar datos
+    loadData();
   }, [loadData]);
 
-  // 2. Definir un objeto centralizado de reglas de validación
+  // Reglas de validación
   const validationRules = {
     nombre: { required: "El nombre es obligatorio" },
-    descripcion: { required: "La descripción es obligatoria" },
+    marca: { required: "La marca es obligatoria" }, // Nueva regla
     precio: {
       required: "El precio es obligatorio",
       min: { value: 0.01, message: "El precio debe ser mayor a 0" },
+      pattern: {
+        value: /^\d+(\.\d{1,2})?$/, // Permitimos hasta dos decimales
+        message: "El precio debe ser un número válido",
+      },
     },
-    cantidad_stock: {
+    stock: {
       required: "El stock es obligatorio",
       min: { value: 0, message: "El stock no puede ser negativo" },
     },
-    unidad_medida: { required: "La unidad de medida es obligatoria" },
     categoria: { required: "La categoría es obligatoria" },
+    codigo_barras: {
+      required: "El código de barras es obligatorio",
+      pattern: {
+        value: /^[a-zA-Z0-9\-]+$/,
+        message: "Código de barras inválido",
+      },
+    },
   };
 
-  // 3. Optimización del mapeo de campos del formulario y select de categorías con useMemo
+  // Opciones de categorías con memoización
   const categoriasOptions = useMemo(
     () =>
       categorias.map((cat) => (
@@ -118,25 +122,26 @@ export function FormProducto() {
     [categorias]
   );
 
-  // Función para manejar el envío del formulario
+  // Manejar el envío del formulario
   const onSubmit = handleSubmit(async (data) => {
     setLoading(true);
     try {
       const payload = {
         ...data,
-        precio: parseFloat(data.precio),
+        precio: parseFloat(data.precio).toFixed(2),
         cantidad_stock: parseInt(data.cantidad_stock, 10),
         categoria: parseInt(data.categoria, 10),
       };
 
       if (id) {
         await updateProducto(id, payload);
-        toast.success("Producto actualizado", { duration: 3000 });
+        toast.success("Producto actualizado con éxito");
       } else {
         await createProducto(payload);
-        toast.success("Producto creado");
+        toast.success("Producto creado con éxito");
       }
-      navigate("/almacen/productos"); // Redirigir directamente
+
+      navigate("/almacen/productos");
     } catch (error) {
       toast.error("Error al guardar el producto");
     } finally {
@@ -144,16 +149,14 @@ export function FormProducto() {
     }
   });
 
-  // Función para eliminar producto
+  // Eliminar producto
   const handleEliminarProducto = async () => {
-    if (
-      window.confirm("¿Estás seguro de que quieres eliminar este producto?")
-    ) {
+    if (window.confirm("¿Estás seguro de que deseas eliminar este producto?")) {
       setLoading(true);
       try {
         await deleteProducto(id);
         toast.success("Producto eliminado con éxito");
-        navigate("/almacen/productos"); // Redirigir directamente
+        navigate("/almacen/productos");
       } catch (error) {
         toast.error("Error al eliminar el producto");
       } finally {
@@ -162,14 +165,9 @@ export function FormProducto() {
     }
   };
 
-  // 4. Definir los campos del formulario en un objeto
   const fields = [
     { name: "nombre", label: "Nombre", placeholder: "Nombre del producto" },
-    {
-      name: "descripcion",
-      label: "Descripción",
-      placeholder: "Descripción del producto",
-    },
+    { name: "marca", label: "Marca", placeholder: "Marca del producto" }, // Nuevo campo
     {
       name: "precio",
       label: "Precio",
@@ -177,15 +175,15 @@ export function FormProducto() {
       placeholder: "Precio del producto",
     },
     {
-      name: "cantidad_stock",
+      name: "stock",
       label: "Stock",
       type: "number",
       placeholder: "Cantidad en stock",
     },
     {
-      name: "unidad_medida",
-      label: "Unidad de Medida",
-      placeholder: "Unidad de medida",
+      name: "codigo_barras",
+      label: "Código de Barras",
+      placeholder: "Código único",
     },
   ];
 
@@ -195,30 +193,28 @@ export function FormProducto() {
         {id ? "Actualizar Producto" : "Crear Producto"}
       </h2>
       <form onSubmit={onSubmit}>
-        {/* 5. Mapeo de los campos del formulario para evitar repetición */}
+        {/* Renderización de los campos del formulario */}
         {fields.map(({ name, label, type = "text", placeholder }) => (
           <InputField
             key={name}
             label={label}
-            type={type}
+            type="text"
             register={register}
             name={name}
             errors={errors}
             placeholder={placeholder}
-            rules={validationRules[name]} // Usar reglas de validación centralizadas
+            rules={validationRules[name]}
           />
         ))}
 
-        {/* Select de Categoría */}
+        {/* Select de categorías */}
         <div className="mb-4">
           <label htmlFor="categoria" className="block text-sm font-medium">
             Categoría
           </label>
           <select
             id="categoria"
-            {...register("categoria", {
-              required: "La categoría es obligatoria",
-            })}
+            {...register("categoria", validationRules.categoria)}
             className={`mt-1 block w-full px-3 py-2 rounded ${
               errors.categoria ? "border-red-500" : "border-gray-300"
             }`}
@@ -227,7 +223,9 @@ export function FormProducto() {
             {categoriasOptions}
           </select>
           {errors.categoria && (
-            <span className="text-red-500">{errors.categoria.message}</span>
+            <span className="text-red-500 text-sm">
+              {errors.categoria.message}
+            </span>
           )}
         </div>
 
@@ -235,7 +233,7 @@ export function FormProducto() {
           <button
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded"
-            disabled={loading} // Deshabilitar el botón mientras se está enviando el formulario
+            disabled={loading}
           >
             {loading
               ? "Guardando..."
@@ -248,7 +246,7 @@ export function FormProducto() {
               type="button"
               className="bg-red-500 text-white px-4 py-2 rounded"
               onClick={handleEliminarProducto}
-              disabled={loading} // Deshabilitar el botón mientras se está procesando la eliminación
+              disabled={loading}
             >
               Eliminar Producto
             </button>
@@ -256,7 +254,6 @@ export function FormProducto() {
         </div>
       </form>
 
-      {/* Mostrar mensaje de carga */}
       {loading && (
         <div className="mt-4 text-center text-blue-500">Cargando...</div>
       )}
