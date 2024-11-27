@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBox } from "react-icons/fa";
+import { FaBox, FaCashRegister, FaUser } from "react-icons/fa";
 
 const SidebarMenu = React.memo(
   ({ title, icon: Icon, items, isOpen, toggleMenu }) => (
@@ -47,8 +47,18 @@ const Sidebar = ({ sidebarToggle }) => {
       ],
     },
     {
+      title: "Usuarios",
+      icon: FaUser,
+      items: [
+        { label: "Lista de Usuarios", path: "/usuarios/lista" },
+        { label: "Roles", path: "/usuarios/roles" },
+        { label: "Agregar Usuario", path: "/usuarios/agregar" },
+        { label: "Administrar Usuario", path: "/usuarios/administrar" },
+      ],
+    },
+    {
       title: "Ventas",
-      icon: FaBox,
+      icon: FaCashRegister,
       items: [
         { label: "Realizar Ventas", path: "/ventas/realizar" },
         { label: "Ver Ventas", path: "/ventas/ver" },
