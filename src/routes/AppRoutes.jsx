@@ -1,8 +1,17 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import ProtectedRoute from "../components/ProtectedRoutes";  
 
 const FallbackComponent = () => <div>Hubo un error al cargar la página</div>;
+
+//Login
+const Login = lazy(() => import("@/components/Login"));
+const Register = lazy(() => import("@/components/Register"));
+const PasswordResetRequest = lazy(() =>
+  import("@/components/PasswordResetRequest")
+);
+const PasswordReset = lazy(() => import("@/components/PasswordReset"));
 
 // Lazy loading pages
 // Pagina Principal
@@ -14,7 +23,7 @@ const FormProducto = lazy(() => import("@/components/almacen/FormProducto"));
 const RealizarVenta = lazy(() => import("@/components/ventas/RealizarVenta"));
 // Usuarios
 const UsersPage = lazy(() => import("@/pages/usuarios/UsersPage"));
-const FormUsuario = lazy(() => import("../components/usuarios/FormUsuario"))
+const FormUsuario = lazy(() => import("../components/usuarios/FormUsuario"));
 
 const AppRoutes = () => {
   return (
@@ -23,19 +32,28 @@ const AppRoutes = () => {
         fallback={<div className="spinner">Cargando Pagina Espere</div>}
       >
         <Routes>
-          {/* Pagina Principal */}
-          <Route path="/" element={<Home />} />
-          {/* Almacen */}
-          <Route path="/almacen/productos" element={<Productos />} />
-          <Route path="/almacen/formProducto" element={<FormProducto />} />
-          {/* Ventas */}
-          <Route path="/ventas/realizar" element={<RealizarVenta />} />
-          {/* Usuarios */}
-          <Route path="/usuarios/lista" element={<UsersPage />} />
-          <Route path="/usuarios/formUsuario" element={<FormUsuario />} />
-          <Route path="/usuarios/roles" element={<RealizarVenta />} />
-          <Route path="/usuarios/agregar" element={<RealizarVenta />} />
-          <Route path="/usuarios/administrar" element={<RealizarVenta />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/request/password_reset"
+            element={<PasswordResetRequest />}
+          />
+          <Route path="/password-reset/:token" element={<PasswordReset />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/home" element={<Home />} />
+            {/* Almacen */}
+            <Route path="/almacen/productos" element={<Productos />} />
+            <Route path="/almacen/formProducto" element={<FormProducto />} />
+            {/* Ventas */}
+            <Route path="/ventas/realizar" element={<RealizarVenta />} />
+            {/* Usuarios */}
+            <Route path="/usuarios/lista" element={<UsersPage />} />
+            <Route path="/usuarios/formUsuario" element={<FormUsuario />} />
+            <Route path="/usuarios/roles" element={<RealizarVenta />} />
+            <Route path="/usuarios/agregar" element={<RealizarVenta />} />
+            <Route path="/usuarios/administrar" element={<RealizarVenta />} />
+          </Route>
         </Routes>
       </Suspense>
     </ErrorBoundary>
