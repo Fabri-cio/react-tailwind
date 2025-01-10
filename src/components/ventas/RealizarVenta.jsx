@@ -1,36 +1,56 @@
-// src/components/RealizarVenta.js
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BuscarProducto from "../../components/ventas/BuscarProducto"; // Importa el componente de búsqueda
 
 const RealizarVenta = () => {
-  const [carrito, setCarrito] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [carrito, setCarrito] = useState([]); // Estado del carrito
+  const [total, setTotal] = useState(0); // Total de la venta
 
   // Función para agregar productos al carrito
   const agregarAlCarrito = (producto) => {
-    const existe = carrito.find((item) => item.id === producto.id);
+    console.log(carrito); // Verifica el estado del carrito antes de actualizarlo
+    // Verificamos si el producto ya existe en el carrito
+    const existe = carrito.find((item) => item.id_producto === producto.id_producto);
+
     if (existe) {
+      // Si el producto ya existe, aumentamos la cantidad
       setCarrito(
         carrito.map((item) =>
-          item.id === producto.id
-            ? { ...item, cantidad: item.cantidad + 1 }
+          item.id_producto === producto.id_producto
+            ? { ...item, cantidad: item.cantidad + 1 } // Aumentamos la cantidad del producto
             : item
         )
       );
     } else {
-      setCarrito([...carrito, { ...producto, cantidad: 1 }]);
+      // Si el producto no existe, lo agregamos al carrito como un nuevo producto
+      setCarrito((prevCarrito) => [
+        ...prevCarrito,
+        { ...producto, cantidad: 1 },
+      ]);
     }
-    calcularTotal([...carrito, producto]);
   };
 
   // Función para calcular el total
-  const calcularTotal = (carrito) => {
-    const nuevoTotal = carrito.reduce(
-      (acc, item) => acc + item.precio * item.cantidad,
-      0
-    );
-    setTotal(nuevoTotal);
+  const calcularTotal = () => {
+    if (Array.isArray(carrito) && carrito.length > 0) {
+      const nuevoTotal = carrito.reduce(
+        (acc, item) => acc + item.precio * item.cantidad,
+        0
+      );
+      setTotal(nuevoTotal);
+    } else {
+      setTotal(0);
+    }
+  };
+
+  // Llamamos a la función calcularTotal cada vez que el carrito cambie
+  useEffect(() => {
+    calcularTotal();
+  }, [carrito]);
+
+  // Función para eliminar un producto del carrito
+  const eliminarProducto = (index) => {
+    const nuevoCarrito = carrito.filter((_, i) => i !== index); // Eliminamos el producto en el índice indicado
+    setCarrito(nuevoCarrito); // Actualizamos el carrito
   };
 
   return (
@@ -41,11 +61,12 @@ const RealizarVenta = () => {
         <table className="w-full border-collapse border border-gray-300">
           <thead>
             <tr>
-              <th className="border border-gray-300 p-2">Ítem</th>
-              <th className="border border-gray-300 p-2">Cantidad</th>
+              <th className="border border-gray-300 p-2">N°</th>
               <th className="border border-gray-300 p-2">Producto</th>
-              <th className="border border-gray-300 p-2">Marca</th>
+              <th className="border border-gray-300 p-2">Cant.</th>
               <th className="border border-gray-300 p-2">Precio</th>
+              <th className="border border-gray-300 p-2">Desc.</th>
+              <th className="border border-gray-300 p-2">Total</th>
               <th className="border border-gray-300 p-2">Acción</th>
             </tr>
           </thead>
@@ -53,10 +74,11 @@ const RealizarVenta = () => {
             {carrito.map((item, index) => (
               <tr key={index}>
                 <td className="border border-gray-300 p-2">{index + 1}</td>
-                <td className="border border-gray-300 p-2">{item.cantidad}</td>
                 <td className="border border-gray-300 p-2">{item.nombre}</td>
-                <td className="border border-gray-300 p-2">{item.marca}</td>
+                <td className="border border-gray-300 p-2">{item.cantidad}</td>
                 <td className="border border-gray-300 p-2">${item.precio}</td>
+                <td className="border border-gray-300 p-2">descuento</td>
+                <td className="border border-gray-300 p-2">Total</td>
                 <td className="border border-gray-300 p-2">
                   <button
                     onClick={() => eliminarProducto(index)}

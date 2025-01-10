@@ -1,5 +1,3 @@
-// src/components/BuscarProducto.js
-
 import React, { useState, useEffect } from "react";
 import { useProductos } from "../../hooks/useProductos"; // Hook que trae los productos desde la API
 
@@ -7,6 +5,7 @@ const BuscarProducto = ({ agregarAlCarrito }) => {
   const [query, setQuery] = useState(""); // Estado para el texto del input
   const [productosFiltrados, setProductosFiltrados] = useState([]); // Productos filtrados
   const { productos, loading, error } = useProductos(); // Traemos los productos
+  console.log(productos); // Asegúrate de que los productos son correctos
 
   // Manejo del cambio en el campo de búsqueda
   const handleSearch = (e) => {
@@ -24,6 +23,22 @@ const BuscarProducto = ({ agregarAlCarrito }) => {
     }
   };
 
+  // Función para manejar la selección de un producto
+  const handleSelectProduct = (producto) => {
+    console.log(producto);
+    agregarAlCarrito(producto); // Agregar el producto al carrito
+    setQuery(""); // Limpiar el campo de búsqueda
+    setProductosFiltrados([]); // Limpiar la lista de sugerencias
+  };
+
+  if (loading) {
+    return <p>Cargando productos...</p>;
+  }
+
+  if (error) {
+    return <p className="text-red-500">Error al cargar productos: {error}</p>;
+  }
+
   // Mostrar sugerencias de productos a medida que escribimos
   return (
     <div>
@@ -34,23 +49,27 @@ const BuscarProducto = ({ agregarAlCarrito }) => {
         value={query} // Vinculamos el estado del input
         onChange={handleSearch} // Actualizamos el estado de la búsqueda
       />
-      {loading && <p>Buscando...</p>}
-      {error && <p className="text-red-500">Error: {error}</p>}
-      
-      {/* Mostrar los productos filtrados */}
-      {productosFiltrados.length > 0 && (
-        <ul className="border border-gray-300 rounded mt-2 max-h-60 overflow-y-auto">
-          {productosFiltrados.map((producto) => (
-            <li
-              key={producto.id}
-              className="p-2 hover:bg-gray-200 cursor-pointer"
-              onClick={() => agregarAlCarrito(producto)}  // Al hacer click agregamos al carrito
-            >
-              {producto.nombre} - ${producto.precio}
-            </li>
-          ))}
-        </ul>
-      )}
+
+      {/* Contenedor para las sugerencias de búsqueda */}
+      <div className="relative">
+        {/* Mostrar los productos filtrados */}
+        {productosFiltrados.length > 0 && (
+          <ul className="absolute w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto">
+            {productosFiltrados.map((producto, index) => {
+              const key = producto.id ? producto.id : `producto-${index}`; // Verificamos si el id es válido
+              return (
+                <li
+                  key={key} // Usamos el id o una clave alternativa
+                  className="p-2 hover:bg-gray-200 cursor-pointer"
+                  onClick={() => handleSelectProduct(producto)} // Al hacer click agregamos al carrito
+                >
+                  {producto.nombre} - ${producto.precio}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
