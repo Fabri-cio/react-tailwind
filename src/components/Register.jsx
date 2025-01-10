@@ -1,103 +1,130 @@
-import '../App.css'
-import { Box } from '@mui/material'
-import MyTextField from './forms/MyTextField'
-import MyPassField from './forms/MyPassField'
-import MyButton from './forms/MyButton'
-import {Link} from 'react-router-dom'
-import {useForm} from 'react-hook-form'
-import AxiosInstance from './AxiosInstance'
-import { useNavigate } from 'react-router-dom'
-import {yupResolver} from "@hookform/resolvers/yup"
-import * as yup from "yup"
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import AxiosInstance from "./AxiosInstance";
+import { useNavigate } from "react-router-dom";
 
+const Register = () => {
+  const navigate = useNavigate();
+  const [showMessage, setShowMessage] = useState(false);
+  const [message, setMessage] = useState("");
 
-const Register = () =>{
-    const navigate = useNavigate()
+  const schema = yup.object({
+    email: yup
+      .string()
+      .email("Field expects an email address")
+      .required("Email is a required field"),
+    password: yup
+      .string()
+      .required("Password is a required field")
+      .min(8, "Password must be at least 8 characters")
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+      .matches(/[0-9]/, "Password must contain at least one number")
+      .matches(
+        /[!@#$%^&*(),.?":;{}|<>+]/,
+        "Password must contain at least one special character"
+      ),
+    password2: yup
+      .string()
+      .required("Password confirmation is a required field")
+      .oneOf([yup.ref("password"), null], "Passwords must match"),
+  });
 
-    const schema = yup
-    .object({
-        email: yup.string().email('Field expects an email adress').required('Email is a required field'),
-        password: yup.string()
-                    .required('Password is a required field')
-                    .min(8,'Password must be at least 8 characters')
-                    .matches(/[A-Z]/,'Password must contain at least one uppercase letter')
-                    .matches(/[a-z]/,'Password must contain at least one lower case letter')
-                    .matches(/[0-9]/,'Password must contain at least one number')
-                    .matches(/[!@#$%^&*(),.?":;{}|<>+]/, 'Password must contain at least one special character'),
-        password2: yup.string().required('Password confirmation is a required field')
-                     .oneOf([yup.ref('password'),null], 'Passwords must match')
+  const { handleSubmit, control } = useForm({ resolver: yupResolver(schema) });
 
-    })  
+  const submission = (data) => {
+    AxiosInstance.post(`register/`, {
+      email: data.email,
+      password: data.password,
+    })
+      .then(() => {
+        navigate(`/`);
+      })
+      .catch((error) => {
+        setShowMessage(true);
+        setMessage("Registration failed. Please try again.");
+        console.error("Error during registration", error);
+      });
+  };
 
-    const {handleSubmit, control} = useForm({resolver: yupResolver(schema)})
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-pink-400 to-orange-300">
+      <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg">
+        <h2 className="text-3xl text-center font-bold text-orange-600 mb-6">User Registration</h2>
 
-    const submission = (data) => {
-        AxiosInstance.post(`register/`,{
-            email: data.email, 
-            password: data.password,
-        })
+        {showMessage && (
+          <div className="mb-4 p-4 text-white bg-red-600 rounded-md">
+            {message}
+          </div>
+        )}
 
-        .then(() => {
-            navigate(`/`)
-        }
-        )
-    }
+        <form onSubmit={handleSubmit(submission)}>
+          <div className="mb-4">
+            <Controller
+              name="email"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="email"
+                  placeholder="Email"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
+                />
+              )}
+            />
+          </div>
 
-    return(
-        <div className={"myBackground"}> 
+          <div className="mb-4">
+            <Controller
+              name="password"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="password"
+                  placeholder="Password"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
+                />
+              )}
+            />
+          </div>
 
-            <form onSubmit={handleSubmit(submission)}>
-                
-               
-            <Box className={"whiteBox"}>
+          <div className="mb-6">
+            <Controller
+              name="password2"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="password"
+                  placeholder="Confirm Password"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
+                />
+              )}
+            />
+          </div>
 
-                <Box className={"itemBox"}>
-                    <Box className={"title"}> User registration </Box>
-                </Box>
+          <button
+            type="submit"
+            className="w-full py-3 bg-orange-600 text-white font-bold rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          >
+            Register
+          </button>
+        </form>
 
-                <Box className={"itemBox"}>
-                    <MyTextField
-                    label={"Email"}
-                    name ={"email"}
-                    control={control}
-                    />
-                </Box>
-
-                <Box className={"itemBox"}>
-                    <MyPassField
-                    label={"Password"}
-                    name={"password"}
-                    control={control}
-                    />
-                </Box>
-
-                <Box className={"itemBox"}>
-                    <MyPassField
-                    label={"Confirm password"}
-                    name={"password2"}
-                    control={control}
-                    />
-                </Box>
-
-                <Box className={"itemBox"}>
-                    <MyButton 
-                        type={"submit"}
-                        label={"Register"}
-                    />
-                </Box>
-
-                <Box className={"itemBox"}>
-                    <Link to="/"> Already registered? Please login! </Link>
-                </Box>
-
-
-            </Box>
-
-            </form> 
-            
+        <div className="mt-6 text-center">
+          <a href="/" className="text-sm text-orange-600 hover:underline">
+            Already registered? Please login!
+          </a>
         </div>
-    )
+      </div>
+    </div>
+  );
+};
 
-}
-
-export default Register
+export default Register;

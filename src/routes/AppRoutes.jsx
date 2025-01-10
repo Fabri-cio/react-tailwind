@@ -1,7 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import ProtectedRoute from "../components/ProtectedRoutes";  
+import ProtectedRoute from "@/components/ProtectedRoute";
+import MainLayout from "@/components/MainLayout";
+import PublicLayout from "@/components/PublicLayout";
 
 const FallbackComponent = () => <div>Hubo un error al cargar la página</div>;
 
@@ -21,9 +23,13 @@ const Productos = lazy(() => import("@/pages/almacen/Productos"));
 const FormProducto = lazy(() => import("@/components/almacen/FormProducto"));
 // Ventas
 const RealizarVenta = lazy(() => import("@/components/ventas/RealizarVenta"));
+
+const VentaList = lazy(() => import("@/components/ventas/VentaList"));
+const VentaDetail = lazy(() => import("@/components/ventas/VentaDetail"));
+
 // Usuarios
 const UsersPage = lazy(() => import("@/pages/usuarios/UsersPage"));
-const FormUsuario = lazy(() => import("../components/usuarios/FormUsuario"));
+const FormUsuario = lazy(() => import("@/components/usuarios/FormUsuario"));
 
 const AppRoutes = () => {
   return (
@@ -32,27 +38,33 @@ const AppRoutes = () => {
         fallback={<div className="spinner">Cargando Pagina Espere</div>}
       >
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/request/password_reset"
-            element={<PasswordResetRequest />}
-          />
-          <Route path="/password-reset/:token" element={<PasswordReset />} />
+          {/* Rutas publicas */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/request/password_reset"
+              element={<PasswordResetRequest />}
+            />
+            <Route path="/password-reset/:token" element={<PasswordReset />} />
+          </Route>
 
+          {/* Rutas protegidas */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/home" element={<Home />} />
-            {/* Almacen */}
-            <Route path="/almacen/productos" element={<Productos />} />
-            <Route path="/almacen/formProducto" element={<FormProducto />} />
-            {/* Ventas */}
-            <Route path="/ventas/realizar" element={<RealizarVenta />} />
-            {/* Usuarios */}
-            <Route path="/usuarios/lista" element={<UsersPage />} />
-            <Route path="/usuarios/formUsuario" element={<FormUsuario />} />
-            <Route path="/usuarios/roles" element={<RealizarVenta />} />
-            <Route path="/usuarios/agregar" element={<RealizarVenta />} />
-            <Route path="/usuarios/administrar" element={<RealizarVenta />} />
+            <Route element={<MainLayout />}>
+              <Route path="/home" element={<Home />} />
+              {/* Almacen */}
+              <Route path="/almacen/productos" element={<Productos />} />
+              <Route path="/almacen/formProducto" element={<FormProducto />} />
+              {/* Ventas */}
+              <Route path="/ventas/realizar" element={<RealizarVenta />} />
+              {/* Usuarios */}
+              <Route path="/usuarios/lista" element={<UsersPage />} />
+              <Route path="/usuarios/formUsuario" element={<FormUsuario />} />
+              <Route path="/usuarios/roles" element={<RealizarVenta />} />
+              <Route path="/usuarios/agregar" element={<RealizarVenta />} />
+              <Route path="/usuarios/administrar" element={<RealizarVenta />} />
+            </Route>
           </Route>
         </Routes>
       </Suspense>
