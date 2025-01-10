@@ -7,6 +7,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { handleSubmit, control } = useForm();
   const [showMessage, setShowMessage] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   const submission = (data) => {
     AxiosInstance.post(`login/`, {
@@ -15,23 +16,34 @@ const Login = () => {
     })
       .then((response) => {
         console.log(response);
+        console.log("Inicio de sesión exitoso:", response.data);
         localStorage.setItem("Token", response.data.token);
+        setLoginSuccess(true);
         navigate(`/home`);
       })
       .catch((error) => {
         setShowMessage(true);
-        console.error("Error during login", error);
+        console.error("Error durante el inicio de sesión", error);
       });
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-500 to-blue-300">
       <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg">
-        <h2 className="text-3xl text-center font-bold text-blue-600 mb-6">Iniciar sesión</h2>
+        <h2 className="text-3xl text-center font-bold text-blue-600 mb-6">
+          Iniciar sesión
+        </h2>
 
         {showMessage && (
           <div className="mb-4 p-4 text-white bg-red-600 rounded-md">
-            Login failed, please try again or reset your password.
+            Error al iniciar sesión, inténtelo de nuevo o restablezca su
+            contraseña.
+          </div>
+        )}
+
+        {loginSuccess && (
+          <div className="mb-4 p-4 text-white bg-green-600 rounded-md">
+            ¡Sesión iniciada correctamente!
           </div>
         )}
 
@@ -83,7 +95,10 @@ const Login = () => {
             ¿No tienes cuenta? ¡Regístrate!
           </a>
           <br />
-          <a href="/request/password_reset" className="text-sm text-blue-600 hover:underline">
+          <a
+            href="/request/password_reset"
+            className="text-sm text-blue-600 hover:underline"
+          >
             ¿Olvidaste tu contraseña? Haz clic aquí
           </a>
         </div>
