@@ -16,3 +16,10 @@ export const getCategoria = (id) => request(ApiProductos, "get", `categorias/${i
 export const createCategoria = (categoria) => request(ApiProductos, "post", "categorias/", categoria);
 export const updateCategoria = (id, categoria) => request(ApiProductos, "put", `categorias/${id}/`, categoria);
 export const deleteCategoria = (id) => request(ApiProductos, "delete", `categorias/${id}/`);
+
+// Proveedores
+export const getAllProveedores = () => request(ApiProductos, "get", "proveedores/");
+export const getProveedor = (id) => request(ApiProductos, "get", `proveedores/${id}`);
+export const createProveedor = (proveedor) => request(ApiProductos, "post", "proveedores/", proveedor);
+export const updateProveedor = (id, proveedor) => request(ApiProductos, "put", `proveedores/${id}/`, proveedor);
+export const deleteProveedor = (id) => request(ApiProductos, "delete", `proveedores/${id}/`);
