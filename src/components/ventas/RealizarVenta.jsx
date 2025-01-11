@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 // Importa el componente de búsqueda
-import BuscarProducto from "../../components/ventas/BuscarProducto";
+import BuscarProducto from "@/components/ventas/BuscarProducto";
 import ModalVenta from "./ModalVenta"; // Importa el componente de ModalVenta
+import { createVenta } from "@/api/venta.api"; // Importa la función para crear una venta
 
 const RealizarVenta = () => {
   const [carrito, setCarrito] = useState([]); // Estado del carrito
@@ -87,31 +88,51 @@ const RealizarVenta = () => {
     setDescuentoVenta(parseFloat(e.target.value || 0));
   };
 
+  const idUsuario = localStorage.getItem("id_usuario");
+  console.log(idUsuario);
+  const idTienda = localStorage.getItem("id_tienda");
+
+  if (!idUsuario || !idTienda) {
+    // Manejar el caso cuando no se encuentren estos valores
+    alert("No se pudo encontrar la información del usuario o tienda.");
+    return; // Evita continuar con la venta
+  }
+
   // Función para guardar la venta
   const guardarVenta = async () => {
     const ventaData = {
-      productos: carrito.map((item) => ({
-        id_producto: item.id_producto,
-        cantidad: item.cantidad,
-        precio: item.precio,
-        descuento: item.descuento || 0,
+      id_usuario: idUsuario, // Suponiendo que el usuario está autenticado y puedes obtener su ID
+      id_tienda: idTienda, // ID de la tienda (almacén), puedes obtenerlo de algún estado o contexto
+      metodo_pago: "Efectivo", // Método de pago, este puede ser dinámico
+      descuento: descuentoVenta, // Descuento global
+      total_venta: total, // Total de la venta
+      detalles: carrito.map((item) => ({
+        id_producto: item.id_producto, // Producto ID
+        cantidad: item.cantidad, // Cantidad de productos
+        precio_unitario: item.precio, // Precio del producto
+        descuento_unitario: item.descuento || 0, // Descuento del producto
       })),
-      total,
     };
 
+    console.log("Datos que se enviarán al backend:", ventaData); // Verifica que los datos sean correctos
+
     try {
-      const response = await createVenta(ventaData); // Llama a la función `createVenta`
-      console.log("Venta guardada exitosamente:", response.data);
-      alert("Venta guardada exitosamente");
-      setCarrito([]); // Limpia el carrito después de guardar
-      setTotal(0); // Reinicia el total
-      setDescuentoVenta(0); // Reinicia el descuento global
+      // Llamar a la función que usará Axios para enviar los datos
+      const response = await createVenta(ventaData);
+
+      if (response.status === 201) {
+        console.log("Venta registrada exitosamente:", response.data);
+        alert("Venta guardada exitosamente");
+        setCarrito([]); // Limpiar el carrito
+        setTotal(0); // Reiniciar el total
+        setDescuentoVenta(0); // Reiniciar el descuento
+      } else {
+        console.error("Error al registrar la venta:", response);
+        alert("Error al guardar la venta. Verifica los datos.");
+      }
     } catch (error) {
-      console.error(
-        "Error al guardar la venta:",
-        error.response?.data || error.message
-      );
-      alert("Error al guardar la venta. Verifica los datos.");
+      console.error("Error de red o al enviar la solicitud:", error);
+      alert("Error al guardar la venta. Verifica tu conexión.");
     }
   };
 
@@ -130,6 +151,13 @@ const RealizarVenta = () => {
   // Función para cerrar el modal
   const cerrarModal = () => {
     setIsModalOpen(false);
+  };
+
+  // Función para confirmar la venta desde el modal
+  const handleConfirmVenta = (totalFinal, descuentoGeneral) => {
+    console.log("Total final de la venta:", totalFinal); // Verifica el total final
+    guardarVenta(); // Llamar a la función para guardar la venta
+    cerrarModal(); // Cierra el modal
   };
 
   return (
@@ -162,7 +190,9 @@ const RealizarVenta = () => {
                     type="number"
                     min="0"
                     value={item.cantidad}
-                    onChange={(e) => handleCantidadChange(index, e.target.value)}
+                    onChange={(e) =>
+                      handleCantidadChange(index, e.target.value)
+                    }
                     className="w-20 border rounded px-2 py-1"
                   />
                 </td>
@@ -276,7 +306,7 @@ const RealizarVenta = () => {
           carrito={carrito}
           total={total}
           descuentoGlobal={descuentoVenta}
-          onConfirm={guardarVenta}
+          onConfirm={handleConfirmVenta}
           onClose={cerrarModal}
         />
       )}
