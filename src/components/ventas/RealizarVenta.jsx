@@ -101,38 +101,49 @@ const RealizarVenta = () => {
   // Función para guardar la venta
   const guardarVenta = async () => {
     const ventaData = {
-      id_usuario: idUsuario, // Suponiendo que el usuario está autenticado y puedes obtener su ID
-      id_tienda: idTienda, // ID de la tienda (almacén), puedes obtenerlo de algún estado o contexto
-      metodo_pago: "Efectivo", // Método de pago, este puede ser dinámico
+      id_usuario: idUsuario, // ID del usuario autenticado
+      id_tienda: idTienda, // ID de la tienda o almacén
+      metodo_pago: "Efectivo", // Método de pago (puede ser dinámico)
       descuento: descuentoVenta, // Descuento global
       total_venta: total, // Total de la venta
       detalles: carrito.map((item) => ({
         id_producto: item.id_producto, // Producto ID
         cantidad: item.cantidad, // Cantidad de productos
         precio_unitario: item.precio, // Precio del producto
-        descuento_unitario: item.descuento || 0, // Descuento del producto
+        descuento_unitario: item.descuento || 0, // Descuento del producto (opcional)
+        subtotal: item.precio * item.cantidad - (item.descuento || 0), // Subtotal del producto
       })),
     };
 
-    console.log("Datos que se enviarán al backend:", ventaData); // Verifica que los datos sean correctos
+    console.log(
+      "Datos que se enviarán al backend:",
+      JSON.stringify(ventaData, null, 2)
+    );
+    // Verifica que los datos sean correctos
 
     try {
       // Llamar a la función que usará Axios para enviar los datos
       const response = await createVenta(ventaData);
 
-      if (response.status === 201) {
-        console.log("Venta registrada exitosamente:", response.data);
-        alert("Venta guardada exitosamente");
-        setCarrito([]); // Limpiar el carrito
-        setTotal(0); // Reiniciar el total
-        setDescuentoVenta(0); // Reiniciar el descuento
-      } else {
-        console.error("Error al registrar la venta:", response);
-        alert("Error al guardar la venta. Verifica los datos.");
-      }
+      // Revisión del estado de la respuesta
+      console.log("Respuesta del servidor:", response);
+
+      // Asumimos que un estado 201 indica éxito
+      alert("Venta guardada exitosamente");
+      setCarrito([]); // Limpiar el carrito
+      setTotal(0); // Reiniciar el total
+      setDescuentoVenta(0); // Reiniciar el descuento
     } catch (error) {
-      console.error("Error de red o al enviar la solicitud:", error);
-      alert("Error al guardar la venta. Verifica tu conexión.");
+      // Manejo de errores: mostrar mensajes claros al usuario
+      console.error("Error al guardar la venta:", error);
+
+      if (error.detalles) {
+        alert(
+          `Error: ${error.message}\nDetalles: ${JSON.stringify(error.detalles)}`
+        );
+      } else {
+        alert("Error al guardar la venta. Verifica tu conexión.");
+      }
     }
   };
 
