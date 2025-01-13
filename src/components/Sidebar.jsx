@@ -60,9 +60,9 @@ const Sidebar = ({ sidebarToggle }) => {
       title: "Ventas",
       icon: FaCashRegister,
       items: [
-        { label: "Realizar Ventas", path: "/ventas/realizar" },
-        { label: "Ver Ventas", path: "/ventas/ver" },
-        { label: "Ventas por Fecha", path: "/ventas/fecha" },
+        { label: "Realizar Venta", path: "/ventas/realizar" },
+        { label: "Ventas", path: "/ventas/ver" },
+        { label: "Productos Vendidos", path: "/ventas/productos" },
         { label: "Informes Mensuales", path: "/ventas/informes" },
       ],
     },

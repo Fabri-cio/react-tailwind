@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Función para crear una instancia base de Axios
+// Crear instancia base de Axios
 const createApiInstance = (baseURL) => {
   const token = localStorage.getItem("token");
   return axios.create({
@@ -20,15 +20,12 @@ const request = async (apiInstance, method, url, data = null) => {
     return response;
   } catch (error) {
     if (error.response) {
-      // Error con respuesta del servidor
       console.error("Error del servidor:", error.response.data);
       throw error.response.data;
     } else if (error.request) {
-      // Error sin respuesta (servidor no respondió)
       console.error("Sin respuesta del servidor:", error.request);
       throw new Error("El servidor no está respondiendo.");
     } else {
-      // Otro tipo de error
       console.error("Error desconocido:", error.message);
       throw new Error(error.message);
     }

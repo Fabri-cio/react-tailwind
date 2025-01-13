@@ -23,6 +23,8 @@ const Productos = lazy(() => import("@/pages/almacen/Productos"));
 const FormProducto = lazy(() => import("@/components/almacen/FormProducto"));
 // Ventas
 const RealizarVenta = lazy(() => import("@/components/ventas/RealizarVenta"));
+const Ventas = lazy(() => import("@/pages/ventas/Ventas"));
+const DetalleVenta = lazy(() => import("../pages/ventas/DetalleVenta"));
 
 // Usuarios
 const UsersPage = lazy(() => import("@/pages/usuarios/UsersPage"));
@@ -55,6 +57,8 @@ const AppRoutes = () => {
               <Route path="/almacen/formProducto" element={<FormProducto />} />
               {/* Ventas */}
               <Route path="/ventas/realizar" element={<RealizarVenta />} />
+              <Route path="/ventas/ver" element={<Ventas />} />
+              <Route path="/ventas/detalleVenta/:id" element={<DetalleVenta />} />
               {/* Usuarios */}
               <Route path="/usuarios/lista" element={<UsersPage />} />
               <Route path="/usuarios/formUsuario" element={<FormUsuario />} />
