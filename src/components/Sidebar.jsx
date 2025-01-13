@@ -62,7 +62,7 @@ const Sidebar = ({ sidebarToggle }) => {
       items: [
         { label: "Realizar Venta", path: "/ventas/realizar" },
         { label: "Ventas", path: "/ventas/ver" },
-        { label: "Productos Vendidos", path: "/ventas/productos" },
+        { label: "Productos Vendidos", path: "/ventas/productosVendidos" },
         { label: "Informes Mensuales", path: "/ventas/informes" },
       ],
     },
