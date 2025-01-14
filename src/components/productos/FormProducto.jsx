@@ -141,7 +141,7 @@ export function FormProducto() {
         toast.success("Producto creado con éxito");
       }
 
-      navigate("/almacen/productos");
+      navigate("/productos");
     } catch (error) {
       toast.error("Error al guardar el producto");
     } finally {
@@ -156,7 +156,7 @@ export function FormProducto() {
       try {
         await deleteProducto(id);
         toast.success("Producto eliminado con éxito");
-        navigate("/almacen/productos");
+        navigate("/productos");
       } catch (error) {
         toast.error("Error al eliminar el producto");
       } finally {

@@ -18,15 +18,24 @@ const PasswordReset = lazy(() => import("@/components/PasswordReset"));
 // Lazy loading pages
 // Pagina Principal
 const Home = lazy(() => import("@/pages/Home"));
-// Almacen
-const Productos = lazy(() => import("@/pages/almacen/Productos"));
-const FormProducto = lazy(() => import("@/components/almacen/FormProducto"));
+// Productos
+const Productos = lazy(() => import("@/pages/productos/Productos"));
+const FormProducto = lazy(() => import("@/components/productos/FormProducto"));
 // Ventas
 const RealizarVenta = lazy(() => import("@/components/ventas/RealizarVenta"));
 const Ventas = lazy(() => import("@/pages/ventas/Ventas"));
 const DetalleVenta = lazy(() => import("@/pages/ventas/DetalleVenta"));
-const ProductosVendidos = lazy(() => import("../pages/ventas/ProductosVendidos"));
-
+const ProductosVendidos = lazy(() =>
+  import("../pages/ventas/ProductosVendidos")
+);
+const ReporteVentas = lazy(() => import("../pages/ventas/ReporteVentas"));
+// Predicciones
+const RealizarPrediccion = lazy(() =>
+  import("@/pages/predicciones/RealizarPrediccion")
+);
+const DetallesPrediccion = lazy(() =>
+  import("../components/predicciones/DetallesPrediccion")
+);
 // Usuarios
 const UsersPage = lazy(() => import("@/pages/usuarios/UsersPage"));
 const FormUsuario = lazy(() => import("@/components/usuarios/FormUsuario"));
@@ -53,12 +62,13 @@ const AppRoutes = () => {
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
               <Route path="/home" element={<Home />} />
-              {/* Almacen */}
-              <Route path="/almacen/productos" element={<Productos />} />
-              <Route path="/almacen/formProducto" element={<FormProducto />} />
+              {/* Productos */}
+              <Route path="/productos" element={<Productos />} />
+              <Route path="/formProducto" element={<FormProducto />} />
               {/* Ventas */}
               <Route path="/ventas/realizar" element={<RealizarVenta />} />
               <Route path="/ventas/ver" element={<Ventas />} />
+              <Route path="/ventas/reportes" element={<ReporteVentas />} />
               <Route
                 path="/ventas/detalleVenta/:id"
                 element={<DetalleVenta />}
@@ -67,6 +77,16 @@ const AppRoutes = () => {
                 path="/ventas/productosVendidos"
                 element={<ProductosVendidos />}
               />
+              {/* Predicciones */}
+              <Route
+                path="/realizar_prediccion"
+                element={<RealizarPrediccion />}
+              />
+              <Route
+                path="/detalles-prediccion"
+                element={<DetallesPrediccion />}
+              />
+              {/* <Route path="/ver" element={<Predicciones />} /> */}
               {/* Usuarios */}
               <Route path="/usuarios/lista" element={<UsersPage />} />
               <Route path="/usuarios/formUsuario" element={<FormUsuario />} />

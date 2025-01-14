@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useProductos } from "@/hooks/useProductos";
 import { useCategorias } from "@/hooks/useCategorias";
 import { useProveedores } from "@/hooks/useProveedores";
-import { Navigation } from "@/components/almacen/Navigation";
+import { Navigation } from "@/components/productos/Navigation";
 
 function Productos() {
   const {
@@ -91,7 +91,7 @@ function Productos() {
         </td>
         <td className="py-2 px-4 border-b border-gray-200">
           <Link
-            to={`/almacen/formProducto?id=${id_producto}`}
+            to={`/formProducto?id=${id_producto}`}
             className="bg-green-500 text-white px-2 py-1 rounded"
           >
             Editar

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBox, FaCashRegister, FaUser } from "react-icons/fa";
+import { FaBox, FaCashRegister, FaChartLine, FaUser } from "react-icons/fa";
 
 const SidebarMenu = React.memo(
   ({ title, icon: Icon, items, isOpen, toggleMenu }) => (
@@ -36,14 +36,30 @@ const Sidebar = ({ sidebarToggle }) => {
 
   const menus = [
     {
-      title: "Almacen",
+      title: "Productos",
       icon: FaBox,
       items: [
-        { label: "Categoria", path: "/almacen/categoria" },
-        { label: "Presentacion", path: "/almacen/presentacion" },
-        { label: "Marca", path: "/almacen/marca" },
-        { label: "Producto", path: "/almacen/productos" },
-        { label: "Codigo de Barras", path: "/almacen/codigo-barras" },
+        { label: "Categorias", path: "/categoria" },
+        { label: "Proveedores", path: "/presentacion" },
+        { label: "Productos", path: "/productos" },
+      ],
+    },
+    {
+      title: "Ventas",
+      icon: FaCashRegister,
+      items: [
+        { label: "Realizar Venta", path: "/ventas/realizar" },
+        { label: "Ventas", path: "/ventas/ver" },
+        { label: "Productos Vendidos", path: "/ventas/productosVendidos" },
+        { label: "Reportes", path: "/ventas/reportes" },
+      ],
+    },
+    {
+      title: "Prediccion Demanda",
+      icon: FaChartLine,
+      items: [
+        { label: "Realizar Prediccion", path: "/realizar_prediccion" },
+        { label: "Predicciones", path: "/ver_predicciones" },
       ],
     },
     {
@@ -54,16 +70,6 @@ const Sidebar = ({ sidebarToggle }) => {
         { label: "Roles", path: "/usuarios/roles" },
         { label: "Agregar Usuario", path: "/usuarios/agregar" },
         { label: "Administrar Usuario", path: "/usuarios/administrar" },
-      ],
-    },
-    {
-      title: "Ventas",
-      icon: FaCashRegister,
-      items: [
-        { label: "Realizar Venta", path: "/ventas/realizar" },
-        { label: "Ventas", path: "/ventas/ver" },
-        { label: "Productos Vendidos", path: "/ventas/productosVendidos" },
-        { label: "Informes Mensuales", path: "/ventas/informes" },
       ],
     },
   ];
