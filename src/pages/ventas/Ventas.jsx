@@ -1,9 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useVentas } from "@/hooks/useVentas";
 
 function Ventas() {
-  const { ventas, loadingVentas, errorVentas } = useVentas();
+  const {
+    data: response = {},
+    isLoading: loadingVentas,
+    isError: errorVentas,
+  } = useVentas();
+
+  const ventas = response.data || [];
+
+  const navigate = useNavigate();
 
   console.log("Ventas cargadas:", ventas);
 
@@ -23,6 +31,10 @@ function Ventas() {
       descuento,
       total_venta,
     } = venta;
+
+    const handleDetallesClick = () => {
+      navigate(`/ventas/detalleVenta/${id_venta}`, { state: { venta } });
+    };
 
     return (
       <tr className="hover:bg-gray-100 transition duration-200">
@@ -44,12 +56,12 @@ function Ventas() {
           Bs. {total_venta}
         </td>
         <td className="py-2 px-4 border-b border-gray-200">
-          <Link
-            to={`/ventas/detalleVenta/${id_venta}`}
+          <button
+            onClick={handleDetallesClick}
             className="bg-green-500 text-white px-2 py-1 rounded"
           >
             Detalles
-          </Link>
+          </button>
         </td>
       </tr>
     );

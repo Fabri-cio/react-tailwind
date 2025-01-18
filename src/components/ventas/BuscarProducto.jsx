@@ -4,8 +4,10 @@ import { useProductos } from "../../hooks/useProductos"; // Hook que trae los pr
 const BuscarProducto = ({ agregarAlCarrito }) => {
   const [query, setQuery] = useState(""); // Estado para el texto del input
   const [productosFiltrados, setProductosFiltrados] = useState([]); // Productos filtrados
-  const { productos, loading, error } = useProductos(); // Traemos los productos
+  const { data: productos, loading, error } = useProductos(); // Traemos los productos
   console.log(productos); // Asegúrate de que los productos son correctos
+
+  const productosData = productos?.data || [];
 
   // Manejo del cambio en el campo de búsqueda
   const handleSearch = (e) => {
@@ -14,7 +16,7 @@ const BuscarProducto = ({ agregarAlCarrito }) => {
 
     if (value.trim() !== "") {
       // Filtramos los productos según el nombre que contiene la búsqueda
-      const filtered = productos.filter((producto) =>
+      const filtered = productosData.filter((producto) =>
         producto.nombre.toLowerCase().includes(value.toLowerCase())
       );
       setProductosFiltrados(filtered);

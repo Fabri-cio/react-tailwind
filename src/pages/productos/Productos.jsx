@@ -1,94 +1,60 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useProductos } from "@/hooks/useProductos";
-import { useCategorias } from "@/hooks/useCategorias";
-import { useProveedores } from "@/hooks/useProveedores";
+import { useProductos } from "../../hooks/useProductos";
 import { Navigation } from "@/components/productos/Navigation";
 
 function Productos() {
   const {
-    productos,
-    loading: loadingProductos,
-    error: errorProductos,
+    data: response = {},
+    isLoading: loadingProductos,
+    isError: errorProductos,
   } = useProductos();
-  const {
-    categorias,
-    loading: loadingCategorias,
-    error: errorCategorias,
-  } = useCategorias();
-  const {
-    proveedores,
-    loading: loadingProveedores,
-    error: errorProveedores,
-  } = useProveedores();
 
-  // Log para verificar los productos y categorías cargados
+  const productos = response.data || [];
+
+  // Log para debug
   console.log("Productos cargados:", productos);
-  console.log("Categorías cargadas:", categorias);
-  console.log("Proveedores cargados:", proveedores);
 
   // Manejo de carga y errores
-  if (loadingProductos || loadingCategorias || loadingProveedores)
-    return <p>Cargando productos, categorías y proveedores...</p>;
-  if (errorProductos || errorCategorias || errorProveedores)
+  if (loadingProductos) return <p>Cargando productos...</p>;
+  if (errorProductos)
     return (
-      <p>Error: {errorProductos || errorCategorias || errorProveedores}</p>
+      <p>
+        Error al cargar los productos: {error.message || "Error desconocido"}
+      </p>
     );
 
-  // Mapear las categorías al principio para optimizar el acceso
-  const categoriasMap = categorias.reduce((acc, cat) => {
-    acc[cat.id_categoria] = cat.nombre_categoria;
-    return acc;
-  }, {});
-
-  //Mapear los proveedores al principio para optimizar el acceso
-  const proveedoresMap = proveedores.reduce((acc, prov) => {
-    acc[prov.id_proveedor] = prov.nombre_proveedor;
-    return acc;
-  }, {});
-
-  console.log("Mapa de proveedores:", proveedoresMap);
-
-
-  // Obtener el nombre de la categoría
-  const getNombreCategoria = (idCategoria) =>
-    categoriasMap[idCategoria] || "Sin categoría";
-
-  const getNombreProveedor = (idProveedor) =>
-    proveedoresMap[idProveedor] || "Sin proveedor";
-
   // Componente para una fila de la tabla
-  const ProductoRow = ({ producto }) => {
+  const ProductoRow = ({ producto, index }) => {
     const {
       id_producto,
       estado,
       nombre,
       precio,
       codigo_barras,
-      categoria,
-      id_proveedor,
+      nombre_proveedor,
+      nombre_categoria,
     } = producto;
 
     return (
       <tr className="bg-gray-100 hover:bg-gray-200">
-        <td className="py-2 px-4 border-b border-gray-200">{nombre}</td>
+        <td className="py-2 px-4 border-b border-gray-200">{index}</td>
         <td className="py-2 px-4 border-b border-gray-200">
           {estado ? (
-            <span className="text-green-500">✓</span> // Ícono de bien
+            <span className="text-green-500">✓</span>
           ) : (
-            <span className="text-red-500">✗</span> // Ícono de mal
+            <span className="text-red-500">✗</span>
           )}
         </td>
+        <td className="py-2 px-4 border-b border-gray-200">{nombre}</td>
         <td className="py-2 px-4 border-b border-gray-200">
-          Bs {parseFloat(precio).toFixed(2)}
+          {nombre_proveedor}
         </td>
+        <td className="py-2 px-4 border-b border-gray-200">
+          {nombre_categoria}
+        </td>
+        <td className="py-2 px-4 border-b border-gray-200">{precio}</td>
         <td className="py-2 px-4 border-b border-gray-200">{codigo_barras}</td>
-        <td className="py-2 px-4 border-b border-gray-200">
-          {getNombreCategoria(categoria)}
-        </td>
-        <td className="py-2 px-4 border-b border-gray-200">
-          {getNombreProveedor(id_proveedor)}
-        </td>
         <td className="py-2 px-4 border-b border-gray-200">
           <Link
             to={`/formProducto?id=${id_producto}`}
@@ -107,20 +73,23 @@ function Productos() {
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
-            <th className="py-2 px-4 border-b border-gray-200">Nombre</th>
+            <th className="py-2 px-4 border-b border-gray-200">#</th>
             <th className="py-2 px-4 border-b border-gray-200">Estado</th>
-            <th className="py-2 px-4 border-b border-gray-200">Precio</th>
-            <th className="py-2 px-4 border-b border-gray-200">
-              Código de Barras
-            </th>
-            <th className="py-2 px-4 border-b border-gray-200">Categoría</th>
+            <th className="py-2 px-4 border-b border-gray-200">Nombre</th>
             <th className="py-2 px-4 border-b border-gray-200">Proveedor</th>
+            <th className="py-2 px-4 border-b border-gray-200">Categoría</th>
+            <th className="py-2 px-4 border-b border-gray-200">Precio</th>
+            <th className="py-2 px-4 border-b border-gray-200">Código</th>
             <th className="py-2 px-4 border-b border-gray-200">Actualizar</th>
           </tr>
         </thead>
         <tbody>
-          {productos.map((producto) => (
-            <ProductoRow key={producto.id_producto} producto={producto} />
+          {productos.map((producto, index) => (
+            <ProductoRow
+              key={producto.id_producto}
+              producto={producto}
+              index={index + 1}
+            />
           ))}
         </tbody>
       </table>

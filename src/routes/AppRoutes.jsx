@@ -25,8 +25,8 @@ const FormProducto = lazy(() => import("@/components/productos/FormProducto"));
 const RealizarVenta = lazy(() => import("@/components/ventas/RealizarVenta"));
 const Ventas = lazy(() => import("@/pages/ventas/Ventas"));
 const DetalleVenta = lazy(() => import("@/pages/ventas/DetalleVenta"));
-const ProductosVendidos = lazy(() =>
-  import("../pages/ventas/ProductosVendidos")
+const DetalleVentas = lazy(() =>
+  import("../pages/ventas/DetalleVentas")
 );
 const ReporteVentas = lazy(() => import("../pages/ventas/ReporteVentas"));
 // Predicciones
@@ -74,8 +74,8 @@ const AppRoutes = () => {
                 element={<DetalleVenta />}
               />
               <Route
-                path="/ventas/productosVendidos"
-                element={<ProductosVendidos />}
+                path="/ventas/detalleVentas"
+                element={<DetalleVentas />}
               />
               {/* Predicciones */}
               <Route

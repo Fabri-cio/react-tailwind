@@ -16,7 +16,7 @@ const createApiInstance = (baseURL) => {
 const request = async (apiInstance, method, url, data = null) => {
   try {
     const response = await apiInstance.request({ method, url, data });
-    console.log("Venta creada con éxito:", response); 
+    console.log("Peticion creada con éxito:", response); 
     return response;
   } catch (error) {
     if (error.response) {

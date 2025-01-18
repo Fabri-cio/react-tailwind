@@ -50,7 +50,7 @@ const Sidebar = ({ sidebarToggle }) => {
       items: [
         { label: "Realizar Venta", path: "/ventas/realizar" },
         { label: "Ventas", path: "/ventas/ver" },
-        { label: "Productos Vendidos", path: "/ventas/productosVendidos" },
+        { label: "Productos Vendidos", path: "/ventas/detalleVentas" },
         { label: "Reportes", path: "/ventas/reportes" },
       ],
     },

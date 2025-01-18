@@ -1,21 +1,23 @@
 import React from "react";
-import { useProductosVendidos } from "../../hooks/useProductosVendidos";
+import { useDetalleVentas } from "../../hooks/useDetalleVentas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
-function ProductosVendidos() {
+function DetalleVentas() {
   const {
-    productosVendidos,
-    loading: loadingProductosVendidos,
-    error: errorProductosVendidos,
-  } = useProductosVendidos();
+      data: response = {},
+      isLoading: loadingDetalleVentas,
+      isError: errorDetalleVentas,
+    } = useDetalleVentas();
 
-  console.log("Productos vendidos cargados:", productosVendidos);
+  const detalleVentas = response.data || []
 
-  if (loadingProductosVendidos) return <p>Cargando productos vendidos...</p>;
-  if (errorProductosVendidos) return <p>Error: {errorProductosVendidos}</p>;
+  console.log("Productos vendidos cargados:", detalleVentas);
 
-  const ProductosVendidos = ({ productosVendidos, index }) => {
+  if (loadingDetalleVentas) return <p>Cargando productos vendidos...</p>;
+  if (errorDetalleVentas) return <p>Error: {errorDetalleVentas}</p>;
+
+  const DetalleVentasFila = ({ productosVendidos, index }) => {
     const {
       id_detalle_venta,
       id_venta,
@@ -60,8 +62,8 @@ function ProductosVendidos() {
           </tr>
         </thead>
         <tbody>
-          {productosVendidos.map((producto, index) => (
-            <ProductosVendidos
+          {detalleVentas.map((producto, index) => (
+            <DetalleVentasFila
               key={producto.id_detalle_venta || index}
               productosVendidos={producto}
               index={index}
@@ -73,4 +75,4 @@ function ProductosVendidos() {
   );
 }
 
-export default ProductosVendidos;
+export default DetalleVentas;

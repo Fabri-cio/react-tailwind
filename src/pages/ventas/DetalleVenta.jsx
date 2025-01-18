@@ -1,39 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getVenta } from "../../api/venta.api";
+import React from "react";
+import { useLocation } from "react-router-dom";
 
-function DetalleVenta() {
-  const { id } = useParams(); // Accede al id de la URL
-  const [venta, setVenta] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+function DetallesVenta() {
+  const { state } = useLocation(); // Recibe los datos de la venta desde la navegación
+  const venta = state?.venta;
 
-  useEffect(() => {
-    async function fetchVentaDetails() {
-      try {
-        setLoading(true);
-        const response = await getVenta(id); // Obtener la venta desde la API
-        console.log("Venta Response:", response);
-        setVenta(response.data); // Solo asigna la propiedad 'data'
-      } catch (err) {
-        console.error("Error al cargar los detalles de la venta:", err);
-        setError("Error al cargar los detalles de la venta.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchVentaDetails();
-  }, [id]);
-
-  if (loading)
+  if (!venta)
     return (
-      <p className="text-center text-xl text-blue-500">
-        Cargando detalles de la venta...
+      <p className="text-center text-xl text-red-600">
+        No se proporcionaron datos de la venta.
       </p>
     );
-  if (error)
-    return <p className="text-center text-xl text-red-600">Error: {error}</p>;
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 shadow-lg rounded-lg">
@@ -42,6 +19,7 @@ function DetalleVenta() {
       </h1>
       {venta ? (
         <div className="space-y-6">
+          {/* Información general de la venta */}
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <p className="text-lg font-medium text-gray-800">
               <strong>ID Venta:</strong> {venta.id_venta}
@@ -64,6 +42,7 @@ function DetalleVenta() {
             </p>
           </div>
 
+          {/* Detalles de los productos */}
           <h2 className="text-3xl font-semibold text-indigo-600">
             Detalles de la Venta
           </h2>
@@ -117,4 +96,4 @@ function DetalleVenta() {
   );
 }
 
-export default DetalleVenta;
+export default DetallesVenta;

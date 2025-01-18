@@ -2,13 +2,15 @@ import React, { useState, useEffect, useCallback } from "react";
 // Importa el componente de búsqueda
 import BuscarProducto from "@/components/ventas/BuscarProducto";
 import ModalVenta from "./ModalVenta"; // Importa el componente de ModalVenta
-import { createVenta } from "@/api/venta.api"; // Importa la función para crear una venta
+import { useCrearVenta } from "../../hooks/useCrearVentas";
 
 const RealizarVenta = () => {
   const [carrito, setCarrito] = useState([]); // Estado del carrito
   const [total, setTotal] = useState(0); // Total de la venta
   const [descuentoVenta, setDescuentoVenta] = useState(0); // Descuento global de la venta
   const [isModalOpen, setIsModalOpen] = useState(false); // Controlar si el modal está abierto
+
+  const { mutate: crearVenta, isLoading, isError, error } = useCrearVenta(); // Usamos el hook para crear la venta
 
   // Función para agregar productos al carrito
   const agregarAlCarrito = useCallback((producto) => {
@@ -115,6 +117,8 @@ const RealizarVenta = () => {
       })),
     };
 
+    crearVenta(ventaData);
+
     console.log(
       "Datos que se enviarán al backend:",
       JSON.stringify(ventaData, null, 2)
@@ -123,7 +127,7 @@ const RealizarVenta = () => {
 
     try {
       // Llamar a la función que usará Axios para enviar los datos
-      const response = await createVenta(ventaData);
+      const response = await crearVenta(ventaData);
 
       // Revisión del estado de la respuesta
       console.log("Respuesta del servidor:", response);

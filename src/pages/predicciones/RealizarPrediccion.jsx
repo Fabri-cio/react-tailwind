@@ -5,11 +5,18 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 function RealizarPrediccion() {
-  const { ventas, loading, error } = useVentas();
+  const {
+    data: response = {},
+    isLoading: loadingVentas,
+    isError: errorVentas,
+  } = useVentas();
+
+  const ventas = response.data || [];
+
   const navigate = useNavigate();
 
-  if (loading) return <p>Cargando datos...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loadingVentas) return <p>Cargando datos...</p>;
+  if (errorVentas) return <p>Error: {errorVentas}</p>;
 
   const ventasPorTienda = ventas.reduce((acc, venta) => {
     const tienda = venta.nombre_tienda;
