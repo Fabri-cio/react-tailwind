@@ -73,10 +73,7 @@ const Sidebar = ({ sidebarToggle }) => {
       title: "Usuarios",
       icon: FaUser,
       items: [
-        { label: "Lista de Usuarios", path: "/usuarios/lista" },
-        { label: "Roles", path: "/usuarios/roles" },
-        { label: "Agregar Usuario", path: "/usuarios/agregar" },
-        { label: "Administrar Usuario", path: "/usuarios/administrar" },
+        { label: "Lista de Usuarios", path: "/listusers" },
       ],
     },
   ];

@@ -37,8 +37,7 @@ const DetallesPrediccion = lazy(() =>
   import("../components/predicciones/DetallesPrediccion")
 );
 // Usuarios
-const UsersPage = lazy(() => import("@/pages/usuarios/UsersPage"));
-const FormUsuario = lazy(() => import("@/components/usuarios/FormUsuario"));
+const ListaUsuarios = lazy(() => import("../pages/usuarios/ListaUsuarios"));
 
 const AppRoutes = () => {
   return (
@@ -87,11 +86,7 @@ const AppRoutes = () => {
               />
               {/* <Route path="/ver" element={<Predicciones />} /> */}
               {/* Usuarios */}
-              <Route path="/usuarios/lista" element={<UsersPage />} />
-              <Route path="/usuarios/formUsuario" element={<FormUsuario />} />
-              <Route path="/usuarios/roles" element={<RealizarVenta />} />
-              <Route path="/usuarios/agregar" element={<RealizarVenta />} />
-              <Route path="/usuarios/administrar" element={<RealizarVenta />} />
+              <Route path="/listusers" element={<ListaUsuarios></ListaUsuarios>} />
             </Route>
           </Route>
           {/* Ruta para manejar páginas no encontradas */}

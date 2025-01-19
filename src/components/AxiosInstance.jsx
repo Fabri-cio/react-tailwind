@@ -20,6 +20,7 @@ AxiosInstance.interceptors.request.use(
         else{
             config.headers.Authorization = ``
         }
+        console.log("Token agregado a la solicitud:", config.headers.Authorization); // Verifica que el token esté correcto
         return config;
     }
 )

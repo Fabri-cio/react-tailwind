@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import AxiosInstance from "./AxiosInstance";
+import { login } from "../api/usuario.api"; // Ahora usando el método de api.Base
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -9,27 +9,25 @@ const Login = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
 
-  const submission = (data) => {
-    AxiosInstance.post(`login/`, {
-      email: data.email,
-      password: data.password,
-      lugar_de_trabajo: "1",
-    })
-      .then((response) => {
-        console.log(response);
-        console.log("Inicio de sesión exitoso:", response.data);
+  const submission = async (data) => {
+    try {
+      const response = await login(data.email, data.password);
+      console.log("Inicio de sesión exitoso:", response.data);
 
-        localStorage.setItem("Token", response.data.token);
-        localStorage.setItem("id_usuario", response.data.user.id); // Suponiendo que el backend te devuelve el id del usuario
-        localStorage.setItem("id_tienda", response.data.user.lugar_de_trabajo); // Suponiendo que el backend te devuelve el id de la tienda
-        console.log("id_usuario", response.data.user.id);
-        setLoginSuccess(true);
-        navigate(`/home`);
-      })
-      .catch((error) => {
-        setShowMessage(true);
-        console.error("Error durante el inicio de sesión", error);
-      });
+      // Verifica si el token está siendo guardado en localStorage
+      console.log("Token guardado:", response.data.token);
+
+      localStorage.setItem("Token", response.data.token);
+      localStorage.setItem("id_usuario", response.data.user.id); // Suponiendo que el backend te devuelve el id del usuario
+      localStorage.setItem("id_tienda", response.data.user.lugar_de_trabajo); // Suponiendo que el backend te devuelve el id de la tienda
+      console.log("id_usuario", response.data.user.id);
+
+      setLoginSuccess(true);
+      navigate(`/home`);
+    } catch (error) {
+      setShowMessage(true);
+      console.error("Error durante el inicio de sesión", error);
+    }
   };
 
   return (
