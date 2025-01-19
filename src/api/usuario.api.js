@@ -1,15 +1,21 @@
 import { createApiInstance, request } from "./api.Base";
-import axios from 'axios'; // Asegúrate de importar axios
 
-// Crear instancia específica para la ApiUsuarios de usuarios
+// Crear instancia específica para la API de usuarios
 const ApiUsuarios = createApiInstance("http://localhost:8000/api/v1/usuarios/");
 
-// Funciones específicas para cada endpoint
+// Función genérica para operaciones CRUD
+const createCrudOperations = (apiInstance, resource) => ({
+  getAll: () => request(apiInstance, "get", `${resource}/`),
+  getOne: (id) => request(apiInstance, "get", `${resource}/${id}`),
+  create: (data) => request(apiInstance, "post", `${resource}/`, data),
+  update: (id, data) => request(apiInstance, "put", `${resource}/${id}/`, data),
+  delete: (id) => request(apiInstance, "delete", `${resource}/${id}/`),
+});
+
+// Funciones específicas para el login y registro
 export const login = (email, password) => request(ApiUsuarios, "post", "login/", { email, password });
 export const register = (data) => request(ApiUsuarios, "post", "register/", data);
-export const fetchUsers = () => request(ApiUsuarios, "get", "usuarios/"); 
-export const createUser = (data) => request(ApiUsuarios, "post", "usuarios/", data);
-export const updateUser = (id, data) => request(ApiUsuarios, "put", `usuarios/${id}/`, data);
-export const deleteUser = (id) => request(ApiUsuarios, "delete", `usuarios/${id}/`);
 
-
+// Crear operaciones CRUD específicas para los usuarios
+export const UsuariosAPI = createCrudOperations(ApiUsuarios, "usuarios");
+export const CustomUserAPI = createCrudOperations(ApiUsuarios, "customuser");
