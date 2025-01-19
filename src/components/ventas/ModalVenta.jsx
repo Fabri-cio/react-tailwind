@@ -1,21 +1,15 @@
 import React, { useState } from "react";
 
-const ModalVenta = ({
-  carrito,
-  total,
-  descuentoGlobal,
-  onConfirm,
-  onClose,
-}) => {
-  const [descuentoGeneral, setDescuentoGeneral] = useState(descuentoGlobal); // Inicializamos con descuentoGlobal
+const ModalVenta = ({ carrito, total, descuentoGlobal, onConfirm, onClose }) => {
+  const [descuentoGeneral, setDescuentoGeneral] = useState(descuentoGlobal);
 
-  // Calcular total sin descuento (considerando descuentos individuales)
+  // Calcular total sin descuento (sumando los subtotales con descuentos individuales)
   const totalSinDescuento = carrito.reduce((acc, item) => {
-    const totalProducto = item.precio * item.cantidad;
+    const totalProducto = item.precio * item.cantidad - (item.descuento || 0); // Descuentos por producto
     return acc + totalProducto;
-  }, 0); // Total sin descuentos de productos
+  }, 0);
 
-  // Total final después de descuento global
+  // Total final después de aplicar el descuento global
   const totalFinal = totalSinDescuento - descuentoGlobal;
 
   return (
