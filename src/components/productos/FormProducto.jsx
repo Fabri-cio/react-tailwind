@@ -30,13 +30,17 @@ function FormProducto() {
     precio: "",
     codigo_barras: "",
     id_proveedor: "",
-    id_categoria: "",
+    categoria: "",
     estado: true,
   };
 
   const [formValues, setFormValues] = useState(producto);
 
-  const { mutate: actualizarProducto, isSuccess, isLoading } = useActualizarProducto();
+  const {
+    mutate: actualizarProducto,
+    isSuccess,
+    isLoading,
+  } = useActualizarProducto();
 
   // Actualizar el formulario con los IDs correctos de proveedor y categoría
   useEffect(() => {
@@ -44,9 +48,13 @@ function FormProducto() {
       setFormValues((prevValues) => ({
         ...prevValues,
         id_proveedor:
-          proveedores.find((prov) => prov.nombre_proveedor === prevValues.nombre_proveedor)?.id_proveedor || "",
+          proveedores.find(
+            (prov) => prov.nombre_proveedor === prevValues.nombre_proveedor
+          )?.id_proveedor || "",
         id_categoria:
-          categorias.find((cat) => cat.nombre_categoria === prevValues.nombre_categoria)?.id_categoria || "",
+          categorias.find(
+            (cat) => cat.nombre_categoria === prevValues.nombre_categoria
+          )?.id_categoria || "",
       }));
     }
   }, [categorias, proveedores]);
@@ -77,9 +85,15 @@ function FormProducto() {
     console.log("Datos enviados:", formValues); // Verifica los valores aquí
     const { id_producto, ...data } = formValues;
 
+    // Añadir usuario_modificacion
+    const dataToSend = {
+      ...data,
+      usuario_modificacion: localStorage.getItem("id_usuario"), // Añadir usuario_modificacion
+    };
+
     actualizarProducto({
       id: parseInt(id_producto, 10),
-      data,
+      data: dataToSend,
     });
   };
 
@@ -114,7 +128,9 @@ function FormProducto() {
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-2">Proveedor</label>
+          <label className="block text-gray-700 font-medium mb-2">
+            Proveedor
+          </label>
           <select
             name="id_proveedor"
             value={formValues.id_proveedor}
@@ -132,9 +148,11 @@ function FormProducto() {
         </div>
 
         <div>
-          <label className="block text-gray-700 font-medium mb-2">Categoría</label>
+          <label className="block text-gray-700 font-medium mb-2">
+            Categoría
+          </label>
           <select
-            name="id_categoria"
+            name="categoria"
             value={formValues.id_categoria}
             onChange={handleSelectChange}
             className="w-full p-2 border border-gray-300 rounded"
