@@ -7,9 +7,9 @@ const ApiUsuarios = createApiInstance("http://localhost:8000/api/v1/usuarios/");
 // Funciones específicas para cada endpoint
 export const login = (email, password) => request(ApiUsuarios, "post", "login/", { email, password });
 export const register = (data) => request(ApiUsuarios, "post", "register/", data);
-export const fetchUsers = () => request(ApiUsuarios, "get", "users/"); 
-export const createUser = (data) => request(ApiUsuarios, "post", "users/", data);
-export const updateUser = (id, data) => request(ApiUsuarios, "put", `users/${id}/`, data);
-export const deleteUser = (id) => request(ApiUsuarios, "delete", `users/${id}/`);
+export const fetchUsers = () => request(ApiUsuarios, "get", "usuarios/"); 
+export const createUser = (data) => request(ApiUsuarios, "post", "usuarios/", data);
+export const updateUser = (id, data) => request(ApiUsuarios, "put", `usuarios/${id}/`, data);
+export const deleteUser = (id) => request(ApiUsuarios, "delete", `usuarios/${id}/`);
 
 
