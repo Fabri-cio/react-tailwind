@@ -11,19 +11,8 @@ function Productos() {
   } = useProductos();
 
   const productos = response.data || [];
-
   const navigate = useNavigate();
 
-  // Log para debug
-  console.log("Productos cargados:", productos);
-
-  // Manejo de carga y errores
-  if (loadingProductos)
-    return <p className="text-center text-gray-600">Cargando ventas...</p>;
-  if (errorProductos)
-    return <p className="text-center text-red-600">Error: {errorProductos}</p>;
-
-  // Componente para una fila de la tabla
   const ProductoFila = ({ producto, index }) => {
     const {
       id_producto,
@@ -40,28 +29,28 @@ function Productos() {
     };
 
     return (
-      <tr className="bg-gray-100 hover:bg-gray-200">
-        <td className="py-2 px-4 border-b border-gray-200">{index}</td>
-        <td className="py-2 px-4 border-b border-gray-200">
+      <tr className="hover:bg-gray-100 transition-all">
+        <td className="py-3 px-4 text-gray-700 text-center">{index}</td>
+        <td className="py-3 px-4 text-center">
           {estado ? (
-            <span className="text-green-500">✓</span>
+            <span className="inline-block bg-green-200 text-green-700 px-2 py-1 rounded-full text-sm">
+              Activo
+            </span>
           ) : (
-            <span className="text-red-500">✗</span>
+            <span className="inline-block bg-red-200 text-red-700 px-2 py-1 rounded-full text-sm">
+              Inactivo
+            </span>
           )}
         </td>
-        <td className="py-2 px-4 border-b border-gray-200">{nombre}</td>
-        <td className="py-2 px-4 border-b border-gray-200">
-          {nombre_proveedor}
-        </td>
-        <td className="py-2 px-4 border-b border-gray-200">
-          {nombre_categoria}
-        </td>
-        <td className="py-2 px-4 border-b border-gray-200">{precio}</td>
-        <td className="py-2 px-4 border-b border-gray-200">{codigo_barras}</td>
-        <td className="py-2 px-4 border-b border-gray-200">
+        <td className="py-3 px-4">{nombre}</td>
+        <td className="py-3 px-4">{nombre_proveedor}</td>
+        <td className="py-3 px-4">{nombre_categoria}</td>
+        <td className="py-3 px-4 text-right">{precio.toFixed(2)}</td>
+        <td className="py-3 px-4">{codigo_barras}</td>
+        <td className="py-3 px-4 text-center">
           <button
             onClick={handleDetallesClick}
-            className="bg-green-500 text-white px-2 py-1 rounded"
+            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition-all"
           >
             Editar
           </button>
@@ -70,20 +59,44 @@ function Productos() {
     );
   };
 
+  if (loadingProductos)
+    return <p className="text-center text-gray-500">Cargando productos...</p>;
+  if (errorProductos)
+    return (
+      <p className="text-center text-red-600">Error al cargar productos.</p>
+    );
+
   return (
     <div className="container mx-auto p-4">
       <Navigation />
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
+      <hr />
+      <table className="min-w-full border-collapse border border-gray-200 bg-white shadow-md rounded-lg overflow-hidden">
+        <thead className="bg-gray-50">
           <tr>
-            <th className="py-2 px-4 border-b border-gray-200">#</th>
-            <th className="py-2 px-4 border-b border-gray-200">Estado</th>
-            <th className="py-2 px-4 border-b border-gray-200">Nombre</th>
-            <th className="py-2 px-4 border-b border-gray-200">Proveedor</th>
-            <th className="py-2 px-4 border-b border-gray-200">Categoría</th>
-            <th className="py-2 px-4 border-b border-gray-200">Precio</th>
-            <th className="py-2 px-4 border-b border-gray-200">Código</th>
-            <th className="py-2 px-4 border-b border-gray-200">Actualizar</th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">
+              #
+            </th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">
+              Estado
+            </th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">
+              Nombre
+            </th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">
+              Proveedor
+            </th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">
+              Categoría
+            </th>
+            <th className="py-3 px-4 text-right font-semibold text-gray-700 border-b">
+              Precio Bs.
+            </th>
+            <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">
+              Código
+            </th>
+            <th className="py-3 px-4 text-center font-semibold text-gray-700 border-b">
+              Acciones
+            </th>
           </tr>
         </thead>
         <tbody>
