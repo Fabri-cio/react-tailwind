@@ -1,7 +1,11 @@
-import { useFetch } from "./useFetch";
-import { getAllCategorias } from "../api/producto.api";
+import { useQuery } from "@tanstack/react-query";
+import { CategoriasAPI } from "../api/producto.api";
 
-export function useCategorias() {
-  const { data: categorias, loading, error } = useFetch(getAllCategorias);
-  return { categorias, loading, error };
-}
+export const useCategorias = () => {
+  return useQuery({
+    queryKey: ["categorias"], // Llave única para esta consulta
+    queryFn: CategoriasAPI.getAll, // Función que devuelve los datos
+    staleTime: 1000 * 60 * 5, // Datos frescos durante 5 minutos
+    cacheTime: 1000 * 60 * 10, // Mantén los datos en caché durante 10 minutos
+  });
+};

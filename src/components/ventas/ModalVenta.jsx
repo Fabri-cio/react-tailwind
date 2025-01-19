@@ -10,13 +10,13 @@ const ModalVenta = ({
   const [descuentoGeneral, setDescuentoGeneral] = useState(descuentoGlobal); // Inicializamos con descuentoGlobal
 
   // Calcular total sin descuento (considerando descuentos individuales)
-  const totalSinDescuento = carrito.reduce(
-    (acc, item) => acc + item.precio * item.cantidad - (item.descuento || 0),
-    0
-  );
+  const totalSinDescuento = carrito.reduce((acc, item) => {
+    const totalProducto = item.precio * item.cantidad;
+    return acc + totalProducto;
+  }, 0); // Total sin descuentos de productos
 
-  // Calcular el total final con el descuento general
-  const totalFinal = totalSinDescuento - descuentoGeneral;
+  // Total final después de descuento global
+  const totalFinal = totalSinDescuento - descuentoGlobal;
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
@@ -62,7 +62,7 @@ const ModalVenta = ({
             <strong>Descuento General:</strong> Bs. {descuentoGlobal.toFixed(2)}
           </p>
           <p className="mt-2">
-            <strong>Total Final:</strong> Bs. {total.toFixed(2)}
+            <strong>Total Final:</strong> Bs. {totalFinal.toFixed(2)}
           </p>
         </div>
 

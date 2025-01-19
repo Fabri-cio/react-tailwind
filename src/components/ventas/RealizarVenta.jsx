@@ -35,15 +35,14 @@ const RealizarVenta = () => {
 
   // Función para calcular el total de la venta
   useEffect(() => {
-    const subtotal = carrito.reduce(
-      (acc, item) => acc + item.precio * item.cantidad - (item.descuento || 0),
-      0
-    );
-
-    // Aplicar descuento general a la venta
-    const nuevoTotal = subtotal - (descuentoVenta || 0);
-    setTotal(nuevoTotal);
-  }, [carrito, descuentoVenta]);
+    const subtotal = carrito.reduce((acc, item) => {
+      const descuentoPorProducto = item.descuento || 0;
+      const totalProducto = item.precio * item.cantidad;
+      return acc + totalProducto - descuentoPorProducto;
+    }, 0);
+    // Calcular el total con el descuento global
+    setTotal(subtotal - descuentoVenta); // Resta el descuento global al subtotal
+  }, [carrito, descuentoVenta]); // Asegúrate de que total se actualice cada vez que cambie el carrito o el descuento global
 
   // Función para eliminar un producto del carrito
   const eliminarProducto = (index) => {

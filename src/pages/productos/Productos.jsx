@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useProductos } from "../../hooks/useProductos";
 import { Navigation } from "@/components/productos/Navigation";
 
@@ -12,20 +12,19 @@ function Productos() {
 
   const productos = response.data || [];
 
+  const navigate = useNavigate();
+
   // Log para debug
   console.log("Productos cargados:", productos);
 
   // Manejo de carga y errores
-  if (loadingProductos) return <p>Cargando productos...</p>;
+  if (loadingProductos)
+    return <p className="text-center text-gray-600">Cargando ventas...</p>;
   if (errorProductos)
-    return (
-      <p>
-        Error al cargar los productos: {error.message || "Error desconocido"}
-      </p>
-    );
+    return <p className="text-center text-red-600">Error: {errorProductos}</p>;
 
   // Componente para una fila de la tabla
-  const ProductoRow = ({ producto, index }) => {
+  const ProductoFila = ({ producto, index }) => {
     const {
       id_producto,
       estado,
@@ -35,6 +34,10 @@ function Productos() {
       nombre_proveedor,
       nombre_categoria,
     } = producto;
+
+    const handleDetallesClick = () => {
+      navigate(`/formProducto/${id_producto}`, { state: { producto } });
+    };
 
     return (
       <tr className="bg-gray-100 hover:bg-gray-200">
@@ -56,12 +59,12 @@ function Productos() {
         <td className="py-2 px-4 border-b border-gray-200">{precio}</td>
         <td className="py-2 px-4 border-b border-gray-200">{codigo_barras}</td>
         <td className="py-2 px-4 border-b border-gray-200">
-          <Link
-            to={`/formProducto?id=${id_producto}`}
+          <button
+            onClick={handleDetallesClick}
             className="bg-green-500 text-white px-2 py-1 rounded"
           >
             Editar
-          </Link>
+          </button>
         </td>
       </tr>
     );
@@ -85,7 +88,7 @@ function Productos() {
         </thead>
         <tbody>
           {productos.map((producto, index) => (
-            <ProductoRow
+            <ProductoFila
               key={producto.id_producto}
               producto={producto}
               index={index + 1}

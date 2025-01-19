@@ -18,6 +18,8 @@ const PasswordReset = lazy(() => import("@/components/PasswordReset"));
 // Lazy loading pages
 // Pagina Principal
 const Home = lazy(() => import("@/pages/Home"));
+// Movimientos
+const Movimientos = lazy(() => import("../pages/movimientos/Movimientos"));
 // Productos
 const Productos = lazy(() => import("@/pages/productos/Productos"));
 const FormProducto = lazy(() => import("@/components/productos/FormProducto"));
@@ -25,9 +27,7 @@ const FormProducto = lazy(() => import("@/components/productos/FormProducto"));
 const RealizarVenta = lazy(() => import("@/components/ventas/RealizarVenta"));
 const Ventas = lazy(() => import("@/pages/ventas/Ventas"));
 const DetalleVenta = lazy(() => import("@/pages/ventas/DetalleVenta"));
-const DetalleVentas = lazy(() =>
-  import("../pages/ventas/DetalleVentas")
-);
+const DetalleVentas = lazy(() => import("../pages/ventas/DetalleVentas"));
 const ReporteVentas = lazy(() => import("../pages/ventas/ReporteVentas"));
 // Predicciones
 const RealizarPrediccion = lazy(() =>
@@ -62,9 +62,11 @@ const AppRoutes = () => {
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
               <Route path="/home" element={<Home />} />
+              {/* Movimientos */}
+              <Route path="/ver_movimientos" element={<Movimientos />} />
               {/* Productos */}
               <Route path="/productos" element={<Productos />} />
-              <Route path="/formProducto" element={<FormProducto />} />
+              <Route path="/formProducto/:id" element={<FormProducto />} />
               {/* Ventas */}
               <Route path="/ventas/realizar" element={<RealizarVenta />} />
               <Route path="/ventas/ver" element={<Ventas />} />
@@ -73,10 +75,7 @@ const AppRoutes = () => {
                 path="/ventas/detalleVenta/:id"
                 element={<DetalleVenta />}
               />
-              <Route
-                path="/ventas/detalleVentas"
-                element={<DetalleVentas />}
-              />
+              <Route path="/ventas/detalleVentas" element={<DetalleVentas />} />
               {/* Predicciones */}
               <Route
                 path="/realizar_prediccion"
