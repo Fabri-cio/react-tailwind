@@ -97,24 +97,42 @@ function DetallesProducto() {
   }, {});
 
   // Función para exportar CSV
-  const exportToCSV = () => {
+  // Función para enviar el CSV y obtener la predicción
+  const enviarCSVyObtenerPrediccion = async () => {
+    const formData = new FormData();
     const csvRows = [];
-    // Agregar encabezado
     csvRows.push('"ds","y"');
-    // Agregar los datos
     detalles.forEach((detalle) => {
       const fecha = format(new Date(detalle.fecha_venta), "yyyy-MM-dd");
       csvRows.push(`"${fecha}",${detalle.cantidad}`);
     });
-
-    // Crear el archivo CSV
     const csvString = csvRows.join("\n");
+
+    // Agrega el log para verificar el contenido del CSV
+    console.log(csvString);
+
     const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", `${producto}_detalles.csv`);
-    link.click();
+    formData.append("file", blob, `${producto}_detalles.csv`);
+
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/predicciones/prediccion/csv/",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        navigate("/prediccion-resultados", {
+          state: { forecast: data.forecast },
+        });
+      } else {
+        alert("Error al realizar la predicción: " + data.error);
+      }
+    } catch (error) {
+      alert("Error en la conexión con el servidor: " + error.message);
+    }
   };
 
   return (
@@ -192,12 +210,12 @@ function DetallesProducto() {
         </ul>
       </div>
 
-      {/* Botón para exportar a CSV */}
+      {/* Botón para exportar a CSV y predecir */}
       <button
-        onClick={exportToCSV}
-        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 mb-4"
+        onClick={enviarCSVyObtenerPrediccion}
+        className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600 mb-4"
       >
-        Exportar a CSV
+        Exportar a CSV y Predecir
       </button>
 
       {/* Tabla de Detalles */}

@@ -23,7 +23,9 @@ const Movimientos = lazy(() => import("../pages/movimientos/Movimientos"));
 // Productos
 const Productos = lazy(() => import("@/pages/productos/Productos"));
 const FormProducto = lazy(() => import("@/components/productos/FormProducto"));
-const CrearProducto = lazy(() => import('../components/productos/CrearProducto'))
+const CrearProducto = lazy(() =>
+  import("../components/productos/CrearProducto")
+);
 // Ventas
 const RealizarVenta = lazy(() => import("@/components/ventas/RealizarVenta"));
 const Ventas = lazy(() => import("@/pages/ventas/Ventas"));
@@ -37,13 +39,22 @@ const RealizarPrediccion = lazy(() =>
 const DetallesPrediccion = lazy(() =>
   import("../components/predicciones/DetallesPrediccion")
 );
+const PrediccionResultados = lazy(() =>
+  import("../components/predicciones/PrediccionResultados")
+);
 // Usuarios
 const UserList = lazy(() => import("../pages/usuarios/UserList"));
 const UserEditPage = lazy(() => import("../pages/usuarios/UserEditPage"));
 // Inventarios
-const InventarioList = lazy(() => import("../pages/inventarios/InventarioList"))
-const CrearInventario = lazy(() => import("../components/inventarios/CrearInventario"))
-const RegistrarMovimiento = lazy(() =>import("../components/inventarios/RegistrarMovimiento"))
+const InventarioList = lazy(() =>
+  import("../pages/inventarios/InventarioList")
+);
+const CrearInventario = lazy(() =>
+  import("../components/inventarios/CrearInventario")
+);
+const RegistrarMovimiento = lazy(() =>
+  import("../components/inventarios/RegistrarMovimiento")
+);
 
 const AppRoutes = () => {
   return (
@@ -88,6 +99,10 @@ const AppRoutes = () => {
                 element={<RealizarPrediccion />}
               />
               <Route
+                path="/prediccion-resultados"
+                element={<PrediccionResultados />}
+              />
+              <Route
                 path="/detalles-prediccion"
                 element={<DetallesPrediccion />}
               />
@@ -98,7 +113,10 @@ const AppRoutes = () => {
               {/* Inventario */}
               <Route path="/ver_inventario" element={<InventarioList />} />
               <Route path="/crear_inventario" element={<CrearInventario />} />
-              <Route path="/registrarMovimiento/:id" element={<RegistrarMovimiento />} />
+              <Route
+                path="/registrarMovimiento/:id"
+                element={<RegistrarMovimiento />}
+              />
             </Route>
           </Route>
           {/* Ruta para manejar páginas no encontradas */}
