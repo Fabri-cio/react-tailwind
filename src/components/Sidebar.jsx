@@ -41,6 +41,9 @@ const SidebarMenu = React.memo(
 const Sidebar = ({ sidebarToggle }) => {
   const [openMenu, setOpenMenu] = useState(null);
 
+  // Obtén el rol del usuario desde el localStorage
+  const userRole = localStorage.getItem("role");
+
   const menus = [
     {
       title: "Ventas",
@@ -51,6 +54,8 @@ const Sidebar = ({ sidebarToggle }) => {
         { label: "Productos Vendidos", path: "/ventas/detalleVentas" },
         { label: "Reportes", path: "/ventas/reportes" },
       ],
+      // Solo mostrar para 'Cajero'
+      roleRequired: "Cajero",
     },
     {
       title: "Prediccion Demanda",
@@ -59,6 +64,8 @@ const Sidebar = ({ sidebarToggle }) => {
         { label: "Realizar Prediccion", path: "/realizar_prediccion" },
         // { label: "Predicciones", path: "/ver_predicciones" },
       ],
+       // Solo mostrar para otros roles
+       roleRequired: "Admin", // Cambiar esto según tus roles
     },
     {
       title: "Movimientos",
@@ -68,7 +75,7 @@ const Sidebar = ({ sidebarToggle }) => {
     {
       title: "Inventario",
       icon: FaBoxes,
-      items: [{label: "Ver Inventario", path: "/ver_inventario"}],
+      items: [{ label: "Ver Inventario", path: "/ver_inventario" }],
     },
     {
       title: "Productos",
