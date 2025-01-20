@@ -67,7 +67,7 @@ const Sidebar = ({ sidebarToggle }) => {
     {
       title: "Inventario",
       icon: FaTruckMoving,
-      items: [{}],
+      items: [{label: "Ver Inventario", path: "/ver_inventario"}],
     },
     {
       title: "Productos",

@@ -40,6 +40,8 @@ const DetallesPrediccion = lazy(() =>
 // Usuarios
 const UserList = lazy(() => import("../pages/usuarios/UserList"));
 const UserEditPage = lazy(() => import("../pages/usuarios/UserEditPage"));
+// Inventarios
+const InventarioList = lazy(() => import("../pages/inventarios/InventarioList"))
 
 const AppRoutes = () => {
   return (
@@ -91,6 +93,8 @@ const AppRoutes = () => {
               {/* Usuarios */}
               <Route path="/listusers" element={<UserList />} />
               <Route path="/users/edit/:id" element={<UserEditPage />} />
+              {/* Inventario */}
+              <Route path="/ver_inventario" element={<InventarioList />} />
             </Route>
           </Route>
           {/* Ruta para manejar páginas no encontradas */}
