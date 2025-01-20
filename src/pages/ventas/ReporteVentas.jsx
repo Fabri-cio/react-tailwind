@@ -14,8 +14,8 @@ function Dashboard() {
 
   const ventas = response.data || [];
 
-  if (loadingVentas) return <p>Cargando datos...</p>;
-  if (errorVentas) return <p>Error: {errorVentas}</p>;
+  if (loadingVentas) return <p className="text-center text-gray-600">Cargando datos...</p>;
+  if (errorVentas) return <p className="text-center text-red-600">Error: {errorVentas}</p>;
 
   const isSuperuser = true; // Cambia esto según el estado real del usuario (superusuario)
 
@@ -116,17 +116,21 @@ function Dashboard() {
     // Descargar el archivo
     doc.save("reporte-ventas.pdf");
   };
-  
 
   return (
     <div className="p-8 space-y-6">
+      {/* Título principal de la sección */}
+      <h1 className="text-4xl font-extrabold text-center text-blue-800">
+        Reportes
+      </h1>
       {/* Botón para descargar PDF */}
       <button
         onClick={generarReportePDF}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
       >
         Descargar Reporte en PDF
       </button>
+
       {/* Resumen de Ventas */}
       <div className="grid grid-cols-3 gap-6">
         {Object.keys(ventasPorTienda).map((tienda, index) => (
@@ -149,12 +153,12 @@ function Dashboard() {
         </h3>
         {ventasRecientesPorTienda.map((ventasRecientes, index) => (
           <div key={index} className="mb-6">
-            <h4 className="font-semibold text-lg">
+            <h4 className="font-semibold text-lg text-gray-700">
               {Object.keys(ventasPorTienda)[index]}
             </h4>
             <table className="min-w-full table-auto">
-              <thead>
-                <tr className="border-b">
+              <thead className="bg-blue-600 text-white">
+                <tr>
                   <th className="px-4 py-2 text-left">#</th>
                   <th className="px-4 py-2 text-left">Fecha</th>
                   <th className="px-4 py-2 text-left">Monto Total</th>
@@ -163,7 +167,7 @@ function Dashboard() {
               </thead>
               <tbody>
                 {ventasRecientes.map((venta, index) => (
-                  <tr key={venta.id_venta} className="border-b">
+                  <tr key={venta.id_venta} className="border-b hover:bg-gray-100">
                     <td className="px-4 py-2">{index + 1}</td>
                     <td className="px-4 py-2">
                       {format(new Date(venta.fecha_venta), "dd/MM/yyyy", {
@@ -187,19 +191,19 @@ function Dashboard() {
         </h3>
         {productosMasVendidosPorTienda.map((productos, index) => (
           <div key={index}>
-            <h4 className="font-semibold">
+            <h4 className="font-semibold text-lg text-gray-700">
               {Object.keys(ventasPorTienda)[index]}
             </h4>
             <table className="min-w-full table-auto">
-              <thead>
-                <tr className="border-b">
+              <thead className="bg-blue-600 text-white">
+                <tr>
                   <th className="px-4 py-2 text-left">Producto</th>
                   <th className="px-4 py-2 text-left">Cantidad Vendida</th>
                 </tr>
               </thead>
               <tbody>
                 {productos.map(([nombre, cantidad], idx) => (
-                  <tr key={idx} className="border-b">
+                  <tr key={idx} className="border-b hover:bg-gray-100">
                     <td className="px-4 py-2">{nombre}</td>
                     <td className="px-4 py-2">{cantidad}</td>
                   </tr>

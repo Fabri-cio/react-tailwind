@@ -22,14 +22,14 @@ function DetallesVenta() {
           {/* Información general de la venta */}
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <p className="text-lg font-medium text-gray-800">
-              <strong>ID Venta:</strong> {venta.id_venta}
+              <strong>N° Venta: </strong> {venta.id_venta}
             </p>
             <p className="text-lg font-medium text-gray-800">
               <strong>Fecha:</strong>{" "}
               {new Date(venta.fecha_venta).toLocaleString()}
             </p>
             <p className="text-lg font-medium text-gray-800">
-              <strong>Usuario:</strong> {venta.id_usuario}
+              <strong>Usuario:</strong> {venta.nom_user}
             </p>
             <p className="text-lg font-medium text-gray-800">
               <strong>Tienda:</strong> {venta.nombre_tienda}
@@ -38,7 +38,7 @@ function DetallesVenta() {
               <strong>Método de Pago:</strong> {venta.metodo_pago}
             </p>
             <p className="text-lg font-medium text-gray-800">
-              <strong>Total Venta:</strong> ${venta.total_venta}
+              <strong>Total Venta:</strong> Bs. {venta.total_venta}
             </p>
           </div>
 

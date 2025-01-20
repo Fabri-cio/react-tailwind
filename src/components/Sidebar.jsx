@@ -57,7 +57,7 @@ const Sidebar = ({ sidebarToggle }) => {
       icon: FaChartLine,
       items: [
         { label: "Realizar Prediccion", path: "/realizar_prediccion" },
-        { label: "Predicciones", path: "/ver_predicciones" },
+        // { label: "Predicciones", path: "/ver_predicciones" },
       ],
     },
     {
@@ -74,8 +74,8 @@ const Sidebar = ({ sidebarToggle }) => {
       title: "Productos",
       icon: FaBox,
       items: [
-        { label: "Categorias", path: "/categoria" },
-        { label: "Proveedores", path: "/presentacion" },
+        // { label: "Categorias", path: "/categoria" },
+        // { label: "Proveedores", path: "/presentacion" },
         { label: "Productos", path: "/productos" },
       ],
     },

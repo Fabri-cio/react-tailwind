@@ -103,98 +103,110 @@ const RealizarVenta = () => {
   };
 
   return (
-    <div className="grid grid-cols-4 gap-4 p-4">
-      <div className="col-span-3">
-        <BuscarProducto agregarAlCarrito={agregarAlCarrito} />
-        <table className="w-full border-collapse border border-gray-300 rounded-lg">
-          <thead>
-            <tr className="bg-blue-500 text-white">
-              <th className="p-2">N°</th>
-              <th className="p-2">Producto</th>
-              <th className="p-2">Cant.</th>
-              <th className="p-2">Precio Bs.</th>
-              <th className="p-2">Desc. Bs.</th>
-              <th className="p-2">Total Bs.</th>
-              <th className="p-2">Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {carrito.map((item, index) => (
-              <tr
-                key={index}
-                className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
-              >
-                <td className="p-2">{index + 1}</td>
-                <td className="p-2">{item.nombre}</td>
-                <td className="p-2 text-center">
-                  <input
-                    type="number"
-                    value={item.cantidad}
-                    onChange={(e) => handleCantidadChange(index, e.target.value)}
-                    className="w-20 p-1 border rounded"
-                  />
-                </td>
-                <td className="p-2 text-center">{item.precio.toFixed(2)}</td>
-                <td className="p-2 text-center">
-                  <input
-                    type="number"
-                    value={item.descuento || ""}
-                    onChange={(e) =>
-                      handleDescuentoChange(index, e.target.value)
-                    }
-                    className="w-20 p-1 border rounded"
-                  />
-                </td>
-                <td className="p-2 text-center">
-                  {(
-                    item.precio * item.cantidad -
-                    (item.descuento || 0)
-                  ).toFixed(2)}
-                </td>
-                <td className="p-2 text-center">
-                  <button
-                    onClick={() => eliminarProducto(index)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Eliminar
-                  </button>
-                </td>
+    <div className="p-8 space-y-6">
+      {/* Título principal */}
+      <h1 className="text-4xl font-extrabold text-center text-blue-800 mb-6">
+        Realizar Venta
+      </h1>
+
+      <div className="grid grid-cols-4 gap-4">
+        <div className="col-span-3">
+          <BuscarProducto agregarAlCarrito={agregarAlCarrito} />
+          <table className="w-full border-collapse border border-gray-300 rounded-lg">
+            <thead>
+              <tr className="bg-blue-500 text-white">
+                <th className="p-2">N°</th>
+                <th className="p-2">Producto</th>
+                <th className="p-2">Cant.</th>
+                <th className="p-2">Precio Bs.</th>
+                <th className="p-2">Desc. Bs.</th>
+                <th className="p-2">Total Bs.</th>
+                <th className="p-2">Acción</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="flex justify-between mt-4">
-          <button
-            onClick={abrirModal}
-            className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600"
-          >
-            Guardar Venta
-          </button>
-          <button
-            onClick={vaciarCarrito}
-            className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600"
-          >
-            Vaciar Carrito
-          </button>
+            </thead>
+            <tbody>
+              {carrito.map((item, index) => (
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+                >
+                  <td className="p-2">{index + 1}</td>
+                  <td className="p-2">{item.nombre}</td>
+                  <td className="p-2 text-center">
+                    <input
+                      type="number"
+                      value={item.cantidad}
+                      onChange={(e) =>
+                        handleCantidadChange(index, e.target.value)
+                      }
+                      className="w-20 p-1 border rounded"
+                    />
+                  </td>
+                  <td className="p-2 text-center">{item.precio.toFixed(2)}</td>
+                  <td className="p-2 text-center">
+                    <input
+                      type="number"
+                      value={item.descuento || ""}
+                      onChange={(e) =>
+                        handleDescuentoChange(index, e.target.value)
+                      }
+                      className="w-20 p-1 border rounded"
+                    />
+                  </td>
+                  <td className="p-2 text-center">
+                    {(
+                      item.precio * item.cantidad -
+                      (item.descuento || 0)
+                    ).toFixed(2)}
+                  </td>
+                  <td className="p-2 text-center">
+                    <button
+                      onClick={() => eliminarProducto(index)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="flex justify-between mt-4">
+            <button
+              onClick={abrirModal}
+              className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600"
+            >
+              Guardar Venta
+            </button>
+            <button
+              onClick={vaciarCarrito}
+              className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600"
+            >
+              Vaciar Carrito
+            </button>
+          </div>
+        </div>
+
+        <div className="col-span-1 bg-blue-100 rounded p-4 shadow-md">
+          <h2 className="text-lg font-bold text-blue-600">Resumen</h2>
+          <div className="mt-2">
+            <label className="block">Descuento global:</label>
+            <input
+              type="number"
+              value={descuentoVenta}
+              onChange={handleDescuentoVentaChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="mt-4 p-4 bg-white rounded shadow">
+            <p className="font-bold text-green-600">
+              Total: Bs. {total.toFixed(2)}
+            </p>
+          </div>
         </div>
       </div>
-      <div className="col-span-1 bg-blue-100 rounded p-4 shadow-md">
-        <h2 className="text-lg font-bold text-blue-600">Resumen</h2>
-        <div className="mt-2">
-          <label className="block">Descuento global:</label>
-          <input
-            type="number"
-            value={descuentoVenta}
-            onChange={handleDescuentoVentaChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div className="mt-4 p-4 bg-white rounded shadow">
-          <p className="font-bold text-green-600">
-            Total: Bs. {total.toFixed(2)}
-          </p>
-        </div>
-      </div>
+
+      {/* Modal */}
       {isModalOpen && (
         <ModalVenta
           carrito={carrito}

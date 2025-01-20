@@ -21,12 +21,23 @@ function Ventas() {
   if (errorVentas)
     return <p className="text-center text-red-600">Error: {errorVentas}</p>;
 
+  // Agrupar las ventas por tienda
+  const ventasPorTienda = ventas.reduce((acc, venta) => {
+    const tienda = venta.nombre_tienda;
+    if (!acc[tienda]) {
+      acc[tienda] = [];
+    }
+    acc[tienda].push(venta);
+    return acc;
+  }, {});
+
   const VentasFila = ({ venta, index }) => {
     const {
       id_venta,
       fecha_venta,
       id_usuario,
-      id_tienda,
+      nom_user,
+      nombre_tienda,
       metodo_pago,
       descuento,
       total_venta,
@@ -46,8 +57,8 @@ function Ventas() {
             day: "numeric",
           })}
         </td>
-        <td className="border px-4 py-2 text-center">{id_usuario}</td>
-        <td className="border px-4 py-2 text-center">{id_tienda}</td>
+        <td className="border px-4 py-2 text-center">{nom_user}</td>
+        <td className="border px-4 py-2 text-center">{nombre_tienda}</td>
         <td className="border px-4 py-2 text-center">{metodo_pago}</td>
         <td className="border px-4 py-2 text-center text-red-500">
           {descuento}
@@ -58,7 +69,7 @@ function Ventas() {
         <td className="py-2 px-4 border-b border-gray-200">
           <button
             onClick={handleDetallesClick}
-            className="bg-green-500 text-white px-2 py-1 rounded"
+            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
           >
             Detalles
           </button>
@@ -68,32 +79,48 @@ function Ventas() {
   };
 
   return (
-    <div className="p-4">
-      <table className="table-auto border-collapse border border-gray-300 w-full text-sm">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="border px-4 py-2 text-center">#</th>
-            <th className="border px-4 py-2 text-center">Fecha Venta</th>
-            <th className="border px-4 py-2 text-center">ID Usuario</th>
-            <th className="border px-4 py-2 text-center">ID Tienda</th>
-            <th className="border px-4 py-2 text-center">Método de Pago</th>
-            <th className="border px-4 py-2 text-center">Descuento</th>
-            <th className="border px-4 py-2 text-center">Total Venta</th>
-            <th className="border px-4 py-2 text-center">Detalles</th>
-            {/* Boton ver detalles de la venta */}
-            <th className="border px-4 py-2 text-center"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {ventas.map((venta, index) => (
-            <VentasFila
-              key={venta.id_venta || index}
-              index={index + 1}
-              venta={venta}
-            />
-          ))}
-        </tbody>
-      </table>
+    <div className="p-8 space-y-6">
+      {/* Título principal de la sección */}
+      <h1 className="text-4xl font-extrabold text-center text-blue-800">
+        Ventas
+      </h1>
+      {Object.entries(ventasPorTienda).map(
+        ([tienda, ventasPorUnaTienda], index) => (
+          <div
+            key={index}
+            className="bg-white p-6 shadow-lg rounded-lg border border-gray-200"
+          >
+            <h3 className="text-2xl font-semibold text-gray-700 mb-4">
+              {tienda}
+            </h3>
+            <table className="table-auto border-collapse border border-gray-300 w-full text-sm">
+              <thead className="bg-blue-600 text-white">
+                <tr>
+                  <th className="border px-4 py-2 text-center">#</th>
+                  <th className="border px-4 py-2 text-center">Fecha Venta</th>
+                  <th className="border px-4 py-2 text-center">Cajero</th>
+                  <th className="border px-4 py-2 text-center">Tienda</th>
+                  <th className="border px-4 py-2 text-center">
+                    Método de Pago
+                  </th>
+                  <th className="border px-4 py-2 text-center">Descuento Bs.</th>
+                  <th className="border px-4 py-2 text-center">Total Venta Bs.</th>
+                  <th className="border px-4 py-2 text-center">Detalles</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ventasPorUnaTienda.map((venta, idx) => (
+                  <VentasFila
+                    key={venta.id_venta || idx}
+                    index={idx + 1}
+                    venta={venta}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      )}
     </div>
   );
 }
