@@ -19,3 +19,4 @@ export const register = (data) => request(ApiUsuarios, "post", "register/", data
 // Crear operaciones CRUD específicas para los usuarios
 export const UsuariosAPI = createCrudOperations(ApiUsuarios, "usuarios");
 export const CustomUserAPI = createCrudOperations(ApiUsuarios, "customuser");
+export const RolApi = createApiInstance(ApiUsuarios, "role")

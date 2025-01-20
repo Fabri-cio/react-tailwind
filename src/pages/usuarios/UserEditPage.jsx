@@ -17,14 +17,9 @@ const UserEditPage = () => {
     is_active: true, // Estado de activo o no
     date_joined: '', // Fecha de incorporación
     last_login: '', // Último inicio de sesión
-    groups: [], // Grupos a los que pertenece
-    user_permissions: [], // Permisos del usuario
-    workplace: '', // Lugar de trabajo
+    name_work: '', // Lugar de trabajo
+    name_rol:'',
   });
-
-  const [allGroups, setAllGroups] = useState([]); // Todos los grupos disponibles
-  const [allPermissions, setAllPermissions] = useState([]); // Todos los permisos disponibles
-  const [newGroup, setNewGroup] = useState(""); // Nuevo grupo a crear
 
   useEffect(() => {
     // Cargar los datos del usuario cuando se monta el componente
@@ -37,19 +32,7 @@ const UserEditPage = () => {
       }
     };
 
-    const loadAvailableGroupsAndPermissions = async () => {
-      try {
-        const groupsResponse = await CustomUserAPI.getGroups(); // Método que obtiene los grupos
-        const permissionsResponse = await CustomUserAPI.getPermissions(); // Método que obtiene los permisos
-        setAllGroups(groupsResponse.data);
-        setAllPermissions(permissionsResponse.data);
-      } catch (error) {
-        console.error("Error al cargar los grupos y permisos:", error);
-      }
-    };
-
     loadUserData();
-    loadAvailableGroupsAndPermissions();
   }, [id]); // El array de dependencias contiene el ID para recargar cuando cambie
 
   const handleChange = (e) => {
@@ -58,36 +41,6 @@ const UserEditPage = () => {
       ...userData,
       [name]: type === 'checkbox' ? checked : value
     });
-  };
-
-  const handleGroupChange = (e) => {
-    const { value, checked } = e.target;
-    setUserData({
-      ...userData,
-      groups: checked
-        ? [...userData.groups, value] // Añadir el grupo seleccionado
-        : userData.groups.filter(groupId => groupId !== value), // Eliminar el grupo deseleccionado
-    });
-  };
-
-  const handlePermissionChange = (e) => {
-    const { value, checked } = e.target;
-    setUserData({
-      ...userData,
-      user_permissions: checked
-        ? [...userData.user_permissions, value] // Añadir el permiso seleccionado
-        : userData.user_permissions.filter(permissionId => permissionId !== value), // Eliminar el permiso deseleccionado
-    });
-  };
-
-  const handleCreateGroup = async () => {
-    try {
-      const response = await CustomUserAPI.createGroup({ name: newGroup });
-      setAllGroups([...allGroups, response.data]);
-      setNewGroup("");  // Limpiar el campo
-    } catch (error) {
-      console.error("Error al crear el grupo:", error);
-    }
   };
 
   const handleSave = async () => {
@@ -105,7 +58,7 @@ const UserEditPage = () => {
       <form>
         {/* Campos de texto */}
         <div className="mb-4">
-          <label className="block text-sm font-medium">Nombre</label>
+          <label className="block text-sm font-medium">Nombres</label>
           <input
             type="text"
             name="first_name"
@@ -115,7 +68,7 @@ const UserEditPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium">Apellido</label>
+          <label className="block text-sm font-medium">Apellidos</label>
           <input
             type="text"
             name="last_name"
@@ -140,16 +93,6 @@ const UserEditPage = () => {
             type="text"
             name="username"
             value={userData.username}
-            onChange={handleChange}
-            className="mt-1 p-2 border rounded w-full"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Contraseña</label>
-          <input
-            type="password"
-            name="password"
-            value={userData.password}
             onChange={handleChange}
             className="mt-1 p-2 border rounded w-full"
           />
@@ -187,70 +130,24 @@ const UserEditPage = () => {
           />
         </div>
 
-        {/* Grupos */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Grupos</label>
-          <div className="space-y-2">
-            {allGroups.map((group) => (
-              <div key={group.id}>
-                <input
-                  type="checkbox"
-                  name="groups"
-                  value={group.id}
-                  checked={userData.groups.includes(group.id)}
-                  onChange={handleGroupChange}
-                  className="mr-2"
-                />
-                <span>{group.name}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4">
-            <label className="block text-sm font-medium">Nuevo Grupo</label>
-            <input
-              type="text"
-              name="newGroup"
-              value={newGroup}
-              onChange={(e) => setNewGroup(e.target.value)}
-              className="mt-1 p-2 border rounded w-full"
-            />
-            <button
-              type="button"
-              onClick={handleCreateGroup}
-              className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
-            >
-              Crear Grupo
-            </button>
-          </div>
-        </div>
-
-        {/* Permisos */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium">Permisos</label>
-          <div className="space-y-2">
-            {allPermissions.map((permission) => (
-              <div key={permission.id}>
-                <input
-                  type="checkbox"
-                  name="user_permissions"
-                  value={permission.id}
-                  checked={userData.user_permissions.includes(permission.id)}
-                  onChange={handlePermissionChange}
-                  className="mr-2"
-                />
-                <span>{permission.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Lugar de trabajo */}
         <div className="mb-4">
           <label className="block text-sm font-medium">Lugar de trabajo</label>
           <input
             type="text"
             name="workplace"
-            value={userData.workplace}
+            value={userData.name_work}
+            onChange={handleChange}
+            className="mt-1 p-2 border rounded w-full"
+          />
+        </div>
+        {/* Lugar de trabajo */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium">Rol</label>
+          <input
+            type="text"
+            name="workplace"
+            value={userData.name_rol}
             onChange={handleChange}
             className="mt-1 p-2 border rounded w-full"
           />
