@@ -1,6 +1,7 @@
 import React from "react";
 import { useInventarios } from "../../hooks/useInventarios";
 import { Navigation } from "../../components/inventarios/Navigation";
+import { Link } from "react-router-dom";
 
 function InventarioList() {
   const {
@@ -14,16 +15,22 @@ function InventarioList() {
   console.log("Inventario Cargado:", inventarios);
 
   if (loadingInventarios) return <p>Cargando Inventario...</p>;
-  if (errorInventarios) return <p>Error: {errorInventarios}</p>;
+  if (errorInventarios)
+    return (
+      <p className="text-red-600">
+        Error:{" "}
+        {errorInventarios.message || "Algo salió mal al cargar el inventario."}
+      </p>
+    );
 
-  const InventarioFila = ({ inventarios, index }) => {
+  const InventarioFila = ({ inventario, index }) => {
     const {
-      id_movimiento,
       id_producto_nombre,
       id_almacen_tienda_nombre,
       cantidad,
       stock_minimo,
-    } = inventarios;
+      id_inventario,
+    } = inventario;
 
     return (
       <tr>
@@ -32,6 +39,14 @@ function InventarioList() {
         <td className="text-center">{id_almacen_tienda_nombre}</td>
         <td className="text-center">{cantidad}</td>
         <td className="text-center">{stock_minimo}</td>
+        <td className="text-center">
+              {/* Botón para registrar el movimiento */}
+              <Link to={`/registrarMovimiento/${id_inventario}`}>
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
+                  Registrar Movimiento
+                </button>
+              </Link>
+            </td>
       </tr>
     );
   };
@@ -48,16 +63,25 @@ function InventarioList() {
             <th className="border border-gray-300 px-4 py-2">Lugar</th>
             <th className="border border-gray-300 px-4 py-2">Cantidad</th>
             <th className="border border-gray-300 px-4 py-2">Stock Minimo</th>
+            <th className="border border-gray-300 px-4 py-2">Accion</th>
           </tr>
         </thead>
         <tbody>
-          {inventarios.map((inventario, index) => (
-            <InventarioFila
-              key={inventario.id_inventario || index}
-              inventarios={inventario}
-              index={index}
-            />
-          ))}
+          {inventarios.length > 0 ? (
+            inventarios.map((inventario, index) => (
+              <InventarioFila
+                key={inventario.id_inventario || index}
+                inventario={inventario}
+                index={index}
+              />
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="text-center text-gray-500 py-4">
+                No hay inventarios disponibles.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

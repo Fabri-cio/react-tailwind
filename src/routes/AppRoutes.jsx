@@ -42,6 +42,7 @@ const UserList = lazy(() => import("../pages/usuarios/UserList"));
 const UserEditPage = lazy(() => import("../pages/usuarios/UserEditPage"));
 // Inventarios
 const InventarioList = lazy(() => import("../pages/inventarios/InventarioList"))
+const CrearInventario = lazy(() => import("../components/inventarios/CrearInventario"))
 
 const AppRoutes = () => {
   return (
@@ -95,6 +96,7 @@ const AppRoutes = () => {
               <Route path="/users/edit/:id" element={<UserEditPage />} />
               {/* Inventario */}
               <Route path="/ver_inventario" element={<InventarioList />} />
+              <Route path="/crear_inventario" element={<CrearInventario />} />
             </Route>
           </Route>
           {/* Ruta para manejar páginas no encontradas */}
