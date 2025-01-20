@@ -2,6 +2,8 @@ import React from "react";
 import { useVentas } from "../../hooks/useVentas"; // Usar el hook que recupera las ventas
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 function Dashboard() {
   const {
@@ -75,8 +77,56 @@ function Dashboard() {
     }
   );
 
+  const generarReportePDF = () => {
+    const doc = new jsPDF();
+  
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("Reporte de Ventas por Tienda", 20, 20);
+  
+    let currentY = 30; // Posición Y inicial para el título
+  
+    // Agregar ventas por tienda
+    Object.keys(ventasPorTienda).forEach((tienda, tiendaIndex) => {
+      const ventas = ventasPorTienda[tienda];
+  
+      // Añadir título de la tienda
+      doc.setFontSize(14);
+      doc.text(tienda, 20, currentY);
+  
+      currentY += 10; // Ajustamos un poco para que haya espacio entre el título y la tabla
+  
+      // Tabla de Ventas
+      const rows = ventas.map((venta, index) => [
+        index + 1,
+        format(new Date(venta.fecha_venta), "dd/MM/yyyy", { locale: es }),
+        `${venta.total_venta} Bs.`,
+        venta.metodo_pago,
+      ]);
+  
+      doc.autoTable({
+        head: [["#", "Fecha", "Monto Total", "Método de Pago"]],
+        body: rows,
+        startY: currentY,
+      });
+  
+      currentY = doc.lastAutoTable.finalY + 10; // Ajustamos la posición Y para la siguiente tienda
+    });
+  
+    // Descargar el archivo
+    doc.save("reporte-ventas.pdf");
+  };
+  
+
   return (
     <div className="p-8 space-y-6">
+      {/* Botón para descargar PDF */}
+      <button
+        onClick={generarReportePDF}
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+      >
+        Descargar Reporte en PDF
+      </button>
       {/* Resumen de Ventas */}
       <div className="grid grid-cols-3 gap-6">
         {Object.keys(ventasPorTienda).map((tienda, index) => (
