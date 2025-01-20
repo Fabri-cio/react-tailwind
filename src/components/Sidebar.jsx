@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaBox,
+  FaBoxes,
   FaCashRegister,
   FaChartLine,
   FaTruckMoving,
@@ -66,7 +67,7 @@ const Sidebar = ({ sidebarToggle }) => {
     },
     {
       title: "Inventario",
-      icon: FaTruckMoving,
+      icon: FaBoxes,
       items: [{label: "Ver Inventario", path: "/ver_inventario"}],
     },
     {

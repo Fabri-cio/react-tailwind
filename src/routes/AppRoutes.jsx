@@ -43,6 +43,7 @@ const UserEditPage = lazy(() => import("../pages/usuarios/UserEditPage"));
 // Inventarios
 const InventarioList = lazy(() => import("../pages/inventarios/InventarioList"))
 const CrearInventario = lazy(() => import("../components/inventarios/CrearInventario"))
+const RegistrarMovimiento = lazy(() =>import("../components/inventarios/RegistrarMovimiento"))
 
 const AppRoutes = () => {
   return (
@@ -97,6 +98,7 @@ const AppRoutes = () => {
               {/* Inventario */}
               <Route path="/ver_inventario" element={<InventarioList />} />
               <Route path="/crear_inventario" element={<CrearInventario />} />
+              <Route path="/registrarMovimiento/:id" element={<RegistrarMovimiento />} />
             </Route>
           </Route>
           {/* Ruta para manejar páginas no encontradas */}

@@ -1,9 +1,8 @@
 import React from "react";
 import { useInventarios } from "../../hooks/useInventarios";
-import { Navigation } from "../../components/inventarios/Navigation";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function InventarioList() {
+function Inventarios() {
   const {
     data: response = {},
     isLoading: loadingInventarios,
@@ -12,58 +11,63 @@ function InventarioList() {
 
   const inventarios = response.data || [];
 
-  console.log("Inventario Cargado:", inventarios);
+  const navigate = useNavigate();
 
-  if (loadingInventarios) return <p>Cargando Inventario...</p>;
+  // Manejo de carga y errores
+  if (loadingInventarios)
+    return <p className="text-center text-gray-600">Cargando inventarios...</p>;
   if (errorInventarios)
-    return (
-      <p className="text-red-600">
-        Error:{" "}
-        {errorInventarios.message || "Algo salió mal al cargar el inventario."}
-      </p>
-    );
+    return <p className="text-center text-red-600">Error: {errorInventarios}</p>;
 
   const InventarioFila = ({ inventario, index }) => {
     const {
+      id_inventario,
       id_producto_nombre,
       id_almacen_tienda_nombre,
       cantidad,
       stock_minimo,
-      id_inventario,
     } = inventario;
 
+    const handleDetallesClick = () => {
+      navigate(`/registrarMovimiento/${id_inventario}`, { state: { inventario } });
+    };
+
+    // Determina la clase para la cantidad según la condición
+    const cantidadClase =
+      cantidad <= stock_minimo ? "text-red-600 font-bold" : "text-green-600 font-bold";
+
     return (
-      <tr>
-        <td className="text-center">{index + 1}</td>
-        <td>{id_producto_nombre}</td>
-        <td className="text-center">{id_almacen_tienda_nombre}</td>
-        <td className="text-center">{cantidad}</td>
-        <td className="text-center">{stock_minimo}</td>
-        <td className="text-center">
-              {/* Botón para registrar el movimiento */}
-              <Link to={`/registrarMovimiento/${id_inventario}`}>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-                  Registrar Movimiento
-                </button>
-              </Link>
-            </td>
+      <tr className="hover:bg-gray-100 transition duration-200">
+        <td className="border px-4 py-2 text-center">{index}</td>
+        <td className="border px-4 py-2 text-center">{id_producto_nombre || "Producto no disponible"}</td>
+        <td className="border px-4 py-2 text-center">{id_almacen_tienda_nombre || "Almacén no disponible"}</td>
+        <td className={`border px-4 py-2 text-center ${cantidadClase}`}>
+          {cantidad ?? "0"}
+        </td>
+        <td className="border px-4 py-2 text-center">{stock_minimo ?? "0"}</td>
+        <td className="py-2 px-4 border-b border-gray-200">
+          <button
+            onClick={handleDetallesClick}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          >
+            Registrar Movimiento
+          </button>
+        </td>
       </tr>
     );
   };
 
   return (
-    <div className="overflow-x-auto">
-      <Navigation />
-      <hr />
-      <table className="table-auto border-collapse border border-gray-300 w-full text-sm text-left text-gray-700">
-        <thead className="bg-gray-200 text-gray-700">
-          <tr className="text-center">
-            <th className="border border-gray-300 px-4 py-2">#</th>
-            <th className="border border-gray-300 px-4 py-2">Producto</th>
-            <th className="border border-gray-300 px-4 py-2">Lugar</th>
-            <th className="border border-gray-300 px-4 py-2">Cantidad</th>
-            <th className="border border-gray-300 px-4 py-2">Stock Minimo</th>
-            <th className="border border-gray-300 px-4 py-2">Accion</th>
+    <div className="p-4">
+      <table className="table-auto border-collapse border border-gray-300 w-full text-sm text-left">
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="border px-4 py-2 text-center">#</th>
+            <th className="border px-4 py-2 text-center">Producto</th>
+            <th className="border px-4 py-2 text-center">Lugar</th>
+            <th className="border px-4 py-2 text-center">Cantidad</th>
+            <th className="border px-4 py-2 text-center">Stock Mínimo</th>
+            <th className="border px-4 py-2 text-center">Acción</th>
           </tr>
         </thead>
         <tbody>
@@ -71,13 +75,16 @@ function InventarioList() {
             inventarios.map((inventario, index) => (
               <InventarioFila
                 key={inventario.id_inventario || index}
+                index={index + 1}
                 inventario={inventario}
-                index={index}
               />
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="text-center text-gray-500 py-4">
+              <td
+                colSpan="6"
+                className="text-center text-gray-500 py-4 border border-gray-300"
+              >
                 No hay inventarios disponibles.
               </td>
             </tr>
@@ -88,4 +95,4 @@ function InventarioList() {
   );
 }
 
-export default InventarioList;
+export default Inventarios;
