@@ -14,7 +14,7 @@ const createCrudOperations = (apiInstance, resource) => ({
 
 // Funciones específicas para el login y registro
 export const login = (email, password) => request(ApiUsuarios, "post", "login/", { email, password });
-export const register = (data) => request(ApiUsuarios, "post", "register/", data);
+export const RegistroApi = createCrudOperations(ApiUsuarios, "register");
 
 // Crear operaciones CRUD específicas para los usuarios
 export const UsuariosAPI = createCrudOperations(ApiUsuarios, "usuarios");

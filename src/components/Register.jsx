@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import AxiosInstance from "./AxiosInstance";
 import { useNavigate } from "react-router-dom";
+import { useRegistrarUsuario } from "../hooks/useRegistrarUsuario";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -33,26 +33,30 @@ const Register = () => {
   });
 
   const { handleSubmit, control } = useForm({ resolver: yupResolver(schema) });
+  const { mutate, isLoading } = useRegistrarUsuario();
 
   const submission = (data) => {
-    AxiosInstance.post(`register/`, {
-      email: data.email,
-      password: data.password,
-    })
-      .then(() => {
-        navigate(`/`);
-      })
-      .catch((error) => {
-        setShowMessage(true);
-        setMessage("Registration failed. Please try again.");
-        console.error("Error during registration", error);
-      });
+    mutate(
+      { email: data.email, password: data.password },
+      {
+        onSuccess: () => { // Aquí se corrige el nombre de la clave
+          navigate("/");
+        },
+        onError: () => {
+          setShowMessage(true);
+          setMessage("Error creando usuario");
+        },
+      }
+    );
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-pink-400 to-orange-300">
       <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg">
-        <h2 className="text-3xl text-center font-bold text-orange-600 mb-6">User Registration</h2>
+        <h2 className="text-3xl text-center font-bold text-orange-600 mb-6">
+          Registro de Usuario
+        </h2>
 
         {showMessage && (
           <div className="mb-4 p-4 text-white bg-red-600 rounded-md">
@@ -71,6 +75,7 @@ const Register = () => {
                   {...field}
                   type="email"
                   placeholder="Email"
+                  autoComplete="username"
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               )}
@@ -87,6 +92,7 @@ const Register = () => {
                   {...field}
                   type="password"
                   placeholder="Password"
+                  autoComplete="new-password"
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               )}
@@ -103,6 +109,7 @@ const Register = () => {
                   {...field}
                   type="password"
                   placeholder="Confirm Password"
+                  autoComplete="new-password"
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
                 />
               )}
@@ -111,15 +118,16 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full py-3 bg-orange-600 text-white font-bold rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="w-full py-3 bg-orange-600 text-white font-bold rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400" disabled={isLoading}
           >
-            Register
+            {isLoading ? "Registrando..." : "Registrar"}
+
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <a href="/" className="text-sm text-orange-600 hover:underline">
-            Already registered? Please login!
+          ¿Ya estás registrado? ¡Por favor inicia sesión!
           </a>
         </div>
       </div>
