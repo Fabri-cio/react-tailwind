@@ -73,11 +73,11 @@ const Navbar = ({ sidebarToggle, setSidebarToggle }) => {
   const navigate = useNavigate();
 
   const logoutUser = () => {
-    AxiosInstance.post(`logoutall/`, {})
+    AxiosInstance.post(`api/v1/usuarios/logoutall/`, {})
       .then((response) => {
         console.log("Sesión Cerrada:", response.data);
         localStorage.removeItem("Token");
-        localStorage.setItem("sessionClosed", "true");  // Marcar que la sesión ha sido cerrada
+        localStorage.setItem("sessionClosed", "true"); // Marcar que la sesión ha sido cerrada
         navigate("/");
       })
       .catch((error) => {

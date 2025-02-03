@@ -2,21 +2,59 @@ import axios from "axios";
 
 // Crear instancia base de Axios
 const createApiInstance = (baseURL) => {
-  const token = localStorage.getItem("token");
-  return axios.create({
+  const token = localStorage.getItem("Token");
+  const apiInstance = axios.create({
     baseURL,
     timeout: 10000,
     headers: {
-      Authorization: token ? `Bearer ${token}` : "",
+      "Content-Type": "application/json",
+      accept: "application/json",
     },
   });
+
+  // Interceptor de solicitud: agrega el token de autorización
+  apiInstance.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem("Token");
+      if (token) {
+        config.headers.Authorization = `Token ${token}`;
+      } else {
+        config.headers.Authorization = "";
+      }
+      console.log(
+        "Token agregado a la solicitud:",
+        config.headers.Authorization
+      ); // Verifica el token
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  // Interceptor de respuesta: maneja errores globales
+  apiInstance.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error.response && error.response.status === 401) {
+        localStorage.removeItem("Token"); // Eliminar token si la respuesta es 401
+        // Aquí puedes redirigir al usuario a la página de login o hacer otras acciones.
+        console.error("Sesión expirada, redirigiendo al login.");
+      }
+      return Promise.reject(error); // Devuelve el error para que se pueda manejar en otro lugar
+    }
+  );
+
+  return apiInstance;
 };
 
 // Función genérica para manejar peticiones y errores
 const request = async (apiInstance, method, url, data = null) => {
   try {
     const response = await apiInstance.request({ method, url, data });
-    console.log("Peticion creada con éxito:", response); 
+    console.log("Petición exitosa:", response);
     return response;
   } catch (error) {
     if (error.response) {

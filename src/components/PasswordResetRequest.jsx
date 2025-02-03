@@ -1,37 +1,32 @@
-import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import AxiosInstance from "./AxiosInstance";
 import { useNavigate } from "react-router-dom";
+import { usePasswordResetRequest } from "../hooks/usePasswordResetRequest";
 
 const PasswordResetRequest = () => {
   const navigate = useNavigate();
   const { handleSubmit, control } = useForm();
-  const [showMessage, setShowMessage] = useState(false);
+  const { mutate, isSuccess, isError, error } = usePasswordResetRequest();
 
-  const submission = (data) => {
-    AxiosInstance.post(`api/password_reset/`, {
-      email: data.email,
-    })
-      .then((response) => {
-        setShowMessage(true);
-      })
-      .catch((error) => {
-        console.error("Error during password reset request", error);
-      });
+  const onSubmit = (data) => {
+    mutate(data.email);
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-green-400 to-teal-300">
       <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg">
-        <h2 className="text-3xl text-center font-bold text-teal-600 mb-6">Request password reset</h2>
+        <h2 className="text-3xl text-center font-bold text-teal-600 mb-6">
+          Solicitar restablecimiento de contraseña
+        </h2>
 
-        {showMessage && (
+        {isSuccess && (
           <div className="mb-4 p-4 text-white bg-green-600 rounded-md">
-            If your email exists, you have received an email with instructions for resetting the password.
+            Si tu correo electrónico existe, has recibido un correo electrónico
+            con instrucciones. para restablecer la contraseña.
           </div>
         )}
+        {isError && <div className="text-red-600">Error: {error.message}</div>}
 
-        <form onSubmit={handleSubmit(submission)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <Controller
               name="email"
@@ -43,6 +38,7 @@ const PasswordResetRequest = () => {
                   type="email"
                   placeholder="Email"
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
+                  required
                 />
               )}
             />
@@ -52,13 +48,13 @@ const PasswordResetRequest = () => {
             type="submit"
             className="w-full py-3 bg-teal-600 text-white font-bold rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
           >
-            Request password reset
+            Solicitar restablecimiento de contraseña
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <a href="/" className="text-sm text-teal-600 hover:underline">
-            Remembered your password? Login here.
+            ¿Recordaste tu contraseña? Inicia sesión aquí.
           </a>
         </div>
       </div>
