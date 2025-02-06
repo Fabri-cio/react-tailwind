@@ -31,7 +31,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-500 to-blue-300">
+    <div className="flex justify-center items-center w-full h-screen bg-gradient-to-r from-blue-950 via-blue-700 to-blue-400">
       <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg">
         <h2 className="text-3xl text-center font-bold text-blue-600 mb-6">
           Iniciar sesión
