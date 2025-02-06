@@ -1,71 +1,131 @@
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
-import { useNavigate} from "react-router-dom";
-import { usePasswordResetRequest } from "../hooks/usePasswordResetRequest";
+import { usePasswordResetConfirm } from "../hooks/usePasswordResetConfirm";
 
-const PasswordResetRequest = () => {
+const PasswordReset = () => {
   const navigate = useNavigate();
-  const { handleSubmit, control } = useForm();
-  const { mutate, isSuccess, isError, isLoading, error } = usePasswordResetRequest();
+  const { token } = useParams();
+  const { handleSubmit, control, watch } = useForm();
+  const { mutate, isLoading, isSuccess, isError, error } = usePasswordResetConfirm();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const onSubmit = (data) => {
-    mutate(data.email);
+    mutate(
+      { token, password: data.password },
+      {
+        onSuccess: () => {
+          setTimeout(() => navigate("/"), 3000);
+        },
+      }
+    );
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-green-400 to-teal-300">
-      <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg">
-        <h2 className="text-3xl text-center font-bold text-teal-600 mb-6">
-          Solicitar restablecimiento de contraseña
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      {isSuccess && (
+        <div className="absolute top-5 bg-green-500 text-white px-4 py-2 rounded shadow-md">
+          Contraseña restablecida con éxito. Serás redirigido en unos segundos.
+        </div>
+      )}
+      {isError && (
+        <div className="absolute top-5 bg-red-500 text-white px-4 py-2 rounded shadow-md">
+          {error?.message || "Error al restablecer la contraseña."}
+        </div>
+      )}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md"
+      >
+        <h2 className="text-2xl font-bold text-center mb-4">
+          Restablecer Contraseña
         </h2>
-
-        {isSuccess && (
-          <div className="mb-4 p-4 text-white bg-green-600 rounded-md">
-            Si tu correo electrónico existe, has recibido un correo electrónico
-            con instrucciones para restablecer la contraseña.
-          </div>
-        )}
-
-        {isError && (
-          <div className="text-red-600">
-            Error: {error?.message || "Ocurrió un error desconocido."}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
+        
+        {/* Campo de Contraseña */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Nueva Contraseña</label>
+          <div className="relative">
             <Controller
-              name="email"
+              name="password"
               control={control}
-              defaultValue=""
-              render={({ field }) => (
-                <input
-                  {...field}
-                  type="email"
-                  placeholder="Email"
-                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-400"
-                  required
-                />
+              rules={{ required: "La contraseña es obligatoria" }}
+              render={({ field, fieldState }) => (
+                <>
+                  <input
+                    {...field}
+                    type={showPassword ? "text" : "password"}
+                    className="w-full border rounded p-2 pr-10"
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </>
               )}
             />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute right-2 top-2 text-gray-500"
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
           </div>
+        </div>
 
+        {/* Campo de Confirmar Contraseña */}
+        <div className="mb-4">
+          <label className="block font-medium mb-1">Confirmar Contraseña</label>
+          <div className="relative">
+            <Controller
+              name="password2"
+              control={control}
+              rules={{
+                required: "Confirma tu contraseña",
+                validate: (value) =>
+                  value === watch("password") || "Las contraseñas no coinciden",
+              }}
+              render={({ field, fieldState }) => (
+                <>
+                  <input
+                    {...field}
+                    type={showPassword ? "text" : "password"}
+                    className="w-full border rounded p-2 pr-10"
+                  />
+                  {fieldState.error && (
+                    <p className="text-red-500 text-sm">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute right-2 top-2 text-gray-500"
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
+          </div>
+        </div>
+
+        {/* Botón de envío */}
+        <div className="mb-4 flex justify-center">
           <button
             type="submit"
-            className="w-full py-3 bg-teal-600 text-white font-bold rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
             disabled={isLoading}
+            className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
           >
-            {isLoading ? "Cargando..." : "Solicitar restablecimiento de contraseña"}
+            {isLoading ? "Enviando..." : "Restablecer contraseña"}
           </button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <a href="/" className="text-sm text-teal-600 hover:underline">
-            ¿Recordaste tu contraseña? Inicia sesión aquí.
-          </a>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
 
-export default PasswordResetRequest;
+export default PasswordReset;
