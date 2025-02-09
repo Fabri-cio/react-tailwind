@@ -52,7 +52,7 @@ const Register = () => {
   
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-pink-400 to-orange-300">
+    <div className="flex justify-center items-center w-full h-screen bg-gradient-to-r from-red-400 via-orange-500 to-yellow-300">
       <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg">
         <h2 className="text-3xl text-center font-bold text-orange-600 mb-6">
           Registro de Usuario
