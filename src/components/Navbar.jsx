@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FaBars, FaBell, FaSearch, FaUserCircle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import AxiosInstance from "./AxiosInstance";
+import useLogout from "../hooks/useLogout";
+
+// Clase reutilizable para los íconos
+const iconClasses = "w-6 h-6";
 
 const NavbarButton = ({ icon: Icon, onClick, label, className }) => (
   <button
@@ -9,7 +11,7 @@ const NavbarButton = ({ icon: Icon, onClick, label, className }) => (
     aria-label={label}
     className={`p-1 focus:outline-none ${className}`}
   >
-    <Icon className="w-6 h-6" />
+    <Icon className={iconClasses} />
   </button>
 );
 
@@ -36,10 +38,10 @@ const ProfileMenu = ({ logoutUser }) => {
       <button
         className="text-white"
         aria-haspopup="true"
-        aria-expanded={isOpen}
+        aria-expanded={isOpen ? "true" : "false"} // Actualización dinámica
         onClick={toggleMenu}
       >
-        <FaUserCircle className="w-6 h-6 mt-1" />
+        <FaUserCircle className={iconClasses} />
       </button>
       {isOpen && (
         <div className="absolute z-10 bg-white rounded-lg shadow w-32 top-full right-0">
@@ -70,21 +72,8 @@ const ProfileMenu = ({ logoutUser }) => {
 };
 
 const Navbar = ({ sidebarToggle, setSidebarToggle }) => {
-  const navigate = useNavigate();
-
-  const logoutUser = () => {
-    AxiosInstance.post(`api/v1/usuarios/logoutall/`, {})
-      .then((response) => {
-        console.log("Sesión Cerrada:", response.data);
-        localStorage.removeItem("Token");
-        localStorage.setItem("sessionClosed", "true"); // Marcar que la sesión ha sido cerrada
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("Error al cerrar sesión");
-      });
-  };
+  // Usar el hook useLogout
+  const logoutUser = useLogout(); // Esto ya retorna la función para cerrar sesión
 
   return (
     <nav className="bg-gray-700 px-4 py-3 flex justify-between items-center">

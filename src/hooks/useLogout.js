@@ -11,6 +11,8 @@ const useLogout = () => {
     onSuccess: () => {
       console.log("Sesión cerrada");
       localStorage.removeItem("Token");
+      localStorage.removeItem("id_usuario");
+      localStorage.removeItem("id_tienda");
       localStorage.setItem("sessionClosed", "true");
       navigate("/");
     },

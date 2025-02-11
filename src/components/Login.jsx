@@ -11,6 +11,12 @@ const Login = () => {
 
   const submission = async (data) => {
     try {
+      // Eliminar datos antiguos antes de iniciar sesión
+      localStorage.removeItem("Token");
+      localStorage.removeItem("id_usuario");
+      localStorage.removeItem("id_tienda");
+      localStorage.removeItem("sessionClosed"); // Eliminar sessionClosed si existe
+
       const response = await login(data.email, data.password);
       console.log("Inicio de sesión exitoso:", response.data);
 
