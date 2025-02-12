@@ -138,7 +138,7 @@ function FormProducto() {
             className="w-full p-2 border border-gray-300 rounded"
             required
           >
-            <option value=""></option>
+            <option value="" disabled>Seleccionar Proveedor</option>
             {proveedores.map((prov) => (
               <option key={prov.id_proveedor} value={prov.id_proveedor}>
                 {prov.nombre_proveedor}
@@ -158,7 +158,7 @@ function FormProducto() {
             className="w-full p-2 border border-gray-300 rounded"
             required
           >
-            <option value=""></option>
+            <option value="" disabled>Seleccinar Categoria</option>
             {categorias.map((cat) => (
               <option key={cat.id_categoria} value={cat.id_categoria}>
                 {cat.nombre_categoria}

@@ -123,7 +123,7 @@ const CrearProducto = () => {
             className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             required
           >
-            <option value="">Seleccionar Categoría</option>
+            <option value="" disabled>Seleccionar Categoría</option>
             {categorias?.map((categoria) => (
               <option key={categoria.id_categoria} value={categoria.id_categoria}>
                 {categoria.nombre_categoria}
@@ -142,7 +142,7 @@ const CrearProducto = () => {
             className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             required
           >
-            <option value="">Seleccionar Proveedor</option>
+            <option value="" disabled>Seleccionar Proveedor</option>
             {proveedores?.map((proveedor) => (
               <option key={proveedor.id_proveedor} value={proveedor.id_proveedor}>
                 {proveedor.nombre_proveedor}
