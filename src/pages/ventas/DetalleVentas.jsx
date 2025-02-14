@@ -1,5 +1,5 @@
 import React from "react";
-import { useDetalleVentas } from "../../hooks/useDetalleVentas";
+import { useDetalleVentas } from "@/hooks/useDetalleVentas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 

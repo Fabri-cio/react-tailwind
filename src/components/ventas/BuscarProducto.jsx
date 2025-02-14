@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useProductos } from "../../hooks/useProductos"; // Hook que trae los productos desde la API
+import { useProductos } from "@/hooks/useProductos"; // Hook que trae los productos desde la API
 
 const BuscarProducto = ({ agregarAlCarrito }) => {
   const [query, setQuery] = useState(""); // Estado para el texto del input

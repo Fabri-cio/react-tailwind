@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import BuscarProducto from "@/components/ventas/BuscarProducto";
 import ModalVenta from "./ModalVenta";
-import { useCrearVenta } from "../../hooks/useCrearVentas";
+import { useCrearVenta } from "@/hooks/useCrearVentas";
 
 const RealizarVenta = () => {
   const [carrito, setCarrito] = useState([]);

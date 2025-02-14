@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Asegúrate de tener react-router-dom instalado
-import { CustomUserAPI } from "../../api/usuario.api"; // Importar la API adecuada
+import { CustomUserAPI } from "@/api/usuario.api"; // Importar la API adecuada
 
 const UserList = () => {
   const [users, setUsers] = useState([]);

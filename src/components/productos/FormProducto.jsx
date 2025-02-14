@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useCategorias } from "../../hooks/useCategorias";
-import { useProveedores } from "../../hooks/useProveedores";
-import { useActualizarProducto } from "../../hooks/useActualizarProducto";
+import { useCategorias } from "@/hooks/useCategorias";
+import { useProveedores } from "@/hooks/useProveedores";
+import { useActualizarProducto } from "@/hooks/useActualizarProducto";
 
 function FormProducto() {
   const { state } = useLocation(); // Datos del producto desde la navegación

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";  // Importa useNavigate y useParams
-import { CustomUserAPI } from "../../api/usuario.api";  // Importa la API adecuada
+import { CustomUserAPI } from "@/api/usuario.api";  // Importa la API adecuada
 
 const UserEditPage = () => {
   const navigate = useNavigate(); // Para redirigir después de guardar

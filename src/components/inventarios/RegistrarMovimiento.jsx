@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useTipoMovimientos } from "../../hooks/useTipoMovimientos";
-import { useCrearMovimiento } from "../../hooks/useCrearMovimiento"; // Importa el hook para crear el movimiento
+import { useTipoMovimientos } from "@/hooks/useTipoMovimientos";
+import { useCrearMovimiento } from "@/hooks/useCrearMovimiento"; // Importa el hook para crear el movimiento
 
 function RegistrarMovimiento() {
   const {

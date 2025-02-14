@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useProductos } from "../../hooks/useProductos";
+import { useProductos } from "@/hooks/useProductos";
 import { Navigation } from "@/components/productos/Navigation";
 
 function Productos() {

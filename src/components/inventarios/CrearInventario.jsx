@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Asegúrate de importar useNavigate
-import { useProductos } from "../../hooks/useProductos"; // Hook para obtener productos
-import { useAlmacenTiendas } from "../../hooks/useAlmacenTiendas"; // Hook para obtener almacenes
-import { useCrearInventario } from "../../hooks/useCrearInventario";
+import { useProductos } from "@/hooks/useProductos"; // Hook para obtener productos
+import { useAlmacenTiendas } from "@/hooks/useAlmacenTiendas"; // Hook para obtener almacenes
+import { useCrearInventario } from "@/hooks/useCrearInventario";
 
 const CrearInventario = () => {
   const navigate = useNavigate(); // Hook para redirigir

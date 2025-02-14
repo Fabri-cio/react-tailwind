@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useVentas } from "../../hooks/useVentas"; // Hook para las ventas
+import { useVentas } from "@/hooks/useVentas"; // Hook para las ventas
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 

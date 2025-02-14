@@ -1,7 +1,7 @@
 import React from "react";
-import { useInventarios } from "../../hooks/useInventarios";
+import { useInventarios } from "@/hooks/useInventarios";
 import { useNavigate } from "react-router-dom";
-import { Navigation } from "../../components/inventarios/Navigation";
+import { Navigation } from "@/components/inventarios/Navigation";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
