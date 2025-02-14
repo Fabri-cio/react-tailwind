@@ -27,7 +27,8 @@
 import { createApiInstance, request } from "./api.Base";
 
 // Crear instancia específica para la API de productos
-const ApiProductos = createApiInstance("http://localhost:8000/api/v1/productos/");
+// const ApiProductos = createApiInstance("http://localhost:8000/api/v1/productos/");
+const ApiProductos = createApiInstance(`${ApiBaseURL}/productos/`);
 
 // Función genérica para operaciones CRUD
 const createCrudOperations = (apiInstance, resource) => ({

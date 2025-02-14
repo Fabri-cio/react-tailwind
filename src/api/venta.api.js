@@ -30,7 +30,8 @@
 import { createApiInstance, request } from "./api.Base";
 
 // Crear instancia específica para la API de ventas
-const ApiVentas = createApiInstance("http://localhost:8000/api/v1/ventas/");
+// const ApiVentas = createApiInstance("http://localhost:8000/api/v1/ventas/");
+const ApiVentas = createApiInstance(`${ApiBaseURL}/ventas/`);
 
 // Función genérica para operaciones CRUD
 const createCrudOperations = (apiInstance, resource) => ({
