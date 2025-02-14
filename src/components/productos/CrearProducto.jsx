@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Asegúrate de importar useNavigate
-import { useCrearProducto } from "../../hooks/useCrearProducto";
-import { useCategorias } from "../../hooks/useCategorias";
-import { useProveedores } from "../../hooks/useProveedores";
+import { useCrearProducto } from "@/hooks/useCrearProducto";
+import { useCategorias } from "@/hooks/useCategorias";
+import { useProveedores } from "@/hooks/useProveedores";
 
 const CrearProducto = () => {
   const navigate = useNavigate(); // Hook para redirigir
