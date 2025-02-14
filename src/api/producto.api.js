@@ -26,6 +26,7 @@
 
 import { createApiInstance, request } from "./api.Base";
 
+const ApiBaseURL = import.meta.env.VITE_API_BASE_URL;
 // Crear instancia específica para la API de productos
 // const ApiProductos = createApiInstance("http://localhost:8000/api/v1/productos/");
 const ApiProductos = createApiInstance(`${ApiBaseURL}/productos/`);

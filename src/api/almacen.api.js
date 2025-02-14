@@ -1,5 +1,6 @@
-import { createApiInstance, request } from "./api.Base";
+import { createApiInstance, request} from "./api.Base";
 
+const ApiBaseURL = import.meta.env.VITE_API_BASE_URL;
 // const ApiAlmacenes = createApiInstance("http://localhost:8000/api/v1/almacenes/");
 const ApiAlmacenes = createApiInstance(`${ApiBaseURL}/almacenes/`);
 

@@ -1,5 +1,6 @@
 import { createApiInstance, request } from "./api.Base";
 
+const ApiBaseURL = import.meta.env.VITE_API_BASE_URL;
 // Crear instancia específica para la API de usuarios
 // const ApiUsuarios = createApiInstance("http://localhost:8000/api/v1/usuarios/");
 const ApiUsuarios = createApiInstance(`${ApiBaseURL}/usuarios/`);
