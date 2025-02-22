@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"; // Asegúrate de importar useNav
 import { useCrearProducto } from "@/hooks/useCrearProducto";
 import { useCategorias } from "@/hooks/useCategorias";
 import { useProveedores } from "@/hooks/useProveedores";
+import { FaPlus } from "react-icons/fa";
+import ModalCategoria from "./categorias/ModalCategoria";
 
 const CrearProducto = () => {
   const navigate = useNavigate(); // Hook para redirigir
@@ -31,7 +33,14 @@ const CrearProducto = () => {
   const categorias = responseCat.data || [];
   const proveedores = responseProv.data || [];
 
-  const { mutate: crearProducto, isLoading: isSubmitting, isSuccess, isError } = useCrearProducto();
+  const {
+    mutate: crearProducto,
+    isLoading: isSubmitting,
+    isSuccess,
+    isError,
+  } = useCrearProducto();
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal
 
   useEffect(() => {
     if (isSuccess) {
@@ -58,7 +67,9 @@ const CrearProducto = () => {
   if (loadingCategorias || loadingProveedores) {
     return (
       <div className="flex justify-center items-center">
-        <p className="text-lg text-gray-500">Cargando categorías y proveedores...</p>
+        <p className="text-lg text-gray-500">
+          Cargando categorías y proveedores...
+        </p>
       </div>
     );
   }
@@ -66,14 +77,18 @@ const CrearProducto = () => {
   if (errorCategorias || errorProveedores) {
     return (
       <div className="flex justify-center items-center">
-        <p className="text-lg text-red-600">Error al cargar categorías o proveedores.</p>
+        <p className="text-lg text-red-600">
+          Error al cargar categorías o proveedores.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg space-y-6">
-      <h1 className="text-3xl font-semibold text-center text-indigo-600">Crear Producto</h1>
+      <h1 className="text-3xl font-semibold text-center text-indigo-600">
+        Crear Producto
+      </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex flex-col">
           <label className="text-lg text-gray-700">Nombre del Producto</label>
@@ -116,20 +131,35 @@ const CrearProducto = () => {
         {/* Selección de categoría */}
         <div className="flex flex-col">
           <label className="text-lg text-gray-700">Categoría</label>
-          <select
-            name="categoria"
-            value={producto.categoria}
-            onChange={handleInputChange}
-            className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            required
-          >
-            <option value="" disabled>Seleccionar Categoría</option>
-            {categorias?.map((categoria) => (
-              <option key={categoria.id_categoria} value={categoria.id_categoria}>
-                {categoria.nombre_categoria}
+          <div className="flex items-center gap-2">
+            <select
+              name="categoria"
+              value={producto.categoria}
+              onChange={handleInputChange}
+              className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            >
+              <option value="" disabled>
+                Seleccionar Categoría
               </option>
-            ))}
-          </select>
+              {categorias?.map((categoria) => (
+                <option
+                  key={categoria.id_categoria}
+                  value={categoria.id_categoria}
+                >
+                  {categoria.nombre_categoria}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center text-green-700 hover:text-green-400"
+              title="Agregar Nueva Categoría"
+            >
+              <FaPlus className="mr-2" /> {/* Icono */}
+            </button>
+          </div>
         </div>
 
         {/* Selección de proveedor */}
@@ -142,9 +172,14 @@ const CrearProducto = () => {
             className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             required
           >
-            <option value="" disabled>Seleccionar Proveedor</option>
+            <option value="" disabled>
+              Seleccionar Proveedor
+            </option>
             {proveedores?.map((proveedor) => (
-              <option key={proveedor.id_proveedor} value={proveedor.id_proveedor}>
+              <option
+                key={proveedor.id_proveedor}
+                value={proveedor.id_proveedor}
+              >
                 {proveedor.nombre_proveedor}
               </option>
             ))}
@@ -162,8 +197,18 @@ const CrearProducto = () => {
         </div>
       </form>
 
-      {isSuccess && <p className="text-green-600 text-center">Producto creado con éxito</p>}
-      {isError && <p className="text-red-600 text-center">Error al crear el producto</p>}
+      {isSuccess && (
+        <p className="text-green-600 text-center">Producto creado con éxito</p>
+      )}
+      {isError && (
+        <p className="text-red-600 text-center">Error al crear el producto</p>
+      )}
+
+      {/* Modal para crear categoría */}
+      <ModalCategoria
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
     </div>
   );
 };
