@@ -7,42 +7,38 @@ import {
   FaChartLine,
   FaTruckMoving,
   FaUser,
+  FaTimes,
 } from "react-icons/fa";
 
-const SidebarMenu = React.memo(
-  ({ title, icon: Icon, items, isOpen, toggleMenu }) => (
-    <li className="mb-2 rounded hover:shadow hover:bg-gray-500 py-2">
-      <button
-        aria-expanded={isOpen}
-        className="px-3 w-full text-left flex items-center"
-        onClick={toggleMenu}
-      >
-        <Icon className="inline-block w-6 h-6 mr-2 -mt-2" />
-        {title}
-      </button>
-      {isOpen && (
-        <ul className="pl-4">
-          {items.map((item, index) => (
-            <li
-              key={index}
-              className="rounded hover:shadow hover:bg-blue-950 py-2"
+const SidebarMenu = ({ title, icon: Icon, items, isOpen, toggleMenu }) => (
+  <li>
+    <button
+      className={`flex items-center w-full px-4 py-3 text-lg font-semibold rounded-lg transition-all duration-300
+      ${isOpen ? "bg-blue-600 text-white" : "hover:bg-gray-700 text-gray-300"}`}
+      onClick={toggleMenu}
+    >
+      <Icon className="text-xl mr-3" />
+      {title}
+    </button>
+    {isOpen && (
+      <ul className="mt-2 pl-6 space-y-1">
+        {items.map((item, index) => (
+          <li key={index}>
+            <Link
+              to={item.path}
+              className="block px-4 py-2 rounded-lg text-gray-300 hover:bg-blue-500 transition-all duration-200"
             >
-              <Link to={item.path} className="px-7">
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </li>
-  )
+              {item.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    )}
+  </li>
 );
 
-const Sidebar = ({ sidebarToggle }) => {
+const Sidebar = ({ sidebarToggle, closeSidebar }) => {
   const [openMenu, setOpenMenu] = useState(null);
-
-  // Obtén el rol del usuario desde el localStorage
-  const userRole = localStorage.getItem("role");
 
   const menus = [
     {
@@ -58,14 +54,9 @@ const Sidebar = ({ sidebarToggle }) => {
       roleRequired: "Cajero",
     },
     {
-      title: "Prediccion Demanda",
+      title: "Predicción",
       icon: FaChartLine,
-      items: [
-        { label: "Realizar Prediccion", path: "/realizar_prediccion" },
-        // { label: "Predicciones", path: "/ver_predicciones" },
-      ],
-       // Solo mostrar para otros roles
-       roleRequired: "Admin", // Cambiar esto según tus roles
+      items: [{ label: "Realizar Predicción", path: "/realizar_prediccion" }],
     },
     {
       title: "Movimientos",
@@ -81,9 +72,9 @@ const Sidebar = ({ sidebarToggle }) => {
       title: "Productos",
       icon: FaBox,
       items: [
-        // { label: "Categorias", path: "/categoria" },
-        // { label: "Proveedores", path: "/presentacion" },
         { label: "Productos", path: "/productos" },
+        { label: "Categorias", path: "/categorias" },
+        { label: "Proveedores", path: "/proveedores" },
       ],
     },
     {
@@ -95,15 +86,22 @@ const Sidebar = ({ sidebarToggle }) => {
 
   return (
     <div
-      className={`${
-        sidebarToggle ? "hidden" : "block"
-      } w-64 bg-gray-800 fixed h-full px-4 py-2`}
+      className={`fixed inset-y-0 left-0 w-64 bg-gray-900 text-white shadow-xl transform transition-transform duration-300 ease-in-out
+      ${sidebarToggle ? "-translate-x-full" : "translate-x-0"}`}
     >
-      <div className="my-2 mb-4">
-        <h1 className="text-2x text-white font-bold">Conquistador Admin</h1>
+      {/* Header con botón de cerrar en móviles */}
+      <div className="flex items-center justify-between p-5 border-b border-gray-700">
+        <h1 className="text-2xl font-bold text-blue-400">Conquistador Admin</h1>
+        <button
+          onClick={closeSidebar}
+          className="text-white text-2xl lg:hidden"
+        >
+          <FaTimes />
+        </button>
       </div>
-      <hr />
-      <ul className="mt-3 text-white font-bold">
+
+      {/* Menú de navegación */}
+      <ul className="mt-4 px-4 space-y-2">
         {menus.map((menu, index) => (
           <SidebarMenu
             key={index}
