@@ -5,7 +5,6 @@ import { Navigation } from "@/components/inventarios/Navigation";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-
 function Inventarios() {
   const {
     data: response = {},

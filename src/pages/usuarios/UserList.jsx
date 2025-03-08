@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Asegúrate de tener react-router-dom instalado
 import { CustomUserAPI } from "@/api/usuario.api"; // Importar la API adecuada
+import { Navigation } from "../../components/usuarios/Navigation";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -20,6 +21,7 @@ const UserList = () => {
 
   return (
     <div className="overflow-x-auto">
+      <Navigation />
       <table className="min-w-full table-auto">
         <thead>
           <tr className="bg-gray-200">

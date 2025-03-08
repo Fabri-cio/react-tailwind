@@ -2,6 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { VentasAPI } from "../api/venta.api";
+import { toast} from "react-hot-toast"
 
 export const useCrearVenta = () => {
   return useMutation({
@@ -9,10 +10,12 @@ export const useCrearVenta = () => {
     onSuccess: () => {
       // Aquí puedes manejar el éxito de la operación
       console.log("Venta creada con éxito");
+      toast.success("Venta creada con éxito");
     },
     onError: (error) => {
       // Aquí puedes manejar los errores
       console.error("Error al crear la venta", error);
+      toast.error("Error al crear la venta");
     },
   });
 };
