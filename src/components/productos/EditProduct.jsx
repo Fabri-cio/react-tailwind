@@ -4,7 +4,7 @@ import { useCategorias } from "@/hooks/useCategorias";
 import { useProveedores } from "@/hooks/useProveedores";
 import { useActualizarProducto } from "@/hooks/useActualizarProducto";
 
-function FormProducto() {
+function EditProduct() {
   const { state } = useLocation(); // Datos del producto desde la navegación
   const navigate = useNavigate();
 
@@ -80,6 +80,13 @@ function FormProducto() {
     setFormValues({ ...formValues, [name]: parseInt(value, 10) });
   };
 
+  const handleEstadoToggle = () => {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      estado: !prevValues.estado,
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Datos enviados:", formValues); // Verifica los valores aquí
@@ -99,66 +106,68 @@ function FormProducto() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 shadow-lg rounded-lg">
-      <h1 className="text-4xl font-semibold text-center text-indigo-700 mb-6">
+      <h1 className="text-2xl font-semibold text-center text-blue-900 mb-4">
         {formValues.id_producto ? "Editar Producto" : "Crear Producto"}
       </h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-gray-700 font-medium mb-2">Nombre</label>
+          <label className="block text-gray-700 font-medium text-sm mb-2">
+            Nombre
+          </label>
           <input
             type="text"
             name="nombre"
             value={formValues.nombre}
             onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 text-sm border border-gray-300 rounded"
             required
           />
         </div>
 
+        {/* precio */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">Estado</label>
-          <input
-            type="checkbox"
-            name="estado"
-            checked={formValues.estado}
-            onChange={handleCheckboxChange}
-            className="mr-2"
-          />
-          <span>{formValues.estado ? "Activo" : "Inactivo"}</span>
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Proveedor
+          <label className="block text-gray-700 font-medium text-sm mb-2">
+            Precio
           </label>
-          <select
-            name="id_proveedor"
-            value={formValues.id_proveedor}
-            onChange={handleSelectChange}
-            className="w-full p-2 border border-gray-300 rounded"
+          <input
+            type="number"
+            name="precio"
+            value={formValues.precio}
+            onChange={handleInputChange}
+            className="w-full p-2 text-sm border border-gray-300 rounded"
             required
-          >
-            <option value="" disabled>Seleccionar Proveedor</option>
-            {proveedores.map((prov) => (
-              <option key={prov.id_proveedor} value={prov.id_proveedor}>
-                {prov.nombre_proveedor}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
+        {/* Código de Barras */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
+          <label className="block text-gray-700 font-medium text-sm mb-2">
+            Código de Barras
+          </label>
+          <input
+            type="text"
+            name="codigo_barras"
+            value={formValues.codigo_barras}
+            onChange={handleInputChange}
+            className="w-full p-2 text-sm border border-gray-300 rounded"
+          />
+        </div>
+
+        {/* Categoría */}
+        <div>
+          <label className="block text-gray-700 font-medium text-sm mb-2">
             Categoría
           </label>
           <select
             name="categoria"
             value={formValues.id_categoria}
             onChange={handleSelectChange}
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 text-sm border border-gray-300 rounded"
             required
           >
-            <option value="" disabled>Seleccinar Categoria</option>
+            <option value="" disabled>
+              Seleccinar Categoria
+            </option>
             {categorias.map((cat) => (
               <option key={cat.id_categoria} value={cat.id_categoria}>
                 {cat.nombre_categoria}
@@ -167,35 +176,55 @@ function FormProducto() {
           </select>
         </div>
 
+        {/* Proveedor */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">Precio</label>
-          <input
-            type="number"
-            name="precio"
-            value={formValues.precio}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded"
+          <label className="block text-gray-700 font-medium text-sm mb-2">
+            Proveedor
+          </label>
+          <select
+            name="id_proveedor"
+            value={formValues.id_proveedor}
+            onChange={handleSelectChange}
+            className="w-full p-2 text-sm border border-gray-300 rounded"
             required
-          />
+          >
+            <option value="" disabled>
+              Seleccionar Proveedor
+            </option>
+            {proveedores.map((prov) => (
+              <option key={prov.id_proveedor} value={prov.id_proveedor}>
+                {prov.nombre_proveedor}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Código de Barras
+        {/* Toggle Switch para Estado */}
+        <div className="flex items-center justify-normal">
+          <label className="text-sm font-medium text-gray-700 pe-5">
+            Estado del Producto
           </label>
-          <input
-            type="text"
-            name="codigo_barras"
-            value={formValues.codigo_barras}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
+          <div
+            className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer ${
+              formValues.estado ? "bg-green-500" : "bg-red-400"
+            }`}
+            onClick={handleEstadoToggle}
+          >
+            <div
+              className={`w-4 h-4 bg-white rounded-full shadow-md transform duration-300 ${
+                formValues.estado ? "translate-x-6" : "translate-x-0"
+              }`}
+            ></div>
+          </div>
+          <span className="ml-3 text-sm text-gray-700">
+            {formValues.estado ? "Activo" : "Inactivo"}
+          </span>
         </div>
 
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2 rounded"
+            className="bg-indigo-600 text-white text-sm px-6 py-2 rounded"
             disabled={isLoading}
           >
             {isLoading ? "Guardando..." : "Guardar"}
@@ -206,4 +235,4 @@ function FormProducto() {
   );
 }
 
-export default FormProducto;
+export default EditProduct;

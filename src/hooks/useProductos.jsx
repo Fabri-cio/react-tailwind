@@ -1,11 +1,3 @@
-// import { useFetch } from "./useFetch";
-// import { getAllProductos } from "../api/producto.api";
-
-// export function useProductos() {
-//   const { data: productos, loading, error } = useFetch(getAllProductos);
-//   return { productos, loading, error };
-// }
-
 import { useQuery } from "@tanstack/react-query";
 import { ProductosAPI } from "../api/producto.api";
 

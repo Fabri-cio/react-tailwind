@@ -22,7 +22,7 @@ const Home = lazy(() => import("@/pages/Home"));
 const Movimientos = lazy(() => import("../pages/movimientos/Movimientos"));
 // Productos
 const Productos = lazy(() => import("@/pages/productos/Productos"));
-const FormProducto = lazy(() => import("@/components/productos/FormProducto"));
+const EditProduct = lazy(() => import("../components/productos/EditProduct"));
 const CrearProducto = lazy(() =>
   import("../components/productos/CrearProducto")
 );
@@ -85,7 +85,7 @@ const AppRoutes = () => {
               <Route path="/ver_movimientos" element={<Movimientos />} />
               {/* Productos */}
               <Route path="/productos" element={<Productos />} />
-              <Route path="/formProducto/:id" element={<FormProducto />} />
+              <Route path="/editProduct/:id" element={<EditProduct />} />
               <Route path="/crearProducto" element={<CrearProducto />} />
               {/* Categorias */}
               <Route path="/categorias" element={<Categorias />} />

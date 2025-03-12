@@ -1,32 +1,57 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";  // Importa useNavigate y useParams
-import { CustomUserAPI } from "@/api/usuario.api";  // Importa la API adecuada
+import { useNavigate, useParams } from "react-router-dom"; // Importa useNavigate y useParams
+import { useAlmacenTiendas } from "../../hooks/useAlmacenTiendas"; // Importa el hook personalizado
+import { useRoles } from "../../hooks/useRoles"; // Importa el hook personalizado
+import { CustomUserAPI } from "@/api/usuario.api"; // Importa la API adecuada
 
 const UserEditPage = () => {
   const navigate = useNavigate(); // Para redirigir después de guardar
   const { id } = useParams(); // Para obtener el ID del usuario desde la URL
 
+  const {
+    data: responseAlmacenTiendas = {},
+    isLoading,
+    isError,
+  } = useAlmacenTiendas(); // Usa el hook personalizado
+
+  const {
+    data: responseRoles = {},
+    isLoading: loadingRoles,
+    isError: errorRoles,
+  } = useRoles(); // Usa el hook personalizado
+
+  const almacenTiendas = responseAlmacenTiendas.data || []; // Extrae los datos
+  const roles = responseRoles.data || []; // Extrae los datos
+
+  console.log(almacenTiendas);
+
   const [userData, setUserData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    username: '',
-    birthday: '',
-    password: '', // Campo para la contraseña
+    first_name: "",
+    last_name: "",
+    email: "",
+    username: "",
+    birthday: "",
+    password: "", // Campo para la contraseña
     is_superuser: false, // Campo para el estado de superusuario
     is_active: true, // Estado de activo o no
-    date_joined: '', // Fecha de incorporación
-    last_login: '', // Último inicio de sesión
-    name_work: '', // Lugar de trabajo
-    name_rol:'',
+    date_joined: "", // Fecha de incorporación
+    last_login: "", // Último inicio de sesión
+    name_work: "", // Lugar de trabajo
+    name_rol: "",
   });
 
   useEffect(() => {
     // Cargar los datos del usuario cuando se monta el componente
     const loadUserData = async () => {
       try {
-        const response = await CustomUserAPI.getOne(id);  // Usar el método genérico para obtener el usuario por su ID
-        setUserData(response.data); // Establecer los datos del usuario en el estado
+        const response = await CustomUserAPI.getOne(id); // Usar el método genérico para obtener el usuario por su ID
+        const user = response.data; // Extraer los datos del usuario
+
+        setUserData({
+          ...user,
+          id_almacen_tienda: user.id_almacen_tienda || "", // Establecer el lugar de trabajo
+          id_rol: user.id_rol || "", // Establecer el rol
+        }); // Establecer los datos del usuario en el estado
       } catch (error) {
         console.error("Error al cargar el usuario:", error);
       }
@@ -39,14 +64,14 @@ const UserEditPage = () => {
     const { name, value, type, checked } = e.target;
     setUserData({
       ...userData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSave = async () => {
     try {
-      await CustomUserAPI.update(id, userData);  // Actualizar el usuario con los nuevos datos
-      navigate("/listusers");  // Redirigir a la lista de usuarios después de guardar
+      await CustomUserAPI.update(id, userData); // Actualizar el usuario con los nuevos datos
+      navigate("/listusers"); // Redirigir a la lista de usuarios después de guardar
     } catch (error) {
       console.error("Error al guardar los cambios:", error);
     }
@@ -78,7 +103,9 @@ const UserEditPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium">Correo electrónico</label>
+          <label className="block text-sm font-medium">
+            Correo electrónico
+          </label>
           <input
             type="email"
             name="email"
@@ -98,7 +125,9 @@ const UserEditPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium">Fecha de nacimiento</label>
+          <label className="block text-sm font-medium">
+            Fecha de nacimiento
+          </label>
           <input
             type="date"
             name="birthday"
@@ -133,24 +162,43 @@ const UserEditPage = () => {
         {/* Lugar de trabajo */}
         <div className="mb-4">
           <label className="block text-sm font-medium">Lugar de trabajo</label>
-          <input
-            type="text"
-            name="workplace"
-            value={userData.name_work}
+          <select
+            name="id_almacen_tienda"
+            value={userData.id_almacen_tienda}
             onChange={handleChange}
             className="mt-1 p-2 border rounded w-full"
-          />
+          >
+            <option value="" disabled>
+              Selecciona un lugar
+            </option>
+            {almacenTiendas.map((almacen) => (
+              <option
+                key={almacen.id_almacen_tienda}
+                value={almacen.id_almacen_tienda}
+              >
+                {almacen.nombre}
+              </option>
+            ))}
+          </select>
         </div>
-        {/* Lugar de trabajo */}
+        {/* Rol */}
         <div className="mb-4">
           <label className="block text-sm font-medium">Rol</label>
-          <input
-            type="text"
-            name="workplace"
-            value={userData.name_rol}
+          <select
+            name="id_rol"
+            value={userData.id_rol}
             onChange={handleChange}
             className="mt-1 p-2 border rounded w-full"
-          />
+          >
+            <option value="" disabled>
+              Selecciona un lugar
+            </option>
+            {roles.map((rol) => (
+              <option key={rol.id_almacen_tienda} value={rol.id_almacen_tienda}>
+                {rol.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Botón para guardar */}
