@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useProductos } from "@/hooks/useProductos"; // Hook que trae los productos desde la API
+import { useProducts } from "../../hooks/useProducts"; // Hook que trae los productos desde la API
 
 const BuscarProducto = ({ agregarAlCarrito }) => {
   const [query, setQuery] = useState(""); // Estado para el texto del input
   const [productosFiltrados, setProductosFiltrados] = useState([]); // Productos filtrados
-  const { data: productos, loading, error } = useProductos(); // Traemos los productos
+  const { data: productos, loading, error } = useProducts(); // Traemos los productos
   console.log(productos); // Asegúrate de que los productos son correctos
 
   const productosData = productos?.data || [];

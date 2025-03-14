@@ -72,7 +72,7 @@ const Sidebar = ({ sidebarToggle, closeSidebar }) => {
       title: "Productos",
       icon: FaBox,
       items: [
-        { label: "Productos", path: "/productos" },
+        { label: "Productos", path: "/productList" },
         { label: "Categorias", path: "/categorias" },
         { label: "Proveedores", path: "/proveedores" },
       ],

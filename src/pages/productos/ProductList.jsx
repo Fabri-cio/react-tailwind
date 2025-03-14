@@ -1,12 +1,12 @@
-import { useProductos } from "../../hooks/useProductos";
+import { useProducts } from "../../hooks/useProducts";
 import { useNavigate } from "react-router-dom";
-import Table from "../../components/productos/productos/Table";
-import Loading from "../../components/productos/Loading";
-import ErrorMessage from "../../components/productos/ErrorMessaje";
-import { Navigation } from "../../components/productos/Navigation";
+import Table from "../../components/shared/Table";
+import Loading from "../../components/shared/Loading";
+import ErrorMessage from "../../components/shared/ErrorMessaje";
+import { Navigation } from "../../components/shared/Navigation";
 
 const Productos = () => {
-  const { data: productosData, isLoading, isError } = useProductos();
+  const { data: productosData, isLoading, isError } = useProducts();
 
   // Verifica que productosData sea un arreglo antes de pasarlo a Table
   const productos = Array.isArray(productosData?.data)

@@ -21,10 +21,10 @@ const Home = lazy(() => import("@/pages/Home"));
 // Movimientos
 const Movimientos = lazy(() => import("../pages/movimientos/Movimientos"));
 // Productos
-const Productos = lazy(() => import("@/pages/productos/Productos"));
-const EditProduct = lazy(() => import("../components/productos/productos/ProductoForm"));
-const CrearProducto = lazy(() =>
-  import("../components/productos/productos/ProductoForm")
+const ProductList = lazy(() => import("@/pages/productos/ProductList"));
+const EditProduct = lazy(() => import("../components/productos/productos/ProductForm"));
+const CreateProduct = lazy(() =>
+  import("../components/productos/productos/ProductForm")
 );
 const Categorias = lazy(() => import("@/pages/productos/Categorias"));
 const Proveedores = lazy(() => import("@/pages/productos/Proveedores"));
@@ -84,9 +84,9 @@ const AppRoutes = () => {
               {/* Movimientos */}
               <Route path="/ver_movimientos" element={<Movimientos />} />
               {/* Productos */}
-              <Route path="/productos" element={<Productos />} />
+              <Route path="/productList" element={<ProductList />} />
               <Route path="/editProduct/:id" element={<EditProduct />} />
-              <Route path="/crearProducto" element={<CrearProducto />} />
+              <Route path="/createProduct" element={<CreateProduct />} />
               {/* Categorias */}
               <Route path="/categorias" element={<Categorias />} />
               {/* Marcas */}
