@@ -1,30 +1,24 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useCategorias } from "@/hooks/useCategorias";
 import { useProveedores } from "@/hooks/useProveedores";
-import { useActualizarProducto } from "@/hooks/useActualizarProducto";
+import { useProductMutations } from "../../../hooks/useProductMutations";
 
-function EditProduct() {
-  const { state } = useLocation(); // Datos del producto desde la navegación
+function ProductoForm() {
+  const { state } = useLocation(); // Datos del producto (si estamos editando)
   const navigate = useNavigate();
+  const [idUsuario] = useState(localStorage.getItem("id_usuario")); // Se obtiene una sola vez
 
-  const {
-    data: responseCat = {},
-    isLoading: loadingCategorias,
-    isError: errorCategorias,
-  } = useCategorias();
+  const { crearProducto, actualizarProducto } = useProductMutations();
 
-  const {
-    data: responseProv = {},
-    isLoading: loadingProveedores,
-    isError: errorProveedores,
-  } = useProveedores();
+  const { data: responseCat = {} } = useCategorias();
+  const { data: responseProv = {} } = useProveedores();
 
   const categorias = responseCat.data || [];
   const proveedores = responseProv.data || [];
 
-  // Datos iniciales del producto
-  const producto = state?.producto || {
+  // Datos iniciales (si estamos editando, obtenemos los datos desde `state`)
+  const productoInicial = state?.producto || {
     id_producto: "",
     nombre: "",
     precio: "",
@@ -34,74 +28,37 @@ function EditProduct() {
     estado: true,
   };
 
-  const [formValues, setFormValues] = useState(producto);
-
-  const {
-    mutate: actualizarProducto,
-    isSuccess,
-    isLoading,
-  } = useActualizarProducto();
-
-  // Actualizar el formulario con los IDs correctos de proveedor y categoría
-  useEffect(() => {
-    if (categorias.length > 0 && proveedores.length > 0) {
-      setFormValues((prevValues) => ({
-        ...prevValues,
-        id_proveedor:
-          proveedores.find(
-            (prov) => prov.nombre_proveedor === prevValues.nombre_proveedor
-          )?.id_proveedor || "",
-        id_categoria:
-          categorias.find(
-            (cat) => cat.nombre_categoria === prevValues.nombre_categoria
-          )?.id_categoria || "",
-      }));
-    }
-  }, [categorias, proveedores]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigate("/productos");
-    }
-  }, [isSuccess, navigate]);
+  const [formValues, setFormValues] = useState(productoInicial);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setFormValues({ ...formValues, [name]: checked });
-  };
-
-  const handleSelectChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: parseInt(value, 10) });
-  };
-
-  const handleEstadoToggle = () => {
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      estado: !prevValues.estado,
-    }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Datos enviados:", formValues); // Verifica los valores aquí
-    const { id_producto, ...data } = formValues;
 
-    // Añadir usuario_modificacion
     const dataToSend = {
-      ...data,
-      usuario_modificacion: localStorage.getItem("id_usuario"), // Añadir usuario_modificacion
+      ...formValues,
+      id_proveedor: parseInt(formValues.id_proveedor),
+      categoria: parseInt(formValues.categoria),
+      precio: parseFloat(formValues.precio),
+      usuario_modificacion: idUsuario,
     };
 
-    actualizarProducto({
-      id: parseInt(id_producto, 10),
-      data: dataToSend,
-    });
+    if (!formValues.id_producto) {
+      dataToSend.usuario_creacion = idUsuario;
+      crearProducto.mutate(dataToSend, {
+        onSuccess: () => navigate("/productos"), // Redirige después de éxito
+      });
+    } else {
+      actualizarProducto.mutate(
+        { id: formValues.id_producto, data: dataToSend },
+        {
+          onSuccess: () => navigate("/productos"),
+        }
+      );
+    }
   };
 
   return (
@@ -109,7 +66,9 @@ function EditProduct() {
       <h1 className="text-2xl font-semibold text-center text-blue-900 mb-4">
         {formValues.id_producto ? "Editar Producto" : "Crear Producto"}
       </h1>
+
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Nombre */}
         <div>
           <label className="block text-gray-700 font-medium text-sm mb-2">
             Nombre
@@ -124,7 +83,7 @@ function EditProduct() {
           />
         </div>
 
-        {/* precio */}
+        {/* Precio */}
         <div>
           <label className="block text-gray-700 font-medium text-sm mb-2">
             Precio
@@ -160,13 +119,13 @@ function EditProduct() {
           </label>
           <select
             name="categoria"
-            value={formValues.id_categoria}
-            onChange={handleSelectChange}
+            value={formValues.categoria}
+            onChange={handleInputChange}
             className="w-full p-2 text-sm border border-gray-300 rounded"
             required
           >
             <option value="" disabled>
-              Seleccinar Categoria
+              Seleccionar Categoría
             </option>
             {categorias.map((cat) => (
               <option key={cat.id_categoria} value={cat.id_categoria}>
@@ -184,7 +143,7 @@ function EditProduct() {
           <select
             name="id_proveedor"
             value={formValues.id_proveedor}
-            onChange={handleSelectChange}
+            onChange={handleInputChange}
             className="w-full p-2 text-sm border border-gray-300 rounded"
             required
           >
@@ -199,16 +158,23 @@ function EditProduct() {
           </select>
         </div>
 
-        {/* Toggle Switch para Estado */}
-        <div className="flex items-center justify-normal">
+        {/* Estado */}
+        <div className="flex items-center">
           <label className="text-sm font-medium text-gray-700 pe-5">
             Estado del Producto
           </label>
           <div
+            role="switch"
+            aria-checked={formValues.estado}
             className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer ${
               formValues.estado ? "bg-green-500" : "bg-red-400"
             }`}
-            onClick={handleEstadoToggle}
+            onClick={() =>
+              setFormValues((prevValues) => ({
+                ...prevValues,
+                estado: !prevValues.estado,
+              }))
+            }
           >
             <div
               className={`w-4 h-4 bg-white rounded-full shadow-md transform duration-300 ${
@@ -221,13 +187,14 @@ function EditProduct() {
           </span>
         </div>
 
+        {/* Botón de envío */}
         <div className="flex justify-end">
           <button
             type="submit"
             className="bg-indigo-600 text-white text-sm px-6 py-2 rounded"
-            disabled={isLoading}
+            disabled = {crearProducto.isLoading || actualizarProducto.isLoading}
           >
-            {isLoading ? "Guardando..." : "Guardar"}
+            {formValues.id_producto ? "Guardar Cambios" : "Crear Producto"}
           </button>
         </div>
       </form>
@@ -235,4 +202,4 @@ function EditProduct() {
   );
 }
 
-export default EditProduct;
+export default ProductoForm;

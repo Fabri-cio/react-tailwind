@@ -24,7 +24,7 @@ const Productos = () => {
   if (isError) return <ErrorMessage />;
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-5 overflow-x-auto">
       <Navigation />
       <Table productos={productos} onDetallesClick={handleDetallesClick} />
     </div>
