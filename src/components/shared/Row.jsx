@@ -1,5 +1,7 @@
+import React from "react";
+
 // Row.js
-const Row = ({ item, fields, index }) => {
+const Row = React.memo (({ item, fields, index }) => {
   return (
     <tr className="hover:bg-gray-100 transition-all">
       {fields.map((field, idx) => (
@@ -12,6 +14,6 @@ const Row = ({ item, fields, index }) => {
       ))}
     </tr>
   );
-};
+});
 
 export default Row;

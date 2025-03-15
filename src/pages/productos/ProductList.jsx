@@ -57,7 +57,7 @@ function ProductList() {
     <div className="container mx-auto p-4">
       <Navigation
         entityName="Productos"
-        listPath="/productos"
+        listPath="/productList"
         subTitle="Listado de productos"
         actions={[
           { to: "/createProduct", label: "Crear Producto", color: "green" },

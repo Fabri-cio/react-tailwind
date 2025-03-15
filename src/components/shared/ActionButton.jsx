@@ -6,6 +6,8 @@ export function ActionButton({
   label,
   color = "blue",
   icon: Icon,
+  type,
+  disabled = false, // Soporte para deshabilitar
 }) {
   const colors = {
     blue: "bg-blue-500 hover:bg-blue-600",
@@ -17,8 +19,12 @@ export function ActionButton({
 
   const buttonContent = (
     <button
-      className={`${colors[color]} text-white px-3 py-1 rounded-md flex items-center gap-2`}
-      onClick={onClick} // Solo se ejecuta si `onClick` es pasado
+      type={type || "button"} // Solo usa `submit` si se pasa explícitamente
+      className={`${
+        disabled ? colors.gray : colors[color]
+      } text-white px-3 py-1 rounded-md flex items-center gap-2`}
+      onClick={onClick}
+      disabled={disabled} // Se deshabilita solo si no es un enlace
     >
       {Icon && <Icon />} {label}
     </button>

@@ -127,13 +127,12 @@ export default function ProductForm() {
           checked={formValues.estado}
           onChange={(value) => dispatch({ name: "estado", value })}
         />
-        <button
+        <ActionButton
           type="submit"
-          className="bg-indigo-600 text-white text-sm px-6 py-2 rounded"
+          label={formValues.id_producto ? "Guardar Cambios" : "Crear Producto"}
+          color="blue"
           disabled={crearProducto.isLoading || actualizarProducto.isLoading}
-        >
-          {formValues.id_producto ? "Guardar Cambios" : "Crear Producto"}
-        </button>
+        />
       </form>
     </div>
   );
