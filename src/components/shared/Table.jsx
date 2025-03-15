@@ -1,49 +1,26 @@
-import ProductoFila from "./ProductoFila";
+import Row from "./Row";
 
-const Table = ({ productos, onDetallesClick }) => {
-  // Verificamos que productos sea un arreglo y si está vacío
-  const productosValidos = Array.isArray(productos) ? productos : [];
-
+const Table = ({ items, fields }) => {
   return (
-    <table className="min-w-full border-collapse border border-gray-200 bg-white shadow-md rounded-lg overflow-hidden">
-      <thead className="bg-gray-50">
+    <table className="min-w-full table-auto">
+      <thead>
         <tr>
-          {[
-            "#",
-            "Estado",
-            "Nombre",
-            "Proveedor",
-            "Categoría",
-            "Precio Bs.",
-            "Código",
-            "Acciones",
-          ].map((header) => (
-            <th
-              key={header}
-              className="py-3 px-4 text-sm text-left font-semibold text-gray-700 border-b"
-            >
-              {header}
+          {fields.map((field) => (
+            <th key={field.key} className="px-4 py-2 text-left">
+              {field.label}
             </th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {productosValidos.length === 0 ? (
-          <tr>
-            <td colSpan={8} className="py-3 px-4 text-center text-sm text-gray-500">
-              No hay productos disponibles.
-            </td>
-          </tr>
-        ) : (
-          productosValidos.map((producto, index) => (
-            <ProductoFila
-              key={producto.id_producto}
-              producto={producto}
-              index={index + 1}
-              onDetallesClick={onDetallesClick}
-            />
-          ))
-        )}
+        {items.map((item, index) => (
+          <Row
+            key={item.id_producto || index}
+            item={item}
+            fields={fields}
+            index={index}
+          />
+        ))}
       </tbody>
     </table>
   );

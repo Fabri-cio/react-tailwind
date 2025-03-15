@@ -6,6 +6,8 @@ import { useProductMutations } from "@/hooks/useProductMutations";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
 import { ToggleSwitch } from "@/components/shared/ToggleSwitch";
+import { ActionButton } from "@/components/shared/ActionButton";
+import { FaArrowLeft, FaSave } from "react-icons/fa";
 
 const initialState = (producto) => ({
   id_producto: producto?.id_producto || "",
@@ -62,9 +64,18 @@ export default function ProductForm() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 shadow-lg rounded-lg">
-      <h1 className="text-2xl font-semibold text-center text-blue-900 mb-4">
-        {formValues.id_producto ? "Editar Producto" : "Crear Producto"}
-      </h1>
+      {/* Contenedor para el botón y el título */}
+      <div className="flex items-center justify-between mb-4">
+        <ActionButton
+          to="/productList"
+          label="Volver"
+          icon={FaArrowLeft}
+          color="blue"
+        />
+        <h1 className="text-2xl font-semibold text-blue-900">
+          {formValues.id_producto ? "Editar Producto" : "Crear Producto"}
+        </h1>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <InputField

@@ -1,34 +1,75 @@
-import { useProducts } from "../../hooks/useProducts";
 import { useNavigate } from "react-router-dom";
-import Table from "../../components/shared/Table";
+import { useProducts } from "@/hooks/useProducts";
+import { Navigation } from "@/components/shared/Navigation";
+import Table from "@/components/shared/Table";
+import { ActionButton } from "@/components/shared/ActionButton";
+import { StatusBadge } from "@/components/shared/StatusBadge";
 import Loading from "../../components/shared/Loading";
 import ErrorMessage from "../../components/shared/ErrorMessaje";
-import { Navigation } from "../../components/shared/Navigation";
 
-const Productos = () => {
-  const { data: productosData, isLoading, isError } = useProducts();
+function ProductList() {
+  const {
+    data: response = {},
+    isLoading: loadingProductos,
+    isError: errorProductos,
+  } = useProducts();
 
-  // Verifica que productosData sea un arreglo antes de pasarlo a Table
-  const productos = Array.isArray(productosData?.data)
-    ? productosData.data
-    : [];
+  const productos = response.data || [];
   const navigate = useNavigate();
 
-  const handleDetallesClick = (id_producto, producto) => {
-    // Aquí puedes navegar o hacer cualquier acción al hacer clic en "Editar"
-    console.log(id_producto, producto);
-    navigate(`/editProduct/${id_producto}`, { state: { producto } });
+  const handleDetallesClick = (producto) => {
+    navigate(`/editProduct/${producto.id_producto}`, { state: { producto } });
   };
 
-  if (isLoading) return <Loading />;
-  if (isError) return <ErrorMessage />;
+  const productFields = [
+    { key: "index", label: "#" },
+    { key: "nombre", label: "Nombre" },
+    { key: "nombre_proveedor", label: "Proveedor" },
+    { key: "nombre_categoria", label: "Categoría" },
+    {
+      key: "precio",
+      label: "Precio Bs.",
+      render: (item) => item.precio.toFixed(2),
+    },
+    { key: "codigo_barras", label: "Código" },
+    {
+      key: "estado",
+      label: "Estado",
+      render: (item) => <StatusBadge isActive={item.estado} />,
+    },
+    {
+      key: "acciones",
+      label: "Acciones",
+      render: (item) => (
+        <ActionButton
+          onClick={() => handleDetallesClick(item)} // Usamos onClick para llamar a la función de detalles
+          label="Editar"
+          color="blue"
+        />
+      ),
+    },
+  ];
+
+  if (loadingProductos) return <Loading message="Cargando productos..." />;
+  if (errorProductos) return <ErrorMessage message="Error al cargar productos." />;
 
   return (
-    <div className="container mx-auto p-5 overflow-x-auto">
-      <Navigation />
-      <Table productos={productos} onDetallesClick={handleDetallesClick} />
+    <div className="container mx-auto p-4">
+      <Navigation
+        entityName="Productos"
+        listPath="/productos"
+        subTitle="Listado de productos"
+        actions={[
+          { to: "/createProduct", label: "Crear Producto", color: "green" },
+        ]}
+      />
+      <hr />
+      <Table
+        items={productos}
+        fields={productFields} // Ahora `Table` se encarga de renderizar las filas
+      />
     </div>
   );
-};
+}
 
-export default Productos;
+export default ProductList;

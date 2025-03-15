@@ -1,7 +1,12 @@
 import React from "react";
 
-const ErrorMessage = () => {
-  return <p className="text-center text-red-600">Error al cargar productos.</p>;
+// Componente reutilizable para mensajes de error
+const ErrorMessage = ({ message = "Error al cargar datos." }) => {
+  return (
+    <p className="text-center text-red-600" role="alert">
+      {message}
+    </p>
+  );
 };
 
 export default ErrorMessage;

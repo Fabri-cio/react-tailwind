@@ -1,7 +1,12 @@
 import React from "react";
 
-const Loading = () => {
-  return <p className="text-center text-gray-500">Cargando productos...</p>;
+// Componente reutilizable para mensajes de carga
+const Loading = ({ message = "Cargando datos..." }) => {
+  return (
+    <p className="text-center text-gray-500" role="alert">
+      {message}
+    </p>
+  );
 };
 
 export default Loading;
