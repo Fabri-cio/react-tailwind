@@ -12,9 +12,9 @@ function ProductList() {
     data: response = {},
     isLoading: loadingProductos,
     isError: errorProductos,
-  } = useProducts();
+  } = useProducts(false);
 
-  const productos = response.data || [];
+  const productos = response.data?.results || response.data?.data || [];
   const navigate = useNavigate();
 
   const handleDetallesClick = (producto) => {

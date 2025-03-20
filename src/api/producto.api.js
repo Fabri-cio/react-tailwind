@@ -7,7 +7,10 @@ const ApiProductos = createApiInstance(`${ApiBaseURL}/productos/`);
 
 // Función genérica para operaciones CRUD
 const createCrudOperations = (apiInstance, resource) => ({
-  getAll: () => request(apiInstance, "get", `${resource}/`),
+  getAll: (all_data = false) => {
+    const url = all_data ? `${resource}/?all_data=true` : `${resource}/`;
+    return request(apiInstance, "get", url);
+  },
   getOne: (id) => request(apiInstance, "get", `${resource}/${id}`),
   create: (data) => request(apiInstance, "post", `${resource}/`, data),
   update: (id, data) => request(apiInstance, "put", `${resource}/${id}/`, data),
