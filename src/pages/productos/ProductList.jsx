@@ -8,28 +8,39 @@ import Loading from "../../components/shared/Loading";
 import ErrorMessage from "../../components/shared/ErrorMessaje";
 import { useLocation } from "react-router-dom";
 import Pagination from "../../components/shared/Pagination";
+import { useCallback } from "react";
 
 function ProductList() {
   const location = useLocation();
+  const navigate = useNavigate();
+
   // Extraer número de página de la URL
   const queryParams = new URLSearchParams(location.search);
   const currentPage = parseInt(queryParams.get("page")) || 1;
+  
   const {
     data: response = {},
     isLoading: loadingProductos,
     isError: errorProductos,
-  } = useProducts(false, currentPage);
+  } = useProducts(true, currentPage);
 
   const productos = response.data?.results || response.data?.data || [];
   const totalProducts = response.data?.count || 0;
   const productosPorPagina = 10; // Ajusta este número según los productos por página en la API
   const totalPages = Math.ceil(totalProducts / productosPorPagina);
 
-  const navigate = useNavigate();
-
   const handleDetallesClick = (producto) => {
     navigate(`/editProduct/${producto.id_producto}`, { state: { producto } });
   };
+
+  const handlePageChange = useCallback(
+    (page) => {
+      if (page !== currentPage) {
+        navigate(`/productList?page=${page}`);
+      }
+    },
+    [navigate, currentPage]
+  );
 
   const productFields = [
     { key: "index", label: "#" },
@@ -83,7 +94,7 @@ function ProductList() {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={(page) => navigate(`/productList?page=${page}`)}
+        onPageChange={handlePageChange}
       />
     </div>
   );

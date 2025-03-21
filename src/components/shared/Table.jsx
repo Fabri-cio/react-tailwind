@@ -1,6 +1,7 @@
+import { memo } from "react";
 import Row from "./Row";
 
-const Table = ({ items, fields }) => {
+const Table = memo(({ items, fields }) => {
   // Memoriza las cabeceras de la tabla
   const headers = fields.map((field) => (
     <th key={field.key} className="px-4 py-2 text-left">
@@ -25,6 +26,6 @@ const Table = ({ items, fields }) => {
       </tbody>
     </table>
   );
-};
+});
 
 export default Table;
