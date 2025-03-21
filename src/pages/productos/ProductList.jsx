@@ -4,17 +4,14 @@ import { Navigation } from "@/components/shared/Navigation";
 import Table from "@/components/shared/Table";
 import { ActionButton } from "@/components/shared/ActionButton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import Loading from "../../components/shared/Loading";
-import ErrorMessage from "../../components/shared/ErrorMessaje";
-import Pagination from "../../components/shared/Pagination";
-import usePagination from "@/hooks/usePagination"; // Importa el hook de paginación
+import Loading from "@/components/shared/Loading";
+import ErrorMessage from "@/components/shared/ErrorMessaje";
+import Pagination from "@/components/shared/Pagination";
+import usePagination from "@/hooks/usePagination";
 
 function ProductList() {
   const navigate = useNavigate();
-
-  // Usar el hook de paginación
   const { currentPage, handlePageChange } = usePagination();
-
   const {
     data: response = {},
     isLoading: loadingProductos,
@@ -23,8 +20,7 @@ function ProductList() {
 
   const productos = response.data?.results || response.data?.data || [];
   const totalProducts = response.data?.count || 0;
-  const productosPorPagina = 10; // Ajusta este número según los productos por página en la API
-  const totalPages = Math.ceil(totalProducts / productosPorPagina);
+  const totalPages = Math.ceil(totalProducts / 10);
 
   const handleDetallesClick = (producto) => {
     navigate(`/editProduct/${producto.id_producto}`, { state: { producto } });
@@ -79,11 +75,13 @@ function ProductList() {
         fields={productFields} // Ahora `Table` se encarga de renderizar las filas
       />
       {/* Agregar paginación */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      {!response.all_data && totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 }
