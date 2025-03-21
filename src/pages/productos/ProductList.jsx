@@ -6,23 +6,20 @@ import { ActionButton } from "@/components/shared/ActionButton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import Loading from "../../components/shared/Loading";
 import ErrorMessage from "../../components/shared/ErrorMessaje";
-import { useLocation } from "react-router-dom";
 import Pagination from "../../components/shared/Pagination";
-import { useCallback } from "react";
+import usePagination from "@/hooks/usePagination"; // Importa el hook de paginación
 
 function ProductList() {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  // Extraer número de página de la URL
-  const queryParams = new URLSearchParams(location.search);
-  const currentPage = parseInt(queryParams.get("page")) || 1;
-  
+  // Usar el hook de paginación
+  const { currentPage, handlePageChange } = usePagination();
+
   const {
     data: response = {},
     isLoading: loadingProductos,
     isError: errorProductos,
-  } = useProducts(true, currentPage);
+  } = useProducts(false, currentPage);
 
   const productos = response.data?.results || response.data?.data || [];
   const totalProducts = response.data?.count || 0;
@@ -32,15 +29,6 @@ function ProductList() {
   const handleDetallesClick = (producto) => {
     navigate(`/editProduct/${producto.id_producto}`, { state: { producto } });
   };
-
-  const handlePageChange = useCallback(
-    (page) => {
-      if (page !== currentPage) {
-        navigate(`/productList?page=${page}`);
-      }
-    },
-    [navigate, currentPage]
-  );
 
   const productFields = [
     { key: "index", label: "#" },
