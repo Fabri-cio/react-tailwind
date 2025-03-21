@@ -1,20 +1,30 @@
 import { useNavigate } from "react-router-dom";
-import { useProducts } from "@/hooks/useProducts";
+import useProducts from "@/hooks/useProducts";
 import { Navigation } from "@/components/shared/Navigation";
 import Table from "@/components/shared/Table";
 import { ActionButton } from "@/components/shared/ActionButton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import Loading from "../../components/shared/Loading";
 import ErrorMessage from "../../components/shared/ErrorMessaje";
+import { useLocation } from "react-router-dom";
+import Pagination from "../../components/shared/Pagination";
 
 function ProductList() {
+  const location = useLocation();
+  // Extraer número de página de la URL
+  const queryParams = new URLSearchParams(location.search);
+  const currentPage = parseInt(queryParams.get("page")) || 1;
   const {
     data: response = {},
     isLoading: loadingProductos,
     isError: errorProductos,
-  } = useProducts(false);
+  } = useProducts(false, currentPage);
 
   const productos = response.data?.results || response.data?.data || [];
+  const totalProducts = response.data?.count || 0;
+  const productosPorPagina = 10; // Ajusta este número según los productos por página en la API
+  const totalPages = Math.ceil(totalProducts / productosPorPagina);
+
   const navigate = useNavigate();
 
   const handleDetallesClick = (producto) => {
@@ -51,7 +61,8 @@ function ProductList() {
   ];
 
   if (loadingProductos) return <Loading message="Cargando productos..." />;
-  if (errorProductos) return <ErrorMessage message="Error al cargar productos." />;
+  if (errorProductos)
+    return <ErrorMessage message="Error al obtener los productos" />;
 
   return (
     <div className="container mx-auto p-4">
@@ -67,6 +78,12 @@ function ProductList() {
       <Table
         items={productos}
         fields={productFields} // Ahora `Table` se encarga de renderizar las filas
+      />
+      {/* Agregar paginación */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => navigate(`/productList?page=${page}`)}
       />
     </div>
   );
