@@ -1,4 +1,4 @@
-import { createApiInstance, request } from "./api.Base";
+import { createApiInstance} from "./api.Base";
 
 const ApiBaseURL = import.meta.env.VITE_API_BASE_URL;
 

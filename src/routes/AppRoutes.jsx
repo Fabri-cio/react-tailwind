@@ -46,8 +46,8 @@ const PrediccionResultados = lazy(() =>
 );
 // Usuarios
 const UserList = lazy(() => import("../pages/usuarios/UserList"));
-const UserEditPage = lazy(() => import("../pages/usuarios/UserEditPage"));
-const CrearUsuario = lazy(() => import("../components/usuarios/CrearUsuario"));
+const EditUser = lazy(() => import("../components/usuarios/UserForm"));
+const CreateUser = lazy(() => import("../components/usuarios/UserForm"));
 // Inventarios
 const InventarioList = lazy(() =>
   import("../pages/inventarios/InventarioList")
@@ -115,9 +115,9 @@ const AppRoutes = () => {
               />
               {/* <Route path="/ver" element={<Predicciones />} /> */}
               {/* Usuarios */}
-              <Route path="/listusers" element={<UserList />} />
-              <Route path="/users/edit/:id" element={<UserEditPage />} />
-              <Route path="/crear_usuario" element={<CrearUsuario />} />
+              <Route path="/userList" element={<UserList />} />
+              <Route path="/editUser/:id" element={<EditUser />} />
+              <Route path="/createUser" element={<CreateUser />} />
               {/* Inventario */}
               <Route path="/ver_inventario" element={<InventarioList />} />
               <Route path="/crear_inventario" element={<CrearInventario />} />

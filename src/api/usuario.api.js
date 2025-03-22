@@ -1,29 +1,18 @@
-import { createApiInstance, request } from "./api.Base";
+import { createApi } from "./api.config";
+import { createCrudOperations} from "./api.crud";
+import { createApiInstance, request} from "./api.Base";
 
-const ApiBaseURL = import.meta.env.VITE_API_BASE_URL;
-// Crear instancia específica para la API de usuarios
-// const ApiUsuarios = createApiInstance("http://localhost:8000/api/v1/usuarios/");
-const ApiUsuarios = createApiInstance(`${ApiBaseURL}/usuarios/`);
-
-// Función genérica para operaciones CRUD
-const createCrudOperations = (apiInstance, resource) => ({
-  getAll: () => request(apiInstance, "get", `${resource}/`),
-  getOne: (id) => request(apiInstance, "get", `${resource}/${id}/`),
-  create: (data) => request(apiInstance, "post", `${resource}/`, data),
-  update: (id, data) => request(apiInstance, "put", `${resource}/${id}/`, data),
-  delete: (id) => request(apiInstance, "delete", `${resource}/${id}/`),
-});
-
-// Funciones específicas para el login y registro
-export const login = (email, password) => request(ApiUsuarios, "post", "login/", { email, password });
-export const RegistroApi = createCrudOperations(ApiUsuarios, "register");
-// Función para cerrar la sesión de todos los dispositivos
-export const logoutAll = () => request(ApiUsuarios, "post", "logoutall/");  // Esta es la ruta que cierra sesión en todos los dispositivos
+const ApiUsers = createApi("usuarios");
 
 // Crear operaciones CRUD específicas para los usuarios
-export const UsuariosAPI = createCrudOperations(ApiUsuarios, "usuarios");
-export const CustomUserAPI = createCrudOperations(ApiUsuarios, "customuser");
-export const RolApi = createCrudOperations(ApiUsuarios, "role");
+export const UsuariosAPI = createCrudOperations(ApiUsers, "usuarios");
+export const CustomUsersAPI = createCrudOperations(ApiUsers, "customuser");
+export const RolApi = createCrudOperations(ApiUsers, "role");
+
+// Funciones específicas para el login y registro
+export const login = (email, password) => request(ApiUsers, "post", "login/", { email, password });
+export const RegistroApi = createCrudOperations(ApiUsers, "register");
+export const logoutAll = () => request(ApiUsers, "post", "logoutall/");
 
 // 🔹 API de restablecimiento de contraseña (Corrección de rutas)
 const PasswordResetBaseURL = createApiInstance("http://localhost:8000/api/password_reset/");

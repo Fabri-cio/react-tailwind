@@ -1,72 +1,95 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // Asegúrate de tener react-router-dom instalado
-import { CustomUserAPI } from "@/api/usuario.api"; // Importar la API adecuada
-import { Navigation } from "../../components/usuarios/Navigation";
+import { useNavigate } from "react-router-dom";
+import useUsers from "../../hooks/useUsers";
+import { Navigation } from "@/components/shared/Navigation";
+import Table from "@/components/shared/Table";
+import { ActionButton } from "@/components/shared/ActionButton";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import Loading from "@/components/shared/Loading";
+import ErrorMessage from "@/components/shared/ErrorMessaje";
+import Pagination from "@/components/shared/Pagination";
+import usePagination from "@/hooks/usePagination";
+import FormattedDate from "../../components/shared/FormattedDate";
 
-const UserList = () => {
-  const [users, setUsers] = useState([]);
+function UserList() {
+  const navigate = useNavigate();
+  const { currentPage, handlePageChange } = usePagination();
+  const {
+    data: response = {},
+    isLoading: loadingUsers,
+    isError: errorUsers,
+  } = useUsers(false, currentPage);
 
-  useEffect(() => {
-    const loadUsers = async () => {
-      try {
-        const response = await CustomUserAPI.getAll(); // Usar el método genérico para obtener usuarios
-        setUsers(response.data); // Setear los usuarios en el estado
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
+  const usuarios = response.data?.results || response.data?.data || [];
+  const totalUsers = response.data?.count || 0;
+  const totalPages = Math.ceil(totalUsers / 10);
 
-    loadUsers();
-  }, []); // El array vacío significa que esto se ejecutará una sola vez al montar el componente
+  const handleDetallesClick = (usuario) => {
+    navigate(`/editUser/${usuario.id}`, { state: { usuario } });
+  };
+
+  const userFields = [
+    { key: "index", label: "#" },
+    {
+      key: "full_name",
+      label: "Nombre",
+      render: (item) => `${item.first_name} ${item.last_name}`,
+    },
+    { key: "username", label: "Usuario" },
+    { key: "name_rol", label: "Rol" },
+    { key: "name_work", label: "Lugar de Trabajo" },
+
+    {
+      key: "is_active",
+      label: "Estado",
+      render: (item) => <StatusBadge isActive={item.is_active} />,
+    },
+    {
+      key: "date_joined", // Antes estaba como data_joined (incorrecto)
+      label: "Fecha de Registro",
+      render: (item) => <FormattedDate date={item.date_joined} />,
+    },
+    {
+      key: "acciones",
+      label: "Acciones",
+      render: (item) => (
+        <ActionButton
+          onClick={() => handleDetallesClick(item)} // Usamos onClick para llamar a la función de detalles
+          label="Editar"
+          color="blue"
+        />
+      ),
+    },
+  ];
+
+  if (loadingUsers) return <Loading message="Cargando usuarios..." />;
+  if (errorUsers)
+    return <ErrorMessage message="Error al obtener los usuarios" />;
 
   return (
-    <div className="overflow-x-auto">
-      <Navigation />
-      <table className="min-w-full table-auto">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="px-4 py-2 text-left">N°</th>
-            <th className="px-4 py-2 text-left">Nombres</th>
-            <th className="px-4 py-2 text-left">Apellidos</th>
-            <th className="px-4 py-2 text-left">Estado</th>
-            <th className="px-4 py-2 text-left">Rol</th>
-            <th className="px-4 py-2 text-left">Nombre de Usuario</th>
-            <th className="px-4 py-2">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user, index) => (
-            <tr key={user.id} className="border-t">
-              <td className="px-4 py-2">{index + 1}</td>
-              <td className="px-4 py-2">{user.first_name || "N/A"}</td>
-              <td className="px-4 py-2">{user.last_name || "N/A"}</td>
-              <td className="py-3 px-4 text-center">
-                {user.is_active ? (
-                  <span className="inline-block bg-green-200 text-green-700 px-2 py-1 rounded-full text-sm">
-                    Activo
-                  </span>
-                ) : (
-                  <span className="inline-block bg-red-200 text-red-700 px-2 py-1 rounded-full text-sm">
-                    Inactivo
-                  </span>
-                )}
-              </td>
-              <td className="px-4 py-2">{user.name_rol}</td>
-              <td className="px-4 py-2">{user.username}</td>
-              <td className="px-4 py-2">
-                <Link
-                  to={`/users/edit/${user.id}`}
-                  className="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-700"
-                >
-                  Edit
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="container mx-auto p-4">
+      <Navigation
+        entityName="Usuarios"
+        listPath="/userList"
+        subTitle="Listado de Usuarios"
+        actions={[
+          { to: "/createUser", label: "Crear Usuario", color: "green" },
+        ]}
+      />
+      <hr />
+      <Table
+        items={usuarios}
+        fields={userFields} // Ahora `Table` se encarga de renderizar las filas
+      />
+      {/* Agregar paginación */}
+      {!response.all_data && totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
-};
+}
 
 export default UserList;

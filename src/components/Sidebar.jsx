@@ -80,7 +80,7 @@ const Sidebar = ({ sidebarToggle, closeSidebar }) => {
     {
       title: "Usuarios",
       icon: FaUser,
-      items: [{ label: "Lista de Usuarios", path: "/listusers" }],
+      items: [{ label: "Lista de Usuarios", path: "/userList" }],
     },
   ];
 
