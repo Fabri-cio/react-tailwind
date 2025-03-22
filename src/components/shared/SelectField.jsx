@@ -9,7 +9,7 @@ export function SelectField({ label, name, value, onChange, options }) {
           className="w-full p-2 text-sm border border-gray-300 rounded"
           required
         >
-          <option value="">Selecciona una opción</option>
+          <option value="" disabled>Selecciona una opción</option>
           {options.map(({ id, nombre }) => (
             <option key={id} value={id}>
               {nombre}

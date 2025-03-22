@@ -23,7 +23,7 @@ function ProductList() {
   const totalPages = Math.ceil(totalProducts / 10);
 
   const handleDetallesClick = (producto) => {
-    navigate(`/editProduct/${producto.id_producto}`, { state: { producto } });
+    navigate(`/editProduct/${producto.id_producto}`);
   };
 
   const productFields = [

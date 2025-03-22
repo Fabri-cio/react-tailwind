@@ -1,44 +1,86 @@
-import { useReducer } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useCategorias } from "@/hooks/useCategorias";
 import { useProveedores } from "@/hooks/useProveedores";
+import { useProduct } from "@/hooks/useProduct";
 import { useProductMutations } from "@/hooks/useProductMutations";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
 import { ToggleSwitch } from "@/components/shared/ToggleSwitch";
 import { ActionButton } from "@/components/shared/ActionButton";
-import { FaArrowLeft, FaSave } from "react-icons/fa";
-
-const initialState = (producto) => ({
-  id_producto: producto?.id_producto || "",
-  nombre: producto?.nombre || "",
-  precio: producto?.precio || "",
-  codigo_barras: producto?.codigo_barras || "",
-  id_proveedor: producto?.id_proveedor || "",
-  categoria: producto?.categoria || "",
-  estado: producto?.estado ?? true,
-});
-
-function formReducer(state, { name, value }) {
-  return { ...state, [name]: value };
-}
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function ProductForm() {
-  const { state } = useLocation();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const idUsuario = localStorage.getItem("id_usuario");
+  const idUsuario = useMemo(() => localStorage.getItem("id_usuario"), []);
 
   const { crearProducto, actualizarProducto } = useProductMutations();
   const { data: { data: categorias = [] } = {} } = useCategorias();
   const { data: { data: proveedores = [] } = {} } = useProveedores();
+  const { data: producto, isLoading } = useProduct(id);
 
-  const [formValues, dispatch] = useReducer(
-    formReducer,
-    state?.producto,
-    initialState
+  const [formValues, setFormValues] = useState({
+    id_producto: "",
+    nombre: "",
+    precio: "",
+    codigo_barras: "",
+    id_proveedor: "",
+    categoria: "",
+    estado: true,
+  });
+
+  const categoriasOptions = useMemo(
+    () =>
+      categorias.map(({ id_categoria, nombre_categoria }) => ({
+        id: id_categoria,
+        nombre: nombre_categoria,
+      })),
+    [categorias]
   );
 
-  const handleInputChange = (e) => dispatch(e.target);
+  const proveedoresOptions = useMemo(
+    () =>
+      proveedores.map(({ id_proveedor, nombre_proveedor }) => ({
+        id: id_proveedor,
+        nombre: nombre_proveedor,
+      })),
+    [proveedores]
+  );
+
+  useEffect(() => {
+    if (producto?.data) {
+      const {
+        id_producto,
+        nombre,
+        precio,
+        codigo_barras,
+        id_proveedor,
+        categoria,
+        estado,
+      } = producto.data;
+      setFormValues({
+        id_producto: id_producto || "",
+        nombre: nombre || "",
+        precio: precio || "",
+        codigo_barras: codigo_barras || "",
+        id_proveedor: id_proveedor || "",
+        categoria: categoria || "",
+        estado: estado ?? true,
+      });
+    }
+  }, [producto]);
+
+  const handleInputChange = useCallback((e) => {
+    setFormValues((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  }, []);
+
+  const handleToggleChange = (value) => {
+    setFormValues((prevState) => ({ ...prevState, estado: value }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,23 +90,22 @@ export default function ProductForm() {
       ...data,
       id_proveedor: Number(formValues.id_proveedor),
       categoria: Number(formValues.categoria),
-      precio: Number(formValues.precio).toFixed(2),
+      precio: parseFloat(formValues.precio).toFixed(2),
       usuario_modificacion: idUsuario,
       ...(id_producto ? {} : { usuario_creacion: idUsuario }),
     };
 
     const mutation = id_producto ? actualizarProducto : crearProducto;
     mutation.mutate(
-      id_producto ? { id: id_producto, data: dataToSend } : dataToSend,
-      {
-        onSuccess: () => navigate("/productList"),
-      }
+      { id: id_producto || undefined, data: dataToSend },
+      { onSuccess: () => navigate("/productList") }
     );
   };
 
+  if (isLoading) return <p>Cargando producto...</p>;
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 shadow-lg rounded-lg">
-      {/* Contenedor para el botón y el título */}
       <div className="flex items-center justify-between mb-4">
         <ActionButton
           to="/productList"
@@ -107,25 +148,19 @@ export default function ProductForm() {
           name="categoria"
           value={formValues.categoria}
           onChange={handleInputChange}
-          options={categorias.map(({ id_categoria, nombre_categoria }) => ({
-            id: id_categoria,
-            nombre: nombre_categoria,
-          }))}
+          options={categoriasOptions}
         />
         <SelectField
           label="Proveedor"
           name="id_proveedor"
           value={formValues.id_proveedor}
           onChange={handleInputChange}
-          options={proveedores.map(({ id_proveedor, nombre_proveedor }) => ({
-            id: id_proveedor,
-            nombre: nombre_proveedor,
-          }))}
+          options={proveedoresOptions}
         />
         <ToggleSwitch
           label="Estado"
           checked={formValues.estado}
-          onChange={(value) => dispatch({ name: "estado", value })}
+          onChange={handleToggleChange}
         />
         <ActionButton
           type="submit"
