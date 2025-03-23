@@ -1,25 +1,23 @@
 import { useNavigate } from "react-router-dom";
-import useProducts from "@/hooks/useProducts";
+import useCrudOperations from "../../hooks/useCrudOperations";
 import { Navigation } from "@/components/shared/Navigation";
 import Table from "@/components/shared/Table";
 import { ActionButton } from "@/components/shared/ActionButton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import Loading from "@/components/shared/Loading";
-import ErrorMessage from "@/components/shared/ErrorMessaje";
+import ErrorMessage from "../../components/shared/ErrorMessaje";
 import Pagination from "@/components/shared/Pagination";
 import usePagination from "@/hooks/usePagination";
 
 function ProductList() {
   const navigate = useNavigate();
   const { currentPage, handlePageChange } = usePagination();
-  const {
-    data: response = {},
-    isLoading: loadingProductos,
-    isError: errorProductos,
-  } = useProducts(false, currentPage);
+  const { getAll } = useCrudOperations("productos/productos");
 
-  const productos = response.data?.results || response.data?.data || [];
-  const totalProducts = response.data?.count || 0;
+  const { data: response = {}, isLoading, isError } = getAll(currentPage);
+
+  const productos = response.results  || response.data || [];
+  const totalProducts = response.count || 0;
   const totalPages = Math.ceil(totalProducts / 10);
 
   const handleDetallesClick = (producto) => {
@@ -47,7 +45,7 @@ function ProductList() {
       label: "Acciones",
       render: (item) => (
         <ActionButton
-          onClick={() => handleDetallesClick(item)} // Usamos onClick para llamar a la función de detalles
+          onClick={() => handleDetallesClick(item)}
           label="Editar"
           color="blue"
         />
@@ -55,9 +53,8 @@ function ProductList() {
     },
   ];
 
-  if (loadingProductos) return <Loading message="Cargando productos..." />;
-  if (errorProductos)
-    return <ErrorMessage message="Error al obtener los productos" />;
+  if (isLoading) return <Loading message="Cargando productos..." />;
+  if (isError) return <ErrorMessage message="Error al obtener los productos" />;
 
   return (
     <div className="container mx-auto p-4">
@@ -70,11 +67,7 @@ function ProductList() {
         ]}
       />
       <hr />
-      <Table
-        items={productos}
-        fields={productFields} // Ahora `Table` se encarga de renderizar las filas
-      />
-      {/* Agregar paginación */}
+      <Table items={productos} fields={productFields} />
       {!response.all_data && totalPages > 1 && (
         <Pagination
           currentPage={currentPage}

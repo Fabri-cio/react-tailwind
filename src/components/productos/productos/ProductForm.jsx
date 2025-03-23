@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCategorias } from "@/hooks/useCategorias";
-import { useProveedores } from "@/hooks/useProveedores";
-import { useProduct } from "@/hooks/useProduct";
-import { useProductMutations } from "@/hooks/useProductMutations";
+import useCrudOperations from "../../../hooks/useCrudOperations";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
 import { ToggleSwitch } from "@/components/shared/ToggleSwitch";
@@ -15,10 +12,24 @@ export default function ProductForm() {
   const navigate = useNavigate();
   const idUsuario = useMemo(() => localStorage.getItem("id_usuario"), []);
 
-  const { crearProducto, actualizarProducto } = useProductMutations();
-  const { data: { data: categorias = [] } = {} } = useCategorias();
-  const { data: { data: proveedores = [] } = {} } = useProveedores();
-  const { data: producto, isLoading } = useProduct(id);
+  // Usando useCrudOperations para productos, categorias y proveedores
+  const { create, update, getOne } = useCrudOperations("productos/productos");
+  const { getAll: getCategorias } = useCrudOperations("productos/categorias");
+  const { getAll: getProveedores } = useCrudOperations("productos/proveedores");
+
+  const { data: producto, isLoading, isError: productError } = getOne(id);
+
+  // Obtener categorías y proveedores sin paginación
+  const {
+    data: categorias = [],
+    isLoading: isLoadingCategorias,
+    isError: errorCategorias,
+  } = getCategorias();
+  const {
+    data: proveedores = [],
+    isLoading: isLoadingProveedores,
+    isError: errorProveedores,
+  } = getProveedores();
 
   const [formValues, setFormValues] = useState({
     id_producto: "",
@@ -49,7 +60,7 @@ export default function ProductForm() {
   );
 
   useEffect(() => {
-    if (producto?.data) {
+    if (producto) {
       const {
         id_producto,
         nombre,
@@ -58,7 +69,7 @@ export default function ProductForm() {
         id_proveedor,
         categoria,
         estado,
-      } = producto.data;
+      } = producto;
       setFormValues({
         id_producto: id_producto || "",
         nombre: nombre || "",
@@ -95,14 +106,23 @@ export default function ProductForm() {
       ...(id_producto ? {} : { usuario_creacion: idUsuario }),
     };
 
-    const mutation = id_producto ? actualizarProducto : crearProducto;
-    mutation.mutate(
-      { id: id_producto || undefined, data: dataToSend },
-      { onSuccess: () => navigate("/productList") }
-    );
+    const mutation = id_producto ? update(id_producto) : create();
+    mutation.mutate(dataToSend, {
+      onSuccess: () => navigate("/productList"),
+      onError: (error) => {
+        console.error("Error al guardar el producto:", error);
+        // Aquí podrías mostrar un mensaje de error en la UI si lo necesitas
+      },
+    });
   };
 
-  if (isLoading) return <p>Cargando producto...</p>;
+  if (isLoading || isLoadingCategorias || isLoadingProveedores) {
+    return <p>Cargando...</p>;
+  }
+
+  if (productError) {
+    return <p>Error al cargar el producto.</p>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 shadow-lg rounded-lg">
@@ -166,7 +186,7 @@ export default function ProductForm() {
           type="submit"
           label={formValues.id_producto ? "Guardar Cambios" : "Crear Producto"}
           color="blue"
-          disabled={crearProducto.isLoading || actualizarProducto.isLoading}
+          disabled={create.isLoading || update.isLoading}
         />
       </form>
     </div>
