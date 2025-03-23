@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import useUsers from "../../hooks/useUsers";
+import useUsers from "@/hooks/useUsers";
 import { Navigation } from "@/components/shared/Navigation";
 import Table from "@/components/shared/Table";
 import { ActionButton } from "@/components/shared/ActionButton";
@@ -24,7 +24,7 @@ function UserList() {
   const totalPages = Math.ceil(totalUsers / 10);
 
   const handleDetallesClick = (usuario) => {
-    navigate(`/editUser/${usuario.id}`, { state: { usuario } });
+    navigate(`/editUser/${usuario.id}`);
   };
 
   const userFields = [
