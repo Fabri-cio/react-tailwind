@@ -1,6 +1,10 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useProduct, useCategorias, useProveedores } from "../../../hooks/useEntities";
+import {
+  useProduct,
+  useCategorias,
+  useProveedores,
+} from "../../../hooks/useEntities";
 import { useProductMutations } from "../../../hooks/useEntities";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
@@ -11,7 +15,7 @@ import { FaArrowLeft } from "react-icons/fa";
 export default function ProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const idUsuario = useMemo(() => localStorage.getItem("id_usuario"), []);
+  const idUsuario = () => localStorage.getItem("id_usuario");
 
   const { crear, actualizar } = useProductMutations();
   const { data: { data: categorias = [] } = {} } = useCategorias();
@@ -28,23 +32,16 @@ export default function ProductForm() {
     estado: true,
   });
 
-  const categoriasOptions = useMemo(
-    () =>
-      categorias.map(({ id_categoria, nombre_categoria }) => ({
-        id: id_categoria,
-        nombre: nombre_categoria,
-      })),
-    [categorias]
-  );
-
-  const proveedoresOptions = useMemo(
-    () =>
-      proveedores.map(({ id_proveedor, nombre_proveedor }) => ({
-        id: id_proveedor,
-        nombre: nombre_proveedor,
-      })),
-    [proveedores]
-  );
+  const categoriasOptions = () =>
+    categorias.map(({ id_categoria, nombre_categoria }) => ({
+      id: id_categoria,
+      nombre: nombre_categoria,
+    }));
+  const proveedoresOptions = () =>
+    proveedores.map(({ id_proveedor, nombre_proveedor }) => ({
+      id: id_proveedor,
+      nombre: nombre_proveedor,
+    }));
 
   useEffect(() => {
     if (producto?.data) {
@@ -69,12 +66,12 @@ export default function ProductForm() {
     }
   }, [producto]);
 
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = (e) => {
     setFormValues((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
-  }, []);
+  };
 
   const handleToggleChange = (value) => {
     setFormValues((prevState) => ({ ...prevState, estado: value }));
@@ -146,14 +143,14 @@ export default function ProductForm() {
           name="categoria"
           value={formValues.categoria}
           onChange={handleInputChange}
-          options={categoriasOptions}
+          options={categoriasOptions()}
         />
         <SelectField
           label="Proveedor"
           name="id_proveedor"
           value={formValues.id_proveedor}
           onChange={handleInputChange}
-          options={proveedoresOptions}
+          options={proveedoresOptions()}
         />
         <ToggleSwitch
           label="Estado"
