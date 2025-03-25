@@ -1,4 +1,4 @@
-import { useProducts } from "../../hooks/useData";
+import { useProducts } from "../../hooks/useEntities";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ActionButton } from "@/components/shared/ActionButton";
 import EntityList from "@/components/shared/EntityList";

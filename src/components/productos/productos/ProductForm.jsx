@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCategorias } from "@/hooks/useCategorias";
 import { useProveedores } from "@/hooks/useProveedores";
 import { useProduct } from "@/hooks/useProduct";
-import { useProductMutations } from "@/hooks/useProductMutations";
+import { useProductMutations } from "../../../hooks/useEntities";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
 import { ToggleSwitch } from "@/components/shared/ToggleSwitch";
@@ -15,7 +15,7 @@ export default function ProductForm() {
   const navigate = useNavigate();
   const idUsuario = useMemo(() => localStorage.getItem("id_usuario"), []);
 
-  const { crearProducto, actualizarProducto } = useProductMutations();
+  const { crear, actualizar } = useProductMutations();
   const { data: { data: categorias = [] } = {} } = useCategorias();
   const { data: { data: proveedores = [] } = {} } = useProveedores();
   const { data: producto, isLoading } = useProduct(id);
@@ -95,7 +95,7 @@ export default function ProductForm() {
       ...(id_producto ? {} : { usuario_creacion: idUsuario }),
     };
 
-    const mutation = id_producto ? actualizarProducto : crearProducto;
+    const mutation = id_producto ? actualizar : crear;
     mutation.mutate(
       { id: id_producto || undefined, data: dataToSend },
       { onSuccess: () => navigate("/productList") }
@@ -166,7 +166,7 @@ export default function ProductForm() {
           type="submit"
           label={formValues.id_producto ? "Guardar Cambios" : "Crear Producto"}
           color="blue"
-          disabled={crearProducto.isLoading || actualizarProducto.isLoading}
+          disabled={crear.isLoading || actualizar.isLoading}
         />
       </form>
     </div>
