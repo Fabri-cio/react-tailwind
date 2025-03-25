@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaBars, FaBell, FaSearch, FaUserCircle } from "react-icons/fa";
-import useLogout from "../hooks/useLogout";
+import useLogout from "../../hooks/useLogout";
 
 // Clase reutilizable para los íconos
 const iconClasses = "w-6 h-6";

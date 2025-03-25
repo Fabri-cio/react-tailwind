@@ -1,6 +1,6 @@
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { usePasswordResetRequest } from "../hooks/usePasswordResetRequest";
+import { usePasswordResetRequest } from "../../hooks/usePasswordResetRequest";
 
 const PasswordResetRequest = () => {
   const navigate = useNavigate();

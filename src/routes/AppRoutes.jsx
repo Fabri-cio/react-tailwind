@@ -1,23 +1,23 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import MainLayout from "@/components/MainLayout";
-import PublicLayout from "@/components/PublicLayout";
+import ProtectedRoute from "./ProtectedRoute";
+import MainLayout from "../components/layout/MainLayout";
+import PublicLayout from "../components/layout/PublicLayout";
 
 const FallbackComponent = () => <div>Hubo un error al cargar la página</div>;
 
 //Login
-const Login = lazy(() => import("@/components/Login"));
-const Register = lazy(() => import("@/components/Register"));
+const Login = lazy(() => import("../pages/auth/Login"));
+const Register = lazy(() => import("../pages/auth/Register"));
 const PasswordResetRequest = lazy(() =>
-  import("@/components/PasswordResetRequest")
+  import("../pages/auth/PasswordResetRequest")
 );
-const PasswordReset = lazy(() => import("@/components/PasswordReset"));
+const PasswordReset = lazy(() => import("../pages/auth/PasswordReset"));
 
 // Lazy loading pages
 // Pagina Principal
-const Home = lazy(() => import("@/pages/Home"));
+const Home = lazy(() => import("../pages/Home"));
 // Movimientos
 const Movimientos = lazy(() => import("../pages/movimientos/Movimientos"));
 // Productos

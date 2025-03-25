@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Dashboard from "../components/Dashboard";
+import Sidebar from "./Sidebar";
+import Dashboard from "../../pages/Dashboard";
 import { Outlet } from "react-router-dom";
 import clsx from "clsx";
 import { useEffect } from "react";

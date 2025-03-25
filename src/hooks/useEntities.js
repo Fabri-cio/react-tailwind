@@ -1,7 +1,8 @@
 import useData from "../hooks/useData";
-import { ProductosAPI, CategoriasAPI, ProveedoresAPI } from "../api/producto.api";
 import { useEntityMutations } from "../hooks/useEntityMutations";
+import { ProductosAPI, CategoriasAPI, ProveedoresAPI } from "../api/producto.api";
 import { CustomUsersAPI } from "../api/usuario.api";
+import { InventariosAPI } from "../api/almacen.api";
 
 //productos
 export const useProduct = (id) => useData(ProductosAPI, "producto", id);
@@ -32,3 +33,10 @@ export const useUsers = (all_data = false, page = 1) => {
 };
 
 export const useUserMutations = () => useEntityMutations(CustomUsersAPI, "Usuario");
+
+//proveedores
+export const useInventario = (id) => useData(InventariosAPI, "inventario", id);
+export const useInventarios = (all_data = false, page = 1) => {
+  return useData( InventariosAPI, "inventarios", null, { all_data, page }, 1000 * 60 * 5);
+};
+export const useInventarioMutations = () => useEntityMutations(InventariosAPI, "Inventario");

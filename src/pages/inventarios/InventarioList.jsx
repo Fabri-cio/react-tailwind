@@ -1,5 +1,5 @@
 import React from "react";
-import { useInventarios } from "@/hooks/useInventarios";
+import { useInventarios } from "../../hooks/useEntities";
 import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/inventarios/Navigation";
 import jsPDF from "jspdf";
