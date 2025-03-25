@@ -4,7 +4,7 @@ import Table from "@/components/shared/Table";
 import Loading from "@/components/shared/Loading";
 import ErrorMessage from "@/components/shared/ErrorMessaje";
 import Pagination from "@/components/shared/Pagination";
-import usePagination from "@/hooks/usePagination";
+import usePagination from "../../hooks/usePagination";
 import { Navigation } from "../../components/shared/Navigation";
 
 function EntityList({ entityData }) {
@@ -47,7 +47,14 @@ function EntityList({ entityData }) {
         title={title}
         listPath={`${listPath}`}
         subTitle={`${subTitle}`}
-        actions={[{ to: createPath, label: `${titleBtn}`, color: "yellow", icon: FaPlus }]}
+        actions={[
+          {
+            to: createPath,
+            label: `${titleBtn}`,
+            color: "yellow",
+            icon: FaPlus,
+          },
+        ]}
       />
       <hr />
       <Table items={items} fields={entityFields(handleDetallesClick)} />

@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCategorias } from "@/hooks/useCategorias";
-import { useProveedores } from "@/hooks/useProveedores";
-import { useProduct } from "../../../hooks/useEntities";
+import { useProduct, useCategorias, useProveedores } from "../../../hooks/useEntities";
 import { useProductMutations } from "../../../hooks/useEntities";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
