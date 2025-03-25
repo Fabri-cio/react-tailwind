@@ -1,33 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import useUsers from "@/hooks/useUsers";
-import { Navigation } from "@/components/shared/Navigation";
-import Table from "@/components/shared/Table";
 import { ActionButton } from "@/components/shared/ActionButton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import Loading from "@/components/shared/Loading";
-import ErrorMessage from "@/components/shared/ErrorMessaje";
-import Pagination from "@/components/shared/Pagination";
-import usePagination from "@/hooks/usePagination";
 import FormattedDate from "../../components/shared/FormattedDate";
+import EntityList from "../../components/shared/EntityList";
+import { useUsers } from "../../hooks/useEntities";
 
 function UserList() {
-  const navigate = useNavigate();
-  const { currentPage, handlePageChange } = usePagination();
-  const {
-    data: response = {},
-    isLoading: loadingUsers,
-    isError: errorUsers,
-  } = useUsers(false, currentPage);
-
-  const usuarios = response.data?.results || response.data?.data || [];
-  const totalUsers = response.data?.count || 0;
-  const totalPages = Math.ceil(totalUsers / 10);
-
-  const handleDetallesClick = (usuario) => {
-    navigate(`/editUser/${usuario.id}`);
-  };
-
-  const userFields = [
+  const userFields = (handleDetallesClick) => [
     { key: "index", label: "#" },
     {
       key: "full_name",
@@ -53,7 +31,7 @@ function UserList() {
       label: "Acciones",
       render: (item) => (
         <ActionButton
-          onClick={() => handleDetallesClick(item)} // Usamos onClick para llamar a la función de detalles
+          onClick={() => handleDetallesClick(item.id)} // Usamos onClick para llamar a la función de detalles
           label="Editar"
           color="blue"
         />
@@ -61,35 +39,21 @@ function UserList() {
     },
   ];
 
-  if (loadingUsers) return <Loading message="Cargando usuarios..." />;
-  if (errorUsers)
-    return <ErrorMessage message="Error al obtener los usuarios" />;
+  const entityData = {
+    title: "Gestión de Usuarios",
+    subTitle: "Listado de usuarios",
+    listPath: "/home",
+    createPath: "/createUser",
+    loadingMessage: "Cargando usuarios...",
+    errorMessage: "Error al obtener los usuarios",
+    titleBtn: "Crear Usuario",
+    fetchDataHook: useUsers,
+    editPath: "/editUser",
+    all_data: false,
+    entityFields: userFields,
+  };
 
-  return (
-    <div className="container mx-auto p-4">
-      <Navigation
-        entityName="Usuarios"
-        listPath="/userList"
-        subTitle="Listado de Usuarios"
-        actions={[
-          { to: "/createUser", label: "Crear Usuario", color: "green" },
-        ]}
-      />
-      <hr />
-      <Table
-        items={usuarios}
-        fields={userFields} // Ahora `Table` se encarga de renderizar las filas
-      />
-      {/* Agregar paginación */}
-      {!response.all_data && totalPages > 1 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      )}
-    </div>
-  );
+  return <EntityList entityData={entityData} />;
 }
 
 export default UserList;
