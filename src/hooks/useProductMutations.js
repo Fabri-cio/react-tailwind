@@ -1,11 +1,11 @@
-import { ProductosAPI } from "@/api/producto.api";
+import { ProductosAPI } from "../api/producto.api";
 import { useMutationWithToast } from "./useMutationWithToast";
 
 export const useProductMutations = () => {
   const crearProducto = useMutationWithToast(
-    ProductosAPI.create,
+    ({data}) => ProductosAPI.create(data),
     "Creando producto...",
-    "Producto creado con éxito 🎉",
+    "Producto creado con éxito 🌫😜",
     "productos" // Invalida la query de productos
   );
 

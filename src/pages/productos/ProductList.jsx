@@ -1,32 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import useProducts from "@/hooks/useProducts";
-import { Navigation } from "@/components/shared/Navigation";
-import Table from "@/components/shared/Table";
-import { ActionButton } from "@/components/shared/ActionButton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import Loading from "@/components/shared/Loading";
-import ErrorMessage from "@/components/shared/ErrorMessaje";
-import Pagination from "@/components/shared/Pagination";
-import usePagination from "@/hooks/usePagination";
+import { ActionButton } from "@/components/shared/ActionButton";
+import EntityList from "@/components/shared/EntityList";
 
 function ProductList() {
-  const navigate = useNavigate();
-  const { currentPage, handlePageChange } = usePagination();
-  const {
-    data: response = {},
-    isLoading: loadingProductos,
-    isError: errorProductos,
-  } = useProducts(false, currentPage);
-
-  const productos = response.data?.results || response.data?.data || [];
-  const totalProducts = response.data?.count || 0;
-  const totalPages = Math.ceil(totalProducts / 10);
-
-  const handleDetallesClick = (producto) => {
-    navigate(`/editProduct/${producto.id_producto}`);
-  };
-
-  const productFields = [
+  const productFields = (handleDetallesClick) => [
     { key: "index", label: "#" },
     { key: "nombre", label: "Nombre" },
     { key: "nombre_proveedor", label: "Proveedor" },
@@ -47,7 +25,7 @@ function ProductList() {
       label: "Acciones",
       render: (item) => (
         <ActionButton
-          onClick={() => handleDetallesClick(item)} // Usamos onClick para llamar a la función de detalles
+          onClick={() => handleDetallesClick(item.id_producto)}
           label="Editar"
           color="blue"
         />
@@ -55,35 +33,21 @@ function ProductList() {
     },
   ];
 
-  if (loadingProductos) return <Loading message="Cargando productos..." />;
-  if (errorProductos)
-    return <ErrorMessage message="Error al obtener los productos" />;
+  const entityData = {
+    title: "Gestión de Productos",
+    subTitle: "Listado de productos",
+    listPath: "/home",
+    createPath: "/createProduct",
+    loadingMessage: "Cargando productos...",
+    errorMessage: "Error al obtener los productos",
+    titleBtn: "Crear Producto",
+    fetchDataHook: useProducts,
+    editPath: "/editProduct",
+    all_data: false,
+    entityFields: productFields,
+  };
 
-  return (
-    <div className="container mx-auto p-4">
-      <Navigation
-        entityName="Productos"
-        listPath="/productList"
-        subTitle="Listado de productos"
-        actions={[
-          { to: "/createProduct", label: "Crear Producto", color: "green" },
-        ]}
-      />
-      <hr />
-      <Table
-        items={productos}
-        fields={productFields} // Ahora `Table` se encarga de renderizar las filas
-      />
-      {/* Agregar paginación */}
-      {!response.all_data && totalPages > 1 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      )}
-    </div>
-  );
+  return <EntityList entityData={entityData} />;
 }
 
 export default ProductList;

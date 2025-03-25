@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ActionButton } from "./ActionButton";
 
 export function Navigation({ 
-  entityName, 
+  title, 
   listPath, 
   actions = [], 
   subTitle = "", 
@@ -13,7 +13,7 @@ export function Navigation({
       <Link to={listPath} className="flex items-center gap-2">
         {Icon && <Icon className="text-gray-600 text-2xl" />}
         <div>
-          <h1 className="font-bold text-2xl">Gestión de {entityName}</h1>
+          <h1 className="font-bold text-2xl">{title}</h1>
           {subTitle && <p className="text-gray-500 text-sm">{subTitle}</p>}
         </div>
       </Link>
