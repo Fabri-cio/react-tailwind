@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import useAlmacenTiendas from "../../hooks/useAlmacenTiendas";
-import useRoles from "@/hooks/useRoles";
-import { useUser } from "@/hooks/useUser";
-import { useUserMutations } from "../../hooks/useUserMutations";
+import {
+  useAlmacenes,
+  useRoles,
+  useUser,
+  useUserMutations,
+} from "../../hooks/useEntities";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
 import { ToggleSwitch } from "@/components/shared/ToggleSwitch";
@@ -14,8 +16,8 @@ export default function UserForm() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { crearUsuario, actualizarUsuario } = useUserMutations();
-  const { data: { data: almacenTiendas = [] } = {} } = useAlmacenTiendas();
+  const { crear, actualizar } = useUserMutations();
+  const { data: { data: almacenTiendas = [] } = {} } = useAlmacenes();
   const { data: { data: roles = [] } = {} } = useRoles();
   const { data: user, isLoading } = useUser(id);
 
@@ -31,23 +33,17 @@ export default function UserForm() {
     role: "",
   });
 
-  const almacenTiendasOptions = useMemo(
-    () =>
-      almacenTiendas.map(({ id_almacen_tienda, nombre }) => ({
-        id: id_almacen_tienda,
-        nombre: nombre,
-      })),
-    [almacenTiendas]
-  );
+  const almacenTiendasOptions = () =>
+    almacenTiendas.map(({ id_almacen_tienda, nombre }) => ({
+      id: id_almacen_tienda,
+      nombre: nombre,
+    }));
 
-  const rolesOptions = useMemo(
-    () =>
-      roles.map(({ id, name }) => ({
-        id: id,
-        nombre: name,
-      })),
-    [roles]
-  );
+  const rolesOptions = () =>
+    roles.map(({ id, name }) => ({
+      id: id,
+      nombre: name,
+    }));
 
   useEffect(() => {
     if (user?.data) {
@@ -97,7 +93,7 @@ export default function UserForm() {
       role: Number(formValues.role),
     };
 
-    const mutation = id ? actualizarUsuario : crearUsuario;
+    const mutation = id ? actualizar: crear;
     mutation.mutate(
       { id: id || undefined, data: dataToSend },
       { onSuccess: () => navigate("/userList") }
@@ -168,20 +164,20 @@ export default function UserForm() {
           name="lugar_de_trabajo"
           value={formValues.lugar_de_trabajo}
           onChange={handleInputChange}
-          options={almacenTiendasOptions}
+          options={almacenTiendasOptions()}
         />
         <SelectField
           label="Rol"
           name="role"
           value={formValues.role}
           onChange={handleInputChange}
-          options={rolesOptions}
+          options={rolesOptions()}
         />
         <ActionButton
           type="submit"
           label={formValues.id ? "Guardar Cambios" : "Crear Usuario"}
           color="blue"
-          disabled={crearUsuario.isLoading || actualizarUsuario.isLoading}
+          disabled={crear.isLoading || actualizar.isLoading}
         />
       </form>
     </div>

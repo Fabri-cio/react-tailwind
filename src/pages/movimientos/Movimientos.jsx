@@ -1,7 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { useMovimientos } from "@/hooks/useMovimientos";
+import { useMovimientos } from "../../hooks/useEntities";
 
 function Movimientos() {
   const {

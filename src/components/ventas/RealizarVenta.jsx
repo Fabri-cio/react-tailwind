@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import BuscarProducto from "@/components/ventas/BuscarProducto";
 import ModalVenta from "./ModalVenta";
-import { useCrearVenta } from "@/hooks/useCrearVentas";
+import { useVentaMutations } from "../../hooks/useEntities";
 
 const RealizarVenta = () => {
   const [carrito, setCarrito] = useState([]);
@@ -9,7 +9,7 @@ const RealizarVenta = () => {
   const [descuentoVenta, setDescuentoVenta] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { mutate: crearVenta } = useCrearVenta();
+  const { crear } = useVentaMutations();
 
   const agregarAlCarrito = useCallback((producto) => {
     setCarrito((prevCarrito) => {
@@ -77,7 +77,7 @@ const RealizarVenta = () => {
       })),
     };
 
-    crearVenta(ventaData);
+    crear(ventaData);
     setCarrito([]);
     setTotal(0);
     setDescuentoVenta(0);

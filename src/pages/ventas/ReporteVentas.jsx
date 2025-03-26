@@ -1,5 +1,5 @@
 import React from "react";
-import { useVentas } from "@/hooks/useVentas"; // Usar el hook que recupera las ventas
+import { useVentas } from "../../hooks/useEntities";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import jsPDF from "jspdf";

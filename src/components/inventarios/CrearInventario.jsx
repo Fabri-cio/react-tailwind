@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Asegúrate de importar useNavigate
-import { useProducts } from "../../hooks/useProducts"; // Hook para obtener productos
-import { useAlmacenTiendas } from "@/hooks/useAlmacenTiendas"; // Hook para obtener almacenes
-import { useCrearInventario } from "@/hooks/useCrearInventario";
+import { useNavigate } from "react-router-dom";
+import {
+  useAlmacenes,
+  useProducts,
+  useInventarioMutations,
+} from "../../hooks/useEntities";
 
 const CrearInventario = () => {
   const navigate = useNavigate(); // Hook para redirigir
@@ -17,31 +19,33 @@ const CrearInventario = () => {
   });
 
   const {
-    data: responseProd = [],
+    data: responseProd = {},
     isLoading: loadingProductos,
     isError: errorProductos,
-  } = useProducts();
+  } = useProducts(true);
 
   const {
     data: responseAlmac = [],
     isLoading: loadingAlmacenes,
     isError: errorAlmacenes,
-  } = useAlmacenTiendas();
+  } = useAlmacenes(true);
 
   // Filtrar datos para evitar claves duplicadas o elementos inválidos
-  const productos = (responseProd?.data || []).filter(
+  const productos = (responseProd.data?.data || []).filter(
     (producto) => producto?.id_producto !== undefined
   );
   const almacenes = (responseAlmac?.data || []).filter(
     (almacen) => almacen?.id_almacen_tienda !== undefined
   );
 
+  console.log(responseProd);
+
   const {
     mutate: crearInventario,
     isLoading: isSubmitting,
     isSuccess,
     isError,
-  } = useCrearInventario();
+  } = useInventarioMutations();
 
   useEffect(() => {
     if (isSuccess) {

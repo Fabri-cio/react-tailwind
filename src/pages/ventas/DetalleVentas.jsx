@@ -1,14 +1,14 @@
 import React from "react";
-import { useDetalleVentas } from "@/hooks/useDetalleVentas";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useDetaVentas } from "../../hooks/useEntities";
 
 function DetalleVentas() {
   const {
     data: response = {},
     isLoading: loadingDetalleVentas,
     isError: errorDetalleVentas,
-  } = useDetalleVentas();
+  } = useDetaVentas();
 
   const detalleVentas = response.data || [];
 

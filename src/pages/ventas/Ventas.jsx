@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useVentas } from "@/hooks/useVentas";
+import { useVentas } from "../../hooks/useEntities";
 
 function Ventas() {
   const {

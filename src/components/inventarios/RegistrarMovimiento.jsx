@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useTipoMovimientos } from "@/hooks/useTipoMovimientos";
-import { useCrearMovimiento } from "@/hooks/useCrearMovimiento"; // Importa el hook para crear el movimiento
+import { useTipMovMutations, useTipMovs } from "../../hooks/useEntities";
 
 function RegistrarMovimiento() {
   const {
     data: responseTiposM = {},
     isLoading: loadingTiposM,
     isError: errorTiposM,
-  } = useTipoMovimientos();
+  } = useTipMovs();
 
   const tiposMovimiento = responseTiposM.data || [];
 
@@ -17,7 +16,7 @@ function RegistrarMovimiento() {
 
   const navigate = useNavigate();
 
-  const { mutate } = useCrearMovimiento(); // Hook para crear el movimiento
+  const { crear } = useTipMovMutations(); // Hook para crear el movimiento
 
   if (!inventario)
     return (
@@ -54,7 +53,7 @@ function RegistrarMovimiento() {
     };
 
     // Llamar al API para crear el movimiento
-    mutate(nuevoMovimiento, {
+    crear(nuevoMovimiento, {
       onSuccess: () => {
         console.log("Movimiento registrado con éxito");
         navigate("/ver_inventario"); // Redirigir al listado de inventarios después de un registro exitoso
