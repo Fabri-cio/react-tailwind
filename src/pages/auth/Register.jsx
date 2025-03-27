@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useRegistrarUsuario } from "../hooks/useRegistrarUsuario";
+import { useRegisterMutations } from "../../hooks/useEntities";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -33,23 +33,20 @@ const Register = () => {
   });
 
   const { handleSubmit, control } = useForm({ resolver: yupResolver(schema) });
-  const { mutate, isLoading } = useRegistrarUsuario();
+  const { crear } = useRegisterMutations();
 
   const submission = (data) => {
-    mutate(
-      { email: data.email, password: data.password },
+    crear.mutate(
+      { data: { email: data.email, password: data.password } },
       {
-        onSuccess: () => { // Aquí se corrige el nombre de la clave
-          navigate("/");
-        },
-        onError: () => {
+        onSuccess: () => navigate("/"),
+        onError: (error) => {
           setShowMessage(true);
-          setMessage("Error creando usuario");
+          setMessage(error?.response?.data?.message || "Error en el registro");
         },
       }
     );
   };
-  
 
   return (
     <div className="flex justify-center items-center w-full h-screen bg-gradient-to-r from-red-400 via-orange-500 to-yellow-300">
@@ -118,16 +115,15 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full py-3 bg-orange-600 text-white font-bold rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400" disabled={isLoading}
+            className="w-full py-3 bg-orange-600 text-white font-bold rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400"
           >
-            {isLoading ? "Registrando..." : "Registrar"}
-
+            Registrar
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <a href="/" className="text-sm text-orange-600 hover:underline">
-          ¿Ya estás registrado? ¡Por favor inicia sesión!
+            ¿Ya estás registrado? ¡Por favor inicia sesión!
           </a>
         </div>
       </div>

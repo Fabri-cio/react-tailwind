@@ -1,7 +1,7 @@
 import useData from "./useData";
 import { useEntityMutations } from "./useEntityMutations";
 import { ProductosAPI, CategoriasAPI, ProveedoresAPI } from "../api/producto.api";
-import { CustomUsersAPI, RolesApi } from "../api/usuario.api";
+import { CustomUsersAPI, RolesApi, RegistroApi } from "../api/usuario.api";
 import { InventariosAPI, TipMovsApi, AlmacenesApi, MovimientosAPI } from "../api/almacen.api";
 import { VentasAPI, DetVentasAPI } from "../api/venta.api";
 
@@ -32,6 +32,9 @@ export const useUsers = (all_data = false, page = 1) => {
 };
 export const useUser = (id) => useData(CustomUsersAPI, "user", id);
 export const useUserMutations = () => useEntityMutations(CustomUsersAPI, "Usuario");
+
+//registrar usuario
+export const useRegisterMutations = () => useEntityMutations(RegistroApi, "Registro");
 
 //roles
 export const useRoles = (all_data = false, page = 1) => {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { login } from "../api/usuario.api"; // Ahora usando el método de api.Base
+import { login } from "../../api/usuario.api"; // Ahora usando el método de api.Base
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
