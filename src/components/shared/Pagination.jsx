@@ -1,7 +1,7 @@
 import { ActionButton } from "./ActionButton";
 import { memo } from "react";
 
-const Pagination = memo(({ currentPage = 1, totalPages = 1, onPageChange }) => {
+const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
   const handlePageChange = (newPage) => {
     if (
       onPageChange &&
@@ -14,11 +14,11 @@ const Pagination = memo(({ currentPage = 1, totalPages = 1, onPageChange }) => {
   };
 
   return (
-    <div className="flex justify-center space-x-2 mt-4">
+    <div className="flex justify-center space-x-2 mt-4 bg-yellow-600">
       <ActionButton
         onClick={() => handlePageChange(currentPage - 1)}
         label="Anterior"
-        color="blue"
+        estilos=" bg-blue-800 hover:bg-gray-700 text-white px-6 py-2 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
         disabled={currentPage === 1} // Deshabilita si está en la primera página
       />
 
@@ -29,11 +29,11 @@ const Pagination = memo(({ currentPage = 1, totalPages = 1, onPageChange }) => {
       <ActionButton
         onClick={() => handlePageChange(currentPage + 1)}
         label="Siguiente"
-        color="blue"
+        estilos=" bg-blue-800 hover:bg-gray-700 text-white px-6 py-2 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
         disabled={currentPage >= totalPages} // Deshabilita si está en la última página
       />
     </div>
   );
-});
+};
 
 export default Pagination;

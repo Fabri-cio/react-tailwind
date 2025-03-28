@@ -1,32 +1,35 @@
 import { Link } from "react-router-dom";
 
 export function ActionButton({
-  type,
+  type = "button",
   label,
   icon: Icon,
-  estilos,
+  estilos = "",
   onClick,
-  disabled = false, // Soporte para deshabilitar
+  disabled = false,
   to,
 }) {
-  const buttonContent =
-    (console.log(estilos),
-    (
-      <button
-        type={type || "button"} // Solo usa `submit` si se pasa explícitamente
-        className={estilos}
-        onClick={onClick}
-        disabled={disabled} // Se deshabilita solo si no es un enlace
-      >
-        {Icon && <Icon className="mr-2 w-6 h-6" />} {label}
-      </button>
-    ));
+  const buttonClasses = `px-4 py-2 rounded-md flex items-center gap-2 transition duration-200 ${estilos}`;
 
-  if (to) {
-    return <Link to={to}>{buttonContent}</Link>; // Si `to` está definido, usamos `Link`
-  }
+  const content = (
+    <>
+      {Icon && <Icon className=" w-6 h-6" />}
+      {label}
+    </>
+  );
 
-  return buttonContent; // Si no hay `to`, mostramos solo el botón con `onClick`
+  return to ? (
+    <Link to={to} className={buttonClasses}>
+      {content}
+    </Link>
+  ) : (
+    <button
+      type={type}
+      className={buttonClasses}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {content}
+    </button>
+  );
 }
-
-// ("bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200");

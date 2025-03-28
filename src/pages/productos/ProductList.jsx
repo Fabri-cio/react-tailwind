@@ -2,6 +2,7 @@ import { useProducts } from "../../hooks/useEntities";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ActionButton } from "@/components/shared/ActionButton";
 import EntityList from "@/components/shared/EntityList";
+import { FaPlus } from "react-icons/fa";
 
 function ProductList() {
   const productFields = (handleDetallesClick) => [
@@ -39,15 +40,30 @@ function ProductList() {
     title: "Gestión de Productos",
     subTitle: "Listado de productos",
     listPath: "/home",
-    createPath: "/createProduct",
     loadingMessage: "Cargando productos...",
     errorMessage: "Error al obtener los productos",
-    titleBtn: "Crear Producto",
     fetchDataHook: useProducts,
     editPath: "/editProduct",
     all_data: false,
     entityFields: productFields,
+    actions: [
+      {
+        to: "/createProduct",
+        label: "Nuevo producto",
+        icon: FaPlus,
+        estilos:
+          "bg-purple-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
+      },
+      {
+        to: "/importProducts",
+        label: "Importar productos",
+        icon: FaPlus,
+        estilos:
+          "bg-red-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
+      }
+    ],
   };
+
 
   return <EntityList entityData={entityData} />;
 }

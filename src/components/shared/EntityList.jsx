@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
 import Table from "@/components/shared/Table";
 import Loading from "@/components/shared/Loading";
 import ErrorMessage from "@/components/shared/ErrorMessaje";
@@ -13,13 +12,12 @@ function EntityList({ entityData }) {
     fetchDataHook,
     entityFields,
     editPath,
-    createPath,
     loadingMessage,
     errorMessage,
     listPath,
     subTitle,
-    titleBtn,
     all_data,
+    actions = [],
   } = entityData; // Desestructuramos entityConfig
 
   const navigate = useNavigate();
@@ -30,8 +28,10 @@ function EntityList({ entityData }) {
     isError,
   } = fetchDataHook(all_data, currentPage);
 
-  const items = response.data?.results || response.data?.data || [];
-  const totalItems = response.data?.count || 0;
+  const {count = 0, next = null, previous = null, results = []} = response.data || {};
+
+  const items = results || response.data?.data || [];
+  const totalItems = count 
   const totalPages = Math.ceil(totalItems / 10);
 
   const handleDetallesClick = (id) => {
@@ -47,16 +47,8 @@ function EntityList({ entityData }) {
         title={title}
         listPath={`${listPath}`}
         subTitle={`${subTitle}`}
-        actions={[
-          {
-            to: createPath,
-            label: `${titleBtn}`,
-            color: "yellow",
-            icon: FaPlus,
-          },
-        ]}
+        actions={actions}
       />
-      <hr />
       <Table items={items} fields={entityFields(handleDetallesClick)} />
       {!response.all_data && totalPages > 1 && (
         <Pagination

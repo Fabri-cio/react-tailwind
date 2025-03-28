@@ -3,6 +3,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import FormattedDate from "../../components/shared/FormattedDate";
 import EntityList from "../../components/shared/EntityList";
 import { useUsers } from "../../hooks/useEntities";
+import { FaPlusCircle } from "react-icons/fa";
 
 function UserList() {
   const userFields = (handleDetallesClick) => [
@@ -45,14 +46,21 @@ function UserList() {
     title: "Gestión de Usuarios",
     subTitle: "Listado de usuarios",
     listPath: "/home",
-    createPath: "/createUser",
     loadingMessage: "Cargando usuarios...",
     errorMessage: "Error al obtener los usuarios",
-    titleBtn: "Crear Usuario",
     fetchDataHook: useUsers,
     editPath: "/editUser",
     all_data: false,
     entityFields: userFields,
+    actions: [  
+      {
+        to: "/createUser",
+        label: "Crear Usuario",
+        icon: FaPlusCircle,
+        estilos:
+          "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
+      }
+    ],
   };
 
   return <EntityList entityData={entityData} />;

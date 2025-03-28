@@ -10,7 +10,7 @@ const Table = memo(({ items, fields }) => {
   ));
 
   return (
-    <table className="min-w-full table-auto">
+    <table className="min-w-full table-auto bg-slate-400">
       <thead>
         <tr>{headers}</tr>
       </thead>
