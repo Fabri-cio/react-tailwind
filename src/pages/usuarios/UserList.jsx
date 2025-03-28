@@ -1,4 +1,4 @@
-import { ActionButton } from "@/components/shared/ActionButton";
+import { ActionButton } from "../../components/shared/ActionButton";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import FormattedDate from "../../components/shared/FormattedDate";
 import EntityList from "../../components/shared/EntityList";
@@ -33,7 +33,9 @@ function UserList() {
         <ActionButton
           onClick={() => handleDetallesClick(item.id)} // Usamos onClick para llamar a la función de detalles
           label="Editar"
-          color="blue"
+          estilos={
+            "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200"
+          }
         />
       ),
     },

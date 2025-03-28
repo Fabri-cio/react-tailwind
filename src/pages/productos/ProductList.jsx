@@ -27,7 +27,9 @@ function ProductList() {
         <ActionButton
           onClick={() => handleDetallesClick(item.id_producto)}
           label="Editar"
-          color="blue"
+          estilos={
+            "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200"
+          }
         />
       ),
     },
