@@ -49,7 +49,7 @@ function EntityList({ entityData }) {
   if (isError) return <ErrorMessage message={errorMessage} />;
 
   return (
-    <div className="space-y-2 m-2 ml-4 p-2 border-2 border-gray-400 rounded-lg">
+    <div className="space-y-1 m-2 ml-4 px-2 py-1 border-2 border-gray-400 rounded-lg">
       <Navigation
         title={title}
         listPath={`${listPath}`}

@@ -29,7 +29,7 @@ function ProductList() {
           onClick={() => handleDetallesClick(item.id_producto)}
           label="Editar"
           estilos={
-            "bg-white hover:bg-gray-700 text-black py-1 px-2 rounded-md border-2 border-gray-400 flex items-center gap-2 transition duration-200"
+            "bg-white hover:bg-gray-700 text-black py-1 px-2 rounded-md border-2 border-gray-400 flex items-center gap-2 transition duration-200 hover:text-white"
           }
         />
       ),

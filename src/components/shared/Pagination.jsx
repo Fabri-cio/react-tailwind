@@ -14,10 +14,10 @@ const Pagination = ({
   };
 
   const styleBtn =
-    " bg-white hover:bg-gray-700 hover:text-white h-8 w-10 text-black rounded-md border-2 border-gray-400 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-white disabled:text-white disabled:border-white disabled:cursor-not-allowed text-sm";
+    " bg-white hover:bg-gray-700 hover:text-white h-8 w-10 text-black rounded-md border-2 border-gray-400 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-white disabled:text-white disabled:border-white disabled:cursor-not-allowed";
 
   return (
-    <div className="flex justify-center space-x-2 p-1 bg-whites border-2 border-gray-400 rounded-lg items-center">
+    <div className="flex justify-center space-x-2 bg-whites border-2 border-gray-400 rounded-lg items-center">
       <ActionButton
         onClick={() => handlePageChange(currentPage - 1)}
         label="<"
@@ -25,7 +25,7 @@ const Pagination = ({
         disabled={!prevPage} // Deshabilita si está en la primera página
       />
 
-      <span className="px-4 py-2 border rounded bg-gray-100">
+      <span className="px-4 py-2 border rounded bg-gray-100 text-sm">
         {`Página ${currentPage} de ${
           count === 0 ? 1 : Math.ceil(count / 10)
         } de ${count}`}
