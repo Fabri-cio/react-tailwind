@@ -1,7 +1,6 @@
-import { memo } from "react";
 import Row from "./Row";
 
-const Table = memo(({ items, fields }) => {
+const Table = ({ items, fields, currentPage, itemsPerPage }) => {
   // Memoriza las cabeceras de la tabla
   const headers = fields.map((field) => (
     <th key={field.key} className="px-4 py-2 text-left">
@@ -15,17 +14,20 @@ const Table = memo(({ items, fields }) => {
         <tr>{headers}</tr>
       </thead>
       <tbody>
-        {items.map((item, index) => (
-          <Row
-            key={item.id_producto || index}
-            item={item}
-            fields={fields}
-            index={index}
-          />
-        ))}
+        {items.map((item, index) => {
+          const globalIndex = (currentPage - 1) * itemsPerPage + index;
+          return (
+            <Row
+              key={item.id_producto || globlaIndex}
+              item={{ ...item, index: globalIndex }}
+              fields={fields}
+              index={globalIndex}
+            />
+          );
+        })}
       </tbody>
     </table>
   );
-});
+};
 
 export default Table;

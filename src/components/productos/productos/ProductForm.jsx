@@ -9,8 +9,9 @@ import { useProductMutations } from "../../../hooks/useEntities";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
 import { ToggleSwitch } from "@/components/shared/ToggleSwitch";
-import { ActionButton } from "@/components/shared/ActionButton";
-import { FaArrowLeft } from "react-icons/fa";
+import { ActionButton } from "../../../components/shared/ActionButton";
+import { Navigation } from "../../../components/shared/Navigation";
+import { FaEdit } from "react-icons/fa";
 
 export default function ProductForm() {
   const { id } = useParams();
@@ -100,20 +101,23 @@ export default function ProductForm() {
   if (isLoading) return <p>Cargando producto...</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 shadow-lg rounded-lg">
-      <div className="flex items-center justify-between mb-4">
-        <ActionButton
-          to="/productList"
-          label="Volver"
-          icon={FaArrowLeft}
-          color="blue"
-        />
-        <h1 className="text-2xl font-semibold text-blue-900">
-          {formValues.id_producto ? "Editar Producto" : "Crear Producto"}
-        </h1>
-      </div>
+    <div className="max-w-4xl bg-gray-400 shadow-lg rounded-lg px-3 py-2 mx-60">
+      <Navigation
+        title={`${formValues.id_producto ? "Actualizar" : "Crear"} Producto`}
+        subTitle="Formulario para actualizar o editar un producto"
+        icon={FaEdit}
+        actions={[
+          {
+            to: "/productList",
+            label: "Volver",
+            icon: FaEdit,
+            estilos:
+              "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
+          },
+        ]}
+      />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 py-2">
         <InputField
           label="Nombre"
           type="text"
@@ -160,7 +164,7 @@ export default function ProductForm() {
         <ActionButton
           type="submit"
           label={formValues.id_producto ? "Guardar Cambios" : "Crear Producto"}
-          color="blue"
+          estilos="bg-blue-400 hover:bg-blue-800 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200"
           disabled={crear.isLoading || actualizar.isLoading}
         />
       </form>

@@ -9,7 +9,7 @@ export function ActionButton({
   disabled = false,
   to,
 }) {
-  const buttonClasses = `px-4 py-2 rounded-md flex items-center gap-2 transition duration-200 ${estilos}`;
+  const buttonClasses = `px-4 py-1 rounded-md flex items-center gap-2 transition duration-200 ${estilos}`;
 
   const content = (
     <>

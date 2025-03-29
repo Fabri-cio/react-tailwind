@@ -1,23 +1,16 @@
-import { Link } from "react-router-dom";
 import { ActionButton } from "./ActionButton";
 
-export function Navigation({
-  title,
-  listPath,
-  actions = [],
-  subTitle = "",
-  icon: Icon,
-}) {
+export function Navigation({ title, actions = [], subTitle = "", icon: Icon }) {
   return (
     <div className="flex justify-between items-center py-2 px-4 bg-green-500 shadow-md">
       {/* Enlace al listado */}
-      <Link to={listPath} className="flex items-center gap-2">
-        {Icon && <Icon className="text-gray-600 text-2xl" />}
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="w-1 h-1" />}
         <div>
           <h1 className="font-bold text-2xl">{title}</h1>
           {subTitle && <p className="text-gray-500 text-sm">{subTitle}</p>}
         </div>
-      </Link>
+      </div>
 
       {/* Botones de acciones */}
       <div className="flex items-center text-sm gap-3">

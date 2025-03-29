@@ -29,7 +29,7 @@ function ProductList() {
           onClick={() => handleDetallesClick(item.id_producto)}
           label="Editar"
           estilos={
-            "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200"
+            "bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-md flex items-center gap-2 transition duration-200"
           }
         />
       ),
@@ -39,7 +39,6 @@ function ProductList() {
   const entityData = {
     title: "Gestión de Productos",
     subTitle: "Listado de productos",
-    listPath: "/home",
     loadingMessage: "Cargando productos...",
     errorMessage: "Error al obtener los productos",
     fetchDataHook: useProducts,
@@ -54,13 +53,6 @@ function ProductList() {
         estilos:
           "bg-purple-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
       },
-      {
-        to: "/importProducts",
-        label: "Importar productos",
-        icon: FaPlus,
-        estilos:
-          "bg-red-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
-      }
     ],
   };
 

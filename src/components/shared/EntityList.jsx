@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import Table from "@/components/shared/Table";
+import Table from "../../components/shared/Table";
 import Loading from "@/components/shared/Loading";
 import ErrorMessage from "@/components/shared/ErrorMessaje";
-import Pagination from "@/components/shared/Pagination";
+import Pagination from "../../components/shared/Pagination";
 import usePagination from "../../hooks/usePagination";
 import { Navigation } from "../../components/shared/Navigation";
 
@@ -28,11 +28,17 @@ function EntityList({ entityData }) {
     isError,
   } = fetchDataHook(all_data, currentPage);
 
-  const {count = 0, next = null, previous = null, results = []} = response.data || {};
+  const {
+    count = 0,
+    next = null,
+    previous = null,
+    results = [],
+  } = response.data || {};
 
   const items = results || response.data?.data || [];
-  const totalItems = count 
-  const totalPages = Math.ceil(totalItems / 10);
+  const totalItems = count;
+
+  const hasPagination = next || previous;
 
   const handleDetallesClick = (id) => {
     navigate(`${editPath}/${id}`);
@@ -42,19 +48,28 @@ function EntityList({ entityData }) {
   if (isError) return <ErrorMessage message={errorMessage} />;
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="max-w-6xl mx-auto space-y-6">
       <Navigation
         title={title}
         listPath={`${listPath}`}
         subTitle={`${subTitle}`}
         actions={actions}
       />
-      <Table items={items} fields={entityFields(handleDetallesClick)} />
-      {!response.all_data && totalPages > 1 && (
+
+      <Table
+        items={items}
+        fields={entityFields(handleDetallesClick)}
+        currentPage={currentPage}
+        itemsPerPage={10}
+      />
+
+      {hasPagination && (
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
+          nextPage={next}
+          prevPage={previous}
           onPageChange={handlePageChange}
+          count={totalItems}
         />
       )}
     </div>
