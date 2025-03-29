@@ -18,6 +18,7 @@ function EntityList({ entityData }) {
     subTitle,
     all_data,
     actions = [],
+    icon
   } = entityData; // Desestructuramos entityConfig
 
   const navigate = useNavigate();
@@ -48,12 +49,13 @@ function EntityList({ entityData }) {
   if (isError) return <ErrorMessage message={errorMessage} />;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="space-y-2 m-2 ml-4 p-2 border-2 border-gray-400 rounded-lg">
       <Navigation
         title={title}
         listPath={`${listPath}`}
         subTitle={`${subTitle}`}
         actions={actions}
+        icon={icon}
       />
 
       <Table

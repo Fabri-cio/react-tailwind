@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { FaTimes } from "react-icons/fa";
 import SidebarMenu from "./SidebarMenu";
 import { menus } from "../data/SidebarData";
 
@@ -8,16 +7,15 @@ const Sidebar = ({ sidebarToggle, closeSidebar }) => {
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 w-64 bg-gray-900 text-white shadow-xl transform transition-transform duration-300 ease-in-out
+      className={`fixed inset-y-0 left-0 w-64 bg-zinc-200 shadow-xl transform transition-transform duration-300 ease-in-out m-2 rounded-lg border-2 border-gray-400  
       ${sidebarToggle ? "-translate-x-full" : "translate-x-0"}`}
     >
       {/* Header con botón de cerrar en móviles */}
-      <div className="flex items-center justify-between p-5 border-b border-gray-700">
-        <h1 className="text-2xl font-bold text-blue-400">Conquistador Admin</h1>
-        <button onClick={closeSidebar} className="text-white text-2xl lg:hidden">
-          <FaTimes />
-        </button>
+      <div className="p-5 text-center">
+        <h1 className="text-2xl  text-gray-800">Sistema</h1>
       </div>
+
+      <hr className="border-gray-400"/>
 
       {/* Menú de navegación */}
       <ul className="mt-4 px-4 space-y-2">

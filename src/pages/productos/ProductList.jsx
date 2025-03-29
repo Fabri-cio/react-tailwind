@@ -2,11 +2,16 @@ import { useProducts } from "../../hooks/useEntities";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ActionButton } from "@/components/shared/ActionButton";
 import EntityList from "@/components/shared/EntityList";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaBox } from "react-icons/fa";
 
 function ProductList() {
   const productFields = (handleDetallesClick) => [
     { key: "index", label: "#" },
+    {
+      key: "estado",
+      label: "Estado",
+      render: (item) => <StatusBadge isActive={item.estado} />,
+    },
     { key: "nombre", label: "Nombre" },
     { key: "nombre_proveedor", label: "Proveedor" },
     { key: "nombre_categoria", label: "Categoría" },
@@ -17,11 +22,6 @@ function ProductList() {
     },
     { key: "codigo_barras", label: "Código" },
     {
-      key: "estado",
-      label: "Estado",
-      render: (item) => <StatusBadge isActive={item.estado} />,
-    },
-    {
       key: "acciones",
       label: "Acciones",
       render: (item) => (
@@ -29,7 +29,7 @@ function ProductList() {
           onClick={() => handleDetallesClick(item.id_producto)}
           label="Editar"
           estilos={
-            "bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-md flex items-center gap-2 transition duration-200"
+            "bg-white hover:bg-gray-700 text-black py-1 px-2 rounded-md border-2 border-gray-400 flex items-center gap-2 transition duration-200"
           }
         />
       ),
@@ -51,9 +51,10 @@ function ProductList() {
         label: "Nuevo producto",
         icon: FaPlus,
         estilos:
-          "bg-purple-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
+          "hover:bg-gray-600 hover:text-white py-2 px-1 text-black border-2 rounded-md border-gray-400 flex items-center gap-2 transition duration-200",
       },
     ],
+    icon: FaBox,
   };
 
 
