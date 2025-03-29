@@ -18,7 +18,7 @@ const Table = ({ items, fields, currentPage, itemsPerPage }) => {
           const globalIndex = (currentPage - 1) * itemsPerPage + index;
           return (
             <Row
-              key={item.id_producto || globlaIndex}
+              key={item.id_producto || globalIndex}
               item={{ ...item, index: globalIndex }}
               fields={fields}
               index={globalIndex}

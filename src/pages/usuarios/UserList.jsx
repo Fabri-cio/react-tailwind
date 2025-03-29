@@ -45,7 +45,6 @@ function UserList() {
   const entityData = {
     title: "Gestión de Usuarios",
     subTitle: "Listado de usuarios",
-    listPath: "/home",
     loadingMessage: "Cargando usuarios...",
     errorMessage: "Error al obtener los usuarios",
     fetchDataHook: useUsers,
@@ -56,9 +55,8 @@ function UserList() {
       {
         to: "/createUser",
         label: "Crear Usuario",
-        icon: FaPlusCircle,
         estilos:
-          "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
+          "bg-purple-500 hover:bg-purple-800 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
       }
     ],
   };
