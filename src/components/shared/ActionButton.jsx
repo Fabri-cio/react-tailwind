@@ -5,6 +5,7 @@ export function ActionButton({
   label,
   icon: Icon,
   estilos = "",
+  styleIcon,
   onClick,
   disabled = false,
   to,
@@ -13,7 +14,7 @@ export function ActionButton({
 
   const content = (
     <>
-      {Icon && <Icon className=" w-6 h-6" />}
+      {Icon && <Icon className={`w-5 h-5 ${styleIcon}`}  />}
       {label}
     </>
   );

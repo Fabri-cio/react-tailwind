@@ -1,48 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import Dashboard from "../../pages/Dashboard";
-import { Outlet } from "react-router-dom";
-import clsx from "clsx";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar"; // Importamos Navbar directamente
 
 const MainLayout = () => {
   const navigate = useNavigate();
+  const [sidebarToggle, setSidebarToggle] = useState(false);
 
   useEffect(() => {
-    // Escuchar cambios en el localStorage
     const handleStorageChange = (event) => {
       if (event.key === "sessionClosed" && event.newValue === "true") {
-        // Si la sesión ha sido cerrada en otra pestaña, redirigir a la página de login
         navigate("/login");
       }
     };
 
-    // Añadir el listener del evento storage
     window.addEventListener("storage", handleStorageChange);
-
-    // Limpiar el listener cuando el componente se desmonte
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, [navigate]);
 
-  const [sidebarToggle, setSidebarToggle] = useState(false);
-
-  const mainClass = clsx("w-full", {
-    "ml-0": sidebarToggle,
-    "ml-64": !sidebarToggle,
-  });
-
   return (
-    <div className="flex">
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar fijo */}
       <Sidebar sidebarToggle={sidebarToggle} />
-      <div className={mainClass}>
-        <Dashboard
+
+      {/* Contenedor principal con Navbar fijo y contenido desplazable */}
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          sidebarToggle ? "ml-0" : "ml-64"
+        }`}
+      >
+        {/* Navbar fijo */}
+        <Navbar
           sidebarToggle={sidebarToggle}
           setSidebarToggle={setSidebarToggle}
         />
-        <Outlet />
+
+        {/* Contenido desplazable */}
+        <div className="flex-1 overflow-auto p-1 h-full">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

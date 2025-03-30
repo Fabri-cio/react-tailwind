@@ -2,7 +2,7 @@ import { useState } from "react";
 import SidebarMenu from "./SidebarMenu";
 import { menus } from "../data/SidebarData";
 
-const Sidebar = ({ sidebarToggle, closeSidebar }) => {
+const Sidebar = ({ sidebarToggle}) => {
   const [openMenu, setOpenMenu] = useState(null);
 
   return (

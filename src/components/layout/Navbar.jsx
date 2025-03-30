@@ -1,27 +1,36 @@
 import useLogout from "../../hooks/useLogout";
-import { Link } from "react-router-dom";
+import { FaBars, FaUser } from "react-icons/fa";
+import Dropdown from "../shared/Dropdown";
+import { ActionButton } from "../shared/ActionButton";
 
 const Navbar = ({ sidebarToggle, setSidebarToggle }) => {
   const logoutUser = useLogout();
 
   return (
-    <nav className="flex justify-between items-center p-4 m-2 ml-4 bg-white-800 text-black border-2 border-gray-400 rounded-lg">
-      <button>☰</button>
-      <div>
-        <Link to="/">MiAplicación</Link>
-      </div>
+    <nav className="flex justify-between items-center p-4 ml-4 mt-2 mr-2 bg-white-800 text-black border-2 border-gray-400 rounded-lg">
+      <ActionButton icon={FaBars} to={"/home"} />
+      <ActionButton label={"Mi Aplicacion"} to={"/home"} />
 
-      {sidebarToggle && (
+      {/* {sidebarToggle && (
         <div>
           <Link to="/">Inicio</Link>
           <Link to="/acerca">Acerca</Link>
           <Link to="/contacto">Contacto</Link>
         </div>
-      )}
-      <div>
-        <Link to="/">Inicio</Link>
-        <Link to="/acerca">Acerca</Link>
-        <Link to="/contacto">Contacto</Link>
+      )} */}
+      <div className="flex items-center">
+        <Dropdown
+          icon={FaUser}
+          options={[
+            {
+              label: "Mi Perfil",
+            },
+            {
+              label: "Cerrar Sesión",
+              action: logoutUser,
+            },
+          ]}
+        />
       </div>
     </nav>
   );

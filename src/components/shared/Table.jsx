@@ -9,7 +9,7 @@ const Table = ({ items, fields, currentPage, itemsPerPage }) => {
   ));
 
   return (
-    <table className="min-w-full  table-auto border-2 border-gray-400 rounded-lg">
+    <table className="min-w-full table-auto border-2 border-gray-400 rounded-lg">
       <thead>
         <tr>{headers}</tr>
       </thead>
