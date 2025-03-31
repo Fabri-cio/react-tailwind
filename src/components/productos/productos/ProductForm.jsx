@@ -33,16 +33,17 @@ export default function ProductForm() {
     estado: true,
   });
 
-  const categoriasOptions = () =>
-    categorias.map(({ id_categoria, nombre_categoria }) => ({
-      id: id_categoria,
-      nombre: nombre_categoria,
+  const options = (entity, keyId, keyNombre) =>
+    entity.map((item) => ({
+      id: item[keyId], // Accede dinámicamente a la clave id
+      nombre: item[keyNombre], // Accede dinámicamente a la clave nombre
     }));
+
   const proveedoresOptions = () =>
-    proveedores.map(({ id_proveedor, nombre_proveedor }) => ({
-      id: id_proveedor,
-      nombre: nombre_proveedor,
-    }));
+    options(proveedores, "id_proveedor", "nombre_proveedor");
+
+  const categoriasOptions = () =>
+    options(categorias, "id_categoria", "nombre_categoria");
 
   useEffect(() => {
     if (producto?.data) {
