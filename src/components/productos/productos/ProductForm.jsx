@@ -1,10 +1,6 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import {
-  useProduct,
-  useCategorias,
-  useProveedores,
-} from "../../../hooks/useEntities";
+import { useState } from "react";
+import { useParams} from "react-router-dom";
+import { useProduct, useCategorias, useProveedores } from "../../../hooks/useEntities";
 import { useProductMutations } from "../../../hooks/useEntities";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
@@ -12,18 +8,27 @@ import { ToggleSwitch } from "@/components/shared/ToggleSwitch";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { Navigation } from "../../../components/shared/Navigation";
 import { FaEdit } from "react-icons/fa";
+import { useFormEntity } from "./useFormEntity";
 
 export default function ProductForm() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const idUsuario = () => localStorage.getItem("id_usuario");
+  const {
+    options,
+    crearEstadoFomulario,
+    manejarCambioDeEntrada,
+    manejarCambioDeEstado,
+    usarEfecto,
+    manejarEnvio,
+  } = useFormEntity();
 
   const { crear, actualizar } = useProductMutations();
   const { data: { data: categorias = [] } = {} } = useCategorias();
   const { data: { data: proveedores = [] } = {} } = useProveedores();
   const { data: producto, isLoading } = useProduct(id);
 
-  const [formValues, setFormValues] = useState({
+  //configuración del formulario
+  const configuracionFormulario = {
     id_producto: "",
     nombre: "",
     precio: "",
@@ -31,71 +36,42 @@ export default function ProductForm() {
     id_proveedor: "",
     categoria: "",
     estado: true,
-  });
+  };
 
-  const options = (entity, keyId, keyNombre) =>
-    entity.map((item) => ({
-      id: item[keyId], // Accede dinámicamente a la clave id
-      nombre: item[keyNombre], // Accede dinámicamente a la clave nombre
-    }));
+  //factorizado
+  const [formValues, setFormValues] = useState(
+    crearEstadoFomulario(configuracionFormulario)
+  );
 
+  //factorizado
   const proveedoresOptions = () =>
     options(proveedores, "id_proveedor", "nombre_proveedor");
 
+  //factorizado
   const categoriasOptions = () =>
     options(categorias, "id_categoria", "nombre_categoria");
 
-  useEffect(() => {
-    if (producto?.data) {
-      const {
-        id_producto,
-        nombre,
-        precio,
-        codigo_barras,
-        id_proveedor,
-        categoria,
-        estado,
-      } = producto.data;
-      setFormValues({
-        id_producto: id_producto || "",
-        nombre: nombre || "",
-        precio: precio || "",
-        codigo_barras: codigo_barras || "",
-        id_proveedor: id_proveedor || "",
-        categoria: categoria || "",
-        estado: estado ?? true,
-      });
-    }
-  }, [producto]);
+  usarEfecto(producto, setFormValues, {
+    estado: producto?.data?.estado === true,
+  });
 
-  const handleInputChange = (e) => {
-    setFormValues((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  //factorizado
+  const handleInputChange = manejarCambioDeEntrada(setFormValues);
 
-  const handleToggleChange = (value) => {
-    setFormValues((prevState) => ({ ...prevState, estado: value }));
-  };
+  //factorizado
+  const handleToggleChange = manejarCambioDeEstado(setFormValues);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { id_producto, ...data } = formValues;
-
-    const dataToSend = {
-      ...data,
-      id_proveedor: Number(formValues.id_proveedor),
-      categoria: Number(formValues.categoria),
-      precio: parseFloat(formValues.precio).toFixed(2),
-      usuario_modificacion: idUsuario,
-      ...(id_producto ? {} : { usuario_creacion: idUsuario }),
-    };
-
-    const mutation = id_producto ? actualizar : crear;
-    mutation.mutate(
-      { id: id_producto || undefined, data: dataToSend },
-      { onSuccess: () => navigate("/productList") }
+  //factorizado
+  const handleSubmit = (event) => {
+    const entityId = formValues.id_producto;
+    manejarEnvio( event, "productList", formValues, crear, actualizar, entityId,
+      {
+        id_proveedor: Number(formValues.id_proveedor),
+        categoria: Number(formValues.categoria),
+        precio: parseFloat(formValues.precio).toFixed(2),
+        usuario_modificacion: idUsuario(),
+        ...(entityId ? {} : { usuario_creacion: idUsuario() }),
+      }
     );
   };
 
