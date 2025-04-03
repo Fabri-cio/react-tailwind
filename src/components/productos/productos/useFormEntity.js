@@ -64,6 +64,11 @@ export const useFormEntity = () => {
     );
   };
 
+  const destructuring = (hook) => {
+    const { data = {} } = hook() || {};
+    return data.data || [];
+  };
+  
   return {
     options,
     crearEstadoFomulario,
@@ -71,5 +76,6 @@ export const useFormEntity = () => {
     manejarCambioDeEstado,
     usarEfecto,
     manejarEnvio,
+    destructuring
   };
 };

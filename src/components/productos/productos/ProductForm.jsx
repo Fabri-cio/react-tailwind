@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { useParams} from "react-router-dom";
-import { useProduct, useCategorias, useProveedores } from "../../../hooks/useEntities";
+import { useParams } from "react-router-dom";
+import {
+  useProduct,
+  useCategorias,
+  useProveedores,
+} from "../../../hooks/useEntities";
 import { useProductMutations } from "../../../hooks/useEntities";
 import { InputField } from "@/components/shared/InputField";
 import { SelectField } from "@/components/shared/SelectField";
@@ -20,12 +24,15 @@ export default function ProductForm() {
     manejarCambioDeEstado,
     usarEfecto,
     manejarEnvio,
+    destructuring
   } = useFormEntity();
 
   const { crear, actualizar } = useProductMutations();
-  const { data: { data: categorias = [] } = {} } = useCategorias();
-  const { data: { data: proveedores = [] } = {} } = useProveedores();
   const { data: producto, isLoading } = useProduct(id);
+
+  const categorias = destructuring(useCategorias);
+  const proveedores = destructuring(useProveedores);
+  
 
   //configuración del formulario
   const configuracionFormulario = {
@@ -64,7 +71,13 @@ export default function ProductForm() {
   //factorizado
   const handleSubmit = (event) => {
     const entityId = formValues.id_producto;
-    manejarEnvio( event, "productList", formValues, crear, actualizar, entityId,
+    manejarEnvio(
+      event,
+      "productList",
+      formValues,
+      crear,
+      actualizar,
+      entityId,
       {
         id_proveedor: Number(formValues.id_proveedor),
         categoria: Number(formValues.categoria),
@@ -78,7 +91,7 @@ export default function ProductForm() {
   if (isLoading) return <p>Cargando producto...</p>;
 
   return (
-    <div className="max-w-4xl bg-gray-400 shadow-lg rounded-lg px-3 py-2 mx-60">
+    <div className="max-w-4xl border-2 border-gray-400 shadow-lg rounded-lg px-3 py-2 mx-60">
       <Navigation
         title={`${formValues.id_producto ? "Actualizar" : "Crear"} Producto`}
         subTitle="Formulario para actualizar o editar un producto"
@@ -89,12 +102,15 @@ export default function ProductForm() {
             label: "Volver",
             icon: FaEdit,
             estilos:
-              "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200",
+              "bg-white hover:bg-gray-700 text-black py-1 px-2 rounded-md border-2 border-gray-400 flex items-center gap-2 transition duration-200 hover:text-white",
           },
         ]}
       />
 
-      <form onSubmit={handleSubmit} className="space-y-4 py-2">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-3 p-2 border-2 border-gray-400 rounded-lg"
+      >
         <InputField
           label="Nombre"
           type="text"
@@ -141,7 +157,7 @@ export default function ProductForm() {
         <ActionButton
           type="submit"
           label={formValues.id_producto ? "Guardar Cambios" : "Crear Producto"}
-          estilos="bg-blue-400 hover:bg-blue-800 text-white px-4 py-2 rounded-md flex items-center gap-2 transition duration-200"
+          estilos="hover:bg-gray-600 hover:text-gray-100 text-black border-2 border-gray-400 px-4 py-2 rounded-md flex items-center gap-2 transition duration-200"
           disabled={crear.isLoading || actualizar.isLoading}
         />
       </form>

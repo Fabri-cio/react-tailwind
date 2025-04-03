@@ -13,7 +13,7 @@ const SidebarMenu = ({ title, icon: Icon, items, isOpen, toggleMenu }) => (
     {/* Botón del menú principal */}
     <ActionButton
       label={title}
-      estilos={`flex items-center w-full px-4 py-3 text-base font-semibold rounded-lg transition-all duration-300 hover:text-white text-gray-700
+      estilos={`flex items-center w-full px-4 py-3 text-base font-semibold rounded-lg transition-all duration-300 hover:text-white text-gray-700 
       ${
         isOpen ? "bg-gray-700 text-white" : "hover:bg-gray-700 text-black-300"
       }`}
