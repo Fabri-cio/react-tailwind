@@ -44,6 +44,7 @@ function ProductList() {
     fetchDataHook: useProducts,
     editPath: "/editProduct",
     all_data: false,
+    itemKey: "id_producto",
     entityFields: productFields,
     actions: [
       {

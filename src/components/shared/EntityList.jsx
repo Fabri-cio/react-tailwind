@@ -17,6 +17,7 @@ function EntityList({ entityData }) {
     listPath,
     subTitle,
     all_data,
+    itemKey,
     actions = [],
     icon
   } = entityData; // Desestructuramos entityConfig
@@ -63,6 +64,7 @@ function EntityList({ entityData }) {
         fields={entityFields(handleDetallesClick)}
         currentPage={currentPage}
         itemsPerPage={10}
+        itemKey={itemKey || "id"}
       />
 
       {hasPagination && (

@@ -13,7 +13,7 @@ export const useFormEntity = () => {
   const crearEstadoFomulario = (campos) => {
     const estadoInicial = {};
     Object.keys(campos).forEach((campo) => {
-      estadoInicial[campo] = "";
+      estadoInicial[campo] = campos[campo]; // Usa el valor original esto arregla el togle de estado F V
     });
     return estadoInicial;
   };
@@ -38,7 +38,7 @@ export const useFormEntity = () => {
           ...campos,
         }));
       }
-    }, [entidad]);
+    }, [entidad?.data, setFormValues]);
   };
 
   const manejarEnvio = (
@@ -50,8 +50,7 @@ export const useFormEntity = () => {
     entityId,
     params = {}
   ) => {
-    event.preventDefault();
-
+    
     const dataToSend = {
       ...formValues,
       ...params,
@@ -68,7 +67,7 @@ export const useFormEntity = () => {
     const { data = {} } = hook() || {};
     return data.data || [];
   };
-  
+
   return {
     options,
     crearEstadoFomulario,
@@ -76,6 +75,6 @@ export const useFormEntity = () => {
     manejarCambioDeEstado,
     usarEfecto,
     manejarEnvio,
-    destructuring
+    destructuring,
   };
 };
