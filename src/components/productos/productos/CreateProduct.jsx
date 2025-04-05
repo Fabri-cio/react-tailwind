@@ -10,10 +10,11 @@ import { SelectField } from "../../../components/shared/SelectField";
 import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
 import EntityForm from "./EntityForm";
 import { obtenerIdUser } from "../../../utils/auth";
+import { FaBackspace, FaBoxes, FaProductHunt } from "react-icons/fa";
 
 export default function CreateProduct() {
   const idUsuario = obtenerIdUser;
-  console.log(idUsuario)
+  console.log(idUsuario);
 
   const {
     options,
@@ -114,6 +115,17 @@ export default function CreateProduct() {
       manejarEnviar={handleSubmit}
       fields={components} // Cambié 'conponentes' por 'components'
       esLoading={false}
+      title={"Crear Producto"}
+      subTitle={"Crea un nuevo producto"}
+      icon={FaProductHunt}
+      actions={[
+        {
+          to: "/productList",
+          label: "Volver",
+          icon: FaBackspace,
+          estilos: "border-2 border-gray-400 text-gray-700 hover:bg-gray-700 hover:text-white",
+        },
+      ]}
     />
   );
 }

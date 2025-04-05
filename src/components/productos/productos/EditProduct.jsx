@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useFormEntity } from "./useFormEntity";
-import { useProductMutations } from "../../../hooks/useEntities";
 import {
+  useProductMutations,
   useCategorias,
   useProveedores,
   useProduct,
@@ -12,6 +12,7 @@ import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
 import { SelectField } from "../../../components/shared/SelectField";
 import EntityForm from "./EntityForm";
 import { obtenerIdUser } from "../../../utils/auth";
+import { FaBackspace, FaEdit } from "react-icons/fa";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -124,6 +125,10 @@ export default function EditProduct() {
       fields={fields}
       esLoading={isLoading}
       entityId={formValues.id_producto}
+      title={"Editar Producto"}
+      subTitle={"Actualice los datos del producto"}
+      icon={FaEdit}
+      actions={[{ to: "/productList", label: "Volver", icon: FaBackspace, estilos: "border-2 border-gray-400 text-gray-700 hover:text-white hover:bg-gray-700" }]}
     />
   );
 }
