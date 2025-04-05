@@ -11,7 +11,6 @@ function EntityList({ entityData }) {
     title,
     fetchDataHook,
     entityFields,
-    editPath,
     loadingMessage,
     errorMessage,
     listPath,
@@ -42,9 +41,6 @@ function EntityList({ entityData }) {
 
   const hasPagination = next || previous;
 
-  const handleDetallesClick = (id) => {
-    navigate(`${editPath}/${id}`);
-  };
 
   if (isLoading) return <Loading message={loadingMessage} />;
   if (isError) return <ErrorMessage message={errorMessage} />;
@@ -61,7 +57,7 @@ function EntityList({ entityData }) {
 
       <Table
         items={items}
-        fields={entityFields(handleDetallesClick)}
+        fields={entityFields()}
         currentPage={currentPage}
         itemsPerPage={10}
         itemKey={itemKey || "id"}

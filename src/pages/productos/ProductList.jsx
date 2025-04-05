@@ -3,16 +3,28 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ActionButton } from "@/components/shared/ActionButton";
 import EntityList from "@/components/shared/EntityList";
 import { FaPlus, FaBox } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function ProductList() {
-  const productFields = (handleDetallesClick) => [
+  const productFields = () => [
     { key: "index", label: "#" },
     {
       key: "estado",
       label: "Estado",
       render: (item) => <StatusBadge isActive={item.estado} />,
     },
-    { key: "nombre", label: "Nombre" },
+    {
+      key: "nombre",
+      label: "Nombre",
+      render: (item) => (
+        <Link
+          to={`/editProduct/${item.id_producto}`}
+          className="text-blue-400 font-bold hover:underline"
+        >
+          {item.nombre}
+        </Link>
+      ),
+    },
     { key: "nombre_proveedor", label: "Proveedor" },
     { key: "nombre_categoria", label: "Categoría" },
     {
@@ -21,19 +33,6 @@ function ProductList() {
       render: (item) => item.precio.toFixed(2),
     },
     { key: "codigo_barras", label: "Código" },
-    {
-      key: "acciones",
-      label: "Acciones",
-      render: (item) => (
-        <ActionButton
-          onClick={() => handleDetallesClick(item.id_producto)}
-          label="Editar"
-          estilos={
-            "bg-white hover:bg-gray-700 text-black py-1 px-2 rounded-md border-2 border-gray-400 flex items-center gap-2 transition duration-200 hover:text-white"
-          }
-        />
-      ),
-    },
   ];
 
   const entityData = {
@@ -42,7 +41,6 @@ function ProductList() {
     loadingMessage: "Cargando productos...",
     errorMessage: "Error al obtener los productos",
     fetchDataHook: useProducts,
-    editPath: "/editProduct",
     all_data: false,
     itemKey: "id_producto",
     entityFields: productFields,
@@ -57,7 +55,6 @@ function ProductList() {
     ],
     icon: FaBox,
   };
-
 
   return <EntityList entityData={entityData} />;
 }
