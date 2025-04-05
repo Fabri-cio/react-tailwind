@@ -2,8 +2,14 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar"; // Importamos Navbar directamente
+import { useState } from "react";
 
 const MainLayout = () => {
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible); // Alterna la visibilidad del Sidebar
+  };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,10 +27,10 @@ const MainLayout = () => {
 
   return (
     <div className="h-full overflow-visible">
-      <Navbar />
+      <Navbar toggleSidebar={toggleSidebar} />
       <div className="flex h-full overflow-visible">
-        <Sidebar />
-        <div className="border-gray-400 border-2 rounded-lg m-4 flex-1 overflow-auto">
+        <Sidebar isVisible={sidebarVisible} />
+        <div className="border-gray-400 border-2 rounded-lg mx-4 my-1 flex-1 overflow-auto">
           <Outlet />
         </div>
       </div>

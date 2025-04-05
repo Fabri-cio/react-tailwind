@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import Table from "../../components/shared/Table";
 import Loading from "@/components/shared/Loading";
 import ErrorMessage from "@/components/shared/ErrorMessaje";
@@ -21,7 +20,6 @@ function EntityList({ entityData }) {
     icon,
   } = entityData; // Desestructuramos entityConfig
 
-  const navigate = useNavigate();
   const { currentPage, handlePageChange } = usePagination();
   const {
     data: response = {},
@@ -36,7 +34,7 @@ function EntityList({ entityData }) {
     results = [],
   } = response.data || {};
 
-  const items = response.data?.data || response.data?.results || [];
+  const items = response.data?.data || results || [];
   const totalItems = count;
 
   const hasPagination = next || previous;
