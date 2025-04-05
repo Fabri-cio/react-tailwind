@@ -10,7 +10,13 @@ import { SelectField } from "../../../components/shared/SelectField";
 import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
 import EntityForm from "./EntityForm";
 import { obtenerIdUser } from "../../../utils/auth";
-import { FaBackspace, FaBoxes, FaProductHunt } from "react-icons/fa";
+import {
+  FaBackspace,
+  FaEye,
+  FaPencilAlt,
+  FaPlus,
+  FaProductHunt,
+} from "react-icons/fa";
 
 export default function CreateProduct() {
   const idUsuario = obtenerIdUser;
@@ -92,6 +98,23 @@ export default function CreateProduct() {
       name: "categoria",
       options: categoriasOptions(),
       onChange: handleInputChange,
+      actionButtons: [
+        {
+          to: "/editCategory",
+          icon: FaPencilAlt,
+          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white",
+        },
+        {
+          to: "/addCategory",
+          icon: FaPlus,
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white ",
+        },
+        {
+          to: "/categoryList",
+          icon: FaEye,
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white",
+        }
+      ],
     },
     {
       component: SelectField,
@@ -123,7 +146,8 @@ export default function CreateProduct() {
           to: "/productList",
           label: "Volver",
           icon: FaBackspace,
-          estilos: "border-2 border-gray-400 text-gray-700 hover:bg-gray-700 hover:text-white",
+          estilos:
+            "border-2 border-gray-400 text-gray-700 hover:bg-gray-700 hover:text-white",
         },
       ]}
     />
