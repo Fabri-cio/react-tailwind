@@ -3,13 +3,13 @@ import { FaBars, FaUser } from "react-icons/fa";
 import Dropdown from "../shared/Dropdown";
 import { ActionButton } from "../shared/ActionButton";
 
-const Navbar = ({ sidebarToggle, setSidebarToggle }) => {
+const Navbar = () => {
   const logoutUser = useLogout();
 
   return (
-    <nav className="flex justify-between items-center p-4 ml-4 mt-2 mr-2 bg-white-800 text-black border-2 border-gray-400 rounded-lg">
+    <nav className="sticky top-0 z-50 bg-white border-gray-400 border-2 rounded-lg mx-4 mt-2 flex justify-between p-4">
       <ActionButton icon={FaBars} to={"/home"} />
-      <ActionButton label={"Mi Aplicacion"} to={"/home"} />
+      <ActionButton label={"Navbar"} to={"/home"} />
 
       {/* {sidebarToggle && (
         <div>

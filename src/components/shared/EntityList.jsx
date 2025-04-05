@@ -18,7 +18,7 @@ function EntityList({ entityData }) {
     all_data,
     itemKey,
     actions = [],
-    icon
+    icon,
   } = entityData; // Desestructuramos entityConfig
 
   const navigate = useNavigate();
@@ -36,11 +36,10 @@ function EntityList({ entityData }) {
     results = [],
   } = response.data || {};
 
-  const items = results || response.data?.data || [];
+  const items = response.data?.data || response.data?.results || [];
   const totalItems = count;
 
   const hasPagination = next || previous;
-
 
   if (isLoading) return <Loading message={loadingMessage} />;
   if (isError) return <ErrorMessage message={errorMessage} />;
