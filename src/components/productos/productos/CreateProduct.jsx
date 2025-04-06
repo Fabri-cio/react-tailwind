@@ -20,7 +20,6 @@ import {
 
 export default function CreateProduct() {
   const idUsuario = obtenerIdUser;
-  console.log(idUsuario);
 
   const {
     options,
@@ -102,17 +101,17 @@ export default function CreateProduct() {
         {
           to: "/editCategory",
           icon: FaPencilAlt,
-          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white",
+          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
         },
         {
           to: "/addCategory",
           icon: FaPlus,
-          estilos: "text-green-600 hover:bg-green-600 hover:text-white ",
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
         },
         {
           to: "/categoryList",
           icon: FaEye,
-          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white",
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
         }
       ],
     },

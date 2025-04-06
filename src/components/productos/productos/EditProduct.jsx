@@ -12,7 +12,7 @@ import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
 import { SelectField } from "../../../components/shared/SelectField";
 import EntityForm from "./EntityForm";
 import { obtenerIdUser } from "../../../utils/auth";
-import { FaBackspace, FaEdit } from "react-icons/fa";
+import { FaBackspace, FaEdit, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -40,8 +40,8 @@ export default function EditProduct() {
     nombre: producto?.data?.nombre || "",
     precio: producto?.data?.precio || "",
     codigo_barras: producto?.data?.codigo_barras || "",
-    id_proveedor:   producto?.data?.id_proveedor || "",
-    categoria:  producto?.data?.categoria || "",
+    id_proveedor: producto?.data?.id_proveedor || "",
+    categoria: producto?.data?.categoria || "",
     estado: producto?.data?.estado || false,
   };
 
@@ -102,6 +102,23 @@ export default function EditProduct() {
       name: "categoria",
       onChange: handleInputChange,
       options: categoriasOptions(),
+      actionButtons: [
+        {
+          to: "/editCategory",
+          icon: FaPencilAlt,
+          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
+        },
+        {
+          to: "/addCategory",
+          icon: FaPlus,
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
+        },
+        {
+          to: "/categoryList",
+          icon: FaEye,
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
+        },
+      ],
     },
     {
       component: SelectField,
@@ -128,7 +145,15 @@ export default function EditProduct() {
       title={"Editar Producto"}
       subTitle={"Actualice los datos del producto"}
       icon={FaEdit}
-      actions={[{ to: "/productList", label: "Volver", icon: FaBackspace, estilos: "border-2 border-gray-400 text-gray-700 hover:text-white hover:bg-gray-700" }]}
+      actions={[
+        {
+          to: "/productList",
+          label: "Volver",
+          icon: FaBackspace,
+          estilos:
+            "border-2 border-gray-400 text-gray-700 hover:text-white hover:bg-gray-700 p-1 gap-2",
+        },
+      ]}
     />
   );
 }

@@ -1,6 +1,5 @@
 import { useProducts } from "../../hooks/useEntities";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { ActionButton } from "@/components/shared/ActionButton";
 import EntityList from "@/components/shared/EntityList";
 import { FaPlus, FaBox } from "react-icons/fa";
 import { Link } from "react-router-dom";
