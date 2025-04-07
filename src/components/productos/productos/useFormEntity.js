@@ -59,7 +59,7 @@ export const useFormEntity = () => {
     const mutation = entityId ? updateMutation : createMutation;
     mutation.mutate(
       { id: entityId || undefined, data: dataToSend },
-      { onSuccess: () => navigate(`/${entityName}`) }
+      { onSuccess: () => navigate(`${entityName}`) }
     );
   };
 

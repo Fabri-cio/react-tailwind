@@ -23,7 +23,9 @@ import {
 export default function EditProduct() {
   const { id } = useParams();
 
-  const idUsuario = obtenerIdUser();
+  const logicaNegocio = {
+    idUsuario: obtenerIdUser(),
+  };
 
   const {
     crearEstadoFomulario,
@@ -53,6 +55,11 @@ export default function EditProduct() {
       "nombre_proveedor"
     );
 
+  const selects = {
+    categoriasOptions,
+    proveedoresOptions,
+  };
+
   const configuracionFormulario = {
     nombre: producto?.data?.nombre || "",
     precio: producto?.data?.precio || "",
@@ -66,22 +73,45 @@ export default function EditProduct() {
     crearEstadoFomulario(configuracionFormulario)
   );
 
-  usarEfecto(producto, setFormValues, {
-    //pasamos objeto con campos adicionales
-  });
+    usarEfecto(producto, setFormValues, {
+      //pasamos objeto con campos adicionales
+    });
 
   const handleInputChange = manejarCambioDeEntrada(setFormValues);
   const handleToggleChange = manejarCambioDeEstado(setFormValues);
 
+  const manejarEntradas = {
+    handleInputChange,
+    handleToggleChange,
+  }
+
+  const camposExtras = {
+    id_proveedor: Number(formValues.id_proveedor),
+    categoria: Number(formValues.categoria),
+    precio: parseFloat(formValues.precio).toFixed(2),
+    usuario_modificacion: logicaNegocio.idUsuario,
+  };
+
+  const paraEnvio = {
+    entityId: formValues.id_producto,
+    link: "/productList",
+    mutacion: actualizar,
+    params: camposExtras,
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault(); // Asegúrate de prevenir la acción predeterminada del formulario
-    const entityId = formValues.id_producto;
-    manejarEnvio(event, "productList", formValues, null, actualizar, entityId, {
-      id_proveedor: Number(formValues.id_proveedor),
-      categoria: Number(formValues.categoria),
-      precio: parseFloat(formValues.precio).toFixed(2),
-      usuario_modificacion: idUsuario,
-    });
+    manejarEnvio(
+      event,
+      paraEnvio.link,
+      formValues,
+      null,
+      paraEnvio.mutacion,
+      paraEnvio.entityId,
+      {
+        ...paraEnvio.params,
+      }
+    );
   };
 
   const fields = [
@@ -90,7 +120,7 @@ export default function EditProduct() {
       label: "Nombre",
       name: "nombre",
       required: true,
-      onChange: handleInputChange,
+      onChange: manejarEntradas.handleInputChange,
     },
     {
       component: InputField,
@@ -98,22 +128,22 @@ export default function EditProduct() {
       name: "precio",
       type: "number",
       required: true,
-      onChange: handleInputChange,
+      onChange: manejarEntradas.handleInputChange,
     },
     {
       component: InputField,
       label: "Codigo de Barras",
       name: "codigo_barras",
       required: true,
-      onChange: handleInputChange,
+      onChange: manejarEntradas.handleInputChange,
     },
 
     {
       component: SelectField,
       label: "Categoría",
       name: "categoria",
-      onChange: handleInputChange,
-      options: categoriasOptions(),
+      onChange: manejarEntradas.handleInputChange,
+      options: selects.categoriasOptions(),
       actionButtons: [
         {
           to: "/editCategory",
@@ -136,15 +166,15 @@ export default function EditProduct() {
       component: SelectField,
       label: "Proveedor",
       name: "id_proveedor",
-      onChange: handleInputChange,
-      options: proveedoresOptions(),
+      onChange: manejarEntradas.handleInputChange,
+      options: selects.proveedoresOptions(),
     },
     {
       component: ToggleSwitch,
       label: "Estado",
       name: "estado",
       checked: formValues.estado,
-      onChange: handleToggleChange,
+      onChange: manejarEntradas.handleToggleChange,
     },
   ];
   return (
@@ -153,13 +183,13 @@ export default function EditProduct() {
       manejarEnviar={handleSubmit}
       fields={fields}
       esLoading={isLoading}
-      entityId={formValues.id_producto}
+      entityId={paraEnvio.entityId}
       title={"Editar Producto"}
       subTitle={"Actualice los datos del producto"}
       icon={FaEdit}
       actions={[
         {
-          to: "/productList",
+          to: paraEnvio.link,
           label: "Volver",
           icon: FaBackspace,
           estilos:
