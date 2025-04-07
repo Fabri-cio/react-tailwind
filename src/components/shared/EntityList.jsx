@@ -2,8 +2,8 @@ import Table from "../../components/shared/Table";
 import Loading from "@/components/shared/Loading";
 import ErrorMessage from "@/components/shared/ErrorMessaje";
 import Pagination from "../../components/shared/Pagination";
-import usePagination from "../../hooks/usePagination";
 import { Navigation } from "../../components/shared/Navigation";
+import { useFormEntity } from "../productos/productos/useFormEntity";
 
 function EntityList({ entityData }) {
   const {
@@ -20,24 +20,21 @@ function EntityList({ entityData }) {
     icon,
   } = entityData; // Desestructuramos entityConfig
 
-  const { currentPage, handlePageChange } = usePagination();
+  const { todosDatosOpaginacion } = useFormEntity();
+
+  const paginacion = todosDatosOpaginacion(fetchDataHook, all_data);
+
   const {
-    data: response = {},
+    currentPage,
+    handlePageChange,
     isLoading,
     isError,
-  } = fetchDataHook(all_data, currentPage);
-
-  const {
-    count = 0,
-    next = null,
-    previous = null,
-    results = [],
-  } = response.data || {};
-
-  const items = response.data?.data || results || [];
-  const totalItems = count;
-
-  const hasPagination = next || previous;
+    items,
+    totalItems,
+    hasPagination,
+    next,
+    previous,
+  } = paginacion;
 
   if (isLoading) return <Loading message={loadingMessage} />;
   if (isError) return <ErrorMessage message={errorMessage} />;

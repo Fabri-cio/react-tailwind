@@ -22,18 +22,29 @@ export default function CreateProduct() {
   const idUsuario = obtenerIdUser;
 
   const {
-    options,
     crearEstadoFomulario,
     manejarCambioDeEntrada,
     manejarCambioDeEstado,
     manejarEnvio,
-    destructuring,
+    paraSelectsdestructuringYMap,
   } = useFormEntity();
 
   const { crear } = useProductMutations();
 
-  const categorias = destructuring(useCategorias);
-  const proveedores = destructuring(useProveedores);
+  const categoriasOptions = () =>
+    paraSelectsdestructuringYMap(
+      useCategorias,
+      true,
+      "id_categoria",
+      "nombre_categoria"
+    );
+  const proveedoresOptions = () =>
+    paraSelectsdestructuringYMap(
+      useProveedores,
+      true,
+      "id_proveedor",
+      "nombre_proveedor"
+    );
 
   const configuracionFormulario = {
     nombre: "",
@@ -60,13 +71,6 @@ export default function CreateProduct() {
       usuario_creacion: idUsuario(),
     });
   };
-
-  const categoriasOptions = () =>
-    options(categorias, "id_categoria", "nombre_categoria");
-  const proveedoresOptions = () =>
-    options(proveedores, "id_proveedor", "nombre_proveedor");
-
-  //factorizado
 
   const components = [
     // Corregí 'conponentes' por 'components' y 'conponent' por 'component'
@@ -112,7 +116,7 @@ export default function CreateProduct() {
           to: "/categoryList",
           icon: FaEye,
           estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
-        }
+        },
       ],
     },
     {

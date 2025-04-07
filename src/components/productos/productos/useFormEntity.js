@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import usePagination from "../../../hooks/usePagination";
 
 export const useFormEntity = () => {
   const navigate = useNavigate();
@@ -50,7 +51,6 @@ export const useFormEntity = () => {
     entityId,
     params = {}
   ) => {
-    
     const dataToSend = {
       ...formValues,
       ...params,
@@ -68,6 +68,49 @@ export const useFormEntity = () => {
     return data.data || [];
   };
 
+  const paraSelectsdestructuringYMap = (hook, all_data, keyId, keyNombre) => {
+    const { data: response = {} } = hook(all_data);
+    return (response.data || []).map((item) => ({
+      id: item[keyId], // Accede dinámicamente a la clave id
+      nombre: item[keyNombre], // Accede dinámicamente a la clave nombre
+    }));
+  };
+
+  const todosDatosOpaginacion = (fetchDataHook, all_data) => {
+    const { currentPage, handlePageChange } = usePagination();
+
+    const {
+      data: response = {},
+      isLoading,
+      isError,
+    } = fetchDataHook(all_data, currentPage);
+
+    const {
+      count = 0,
+      next = null,
+      previous = null,
+      results,
+    } = response.data || {};
+
+    const items = results || response.data || [];
+
+    const totalItems = count;
+
+    const hasPagination = next || previous;
+
+    return {
+      currentPage,
+      handlePageChange,
+      isLoading,
+      isError,
+      items,
+      totalItems,
+      hasPagination,
+      next,
+      previous,
+    };
+  };
+
   return {
     options,
     crearEstadoFomulario,
@@ -76,5 +119,7 @@ export const useFormEntity = () => {
     usarEfecto,
     manejarEnvio,
     destructuring,
+    paraSelectsdestructuringYMap,
+    todosDatosOpaginacion,
   };
 };

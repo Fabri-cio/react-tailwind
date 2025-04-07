@@ -12,7 +12,13 @@ import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
 import { SelectField } from "../../../components/shared/SelectField";
 import EntityForm from "./EntityForm";
 import { obtenerIdUser } from "../../../utils/auth";
-import { FaBackspace, FaEdit, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
+import {
+  FaBackspace,
+  FaEdit,
+  FaEye,
+  FaPencilAlt,
+  FaPlus,
+} from "react-icons/fa";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -20,21 +26,32 @@ export default function EditProduct() {
   const idUsuario = obtenerIdUser();
 
   const {
-    options,
     crearEstadoFomulario,
     manejarCambioDeEntrada,
     manejarCambioDeEstado,
     manejarEnvio,
     usarEfecto,
-    destructuring,
+    paraSelectsdestructuringYMap,
   } = useFormEntity();
 
   const { actualizar } = useProductMutations();
 
   const { data: producto, isLoading } = useProduct(id);
 
-  const categorias = destructuring(useCategorias);
-  const proveedores = destructuring(useProveedores);
+  const categoriasOptions = () =>
+    paraSelectsdestructuringYMap(
+      useCategorias,
+      true,
+      "id_categoria",
+      "nombre_categoria"
+    );
+  const proveedoresOptions = () =>
+    paraSelectsdestructuringYMap(
+      useProveedores,
+      true,
+      "id_proveedor",
+      "nombre_proveedor"
+    );
 
   const configuracionFormulario = {
     nombre: producto?.data?.nombre || "",
@@ -48,11 +65,6 @@ export default function EditProduct() {
   const [formValues, setFormValues] = useState(
     crearEstadoFomulario(configuracionFormulario)
   );
-
-  const categoriasOptions = () =>
-    options(categorias, "id_categoria", "nombre_categoria");
-  const proveedoresOptions = () =>
-    options(proveedores, "id_proveedor", "nombre_proveedor");
 
   usarEfecto(producto, setFormValues, {
     //pasamos objeto con campos adicionales
