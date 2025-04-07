@@ -1,6 +1,6 @@
-import { ActionButton } from "../../shared/ActionButton";
-import { Navigation } from "../../shared/Navigation";
-import Modal from "../../shared/Modal";
+import { ActionButton } from "./ActionButton";
+import { Navigation } from "./Navigation";
+import Modal from "./Modal";
 import { useState } from "react";
 
 const EntityForm = ({
@@ -9,10 +9,7 @@ const EntityForm = ({
   fields,
   esLoading,
   entityId,
-  title,
-  subTitle,
-  icon,
-  actions = [],
+  paraNavegacion,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal
 
@@ -31,10 +28,10 @@ const EntityForm = ({
   return (
     <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 mx-auto">
       <Navigation
-        title={title}
-        subTitle={subTitle}
-        icon={icon}
-        actions={actions}
+        title={paraNavegacion.title}
+        subTitle={paraNavegacion.subTitle}
+        icon={paraNavegacion.icon}
+        actions={paraNavegacion.actions}
       />
       <form
         onSubmit={manejarEnviar}

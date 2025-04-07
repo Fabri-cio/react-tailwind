@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import usePagination from "../../../hooks/usePagination";
+import usePagination from "./usePagination";
 
 export const useFormEntity = () => {
   const navigate = useNavigate();

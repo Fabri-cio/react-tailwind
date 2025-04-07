@@ -3,7 +3,7 @@ import Loading from "@/components/shared/Loading";
 import ErrorMessage from "@/components/shared/ErrorMessaje";
 import Pagination from "../../components/shared/Pagination";
 import { Navigation } from "../../components/shared/Navigation";
-import { useFormEntity } from "../productos/productos/useFormEntity";
+import { useFormEntity } from "../../hooks/useFormEntity";
 
 function EntityList({ entityData }) {
   const {

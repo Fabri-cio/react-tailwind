@@ -1,14 +1,16 @@
 import { useParams } from "react-router-dom";
-import { useFormEntity } from "./useFormEntity";
+import { useFormEntity } from "../../hooks/useFormEntity";
 import EntityForm from "./EntityForm";
-import { FaBackspace, FaEdit } from "react-icons/fa";
+import { useState } from "react";
 
-export default function EditEntityForm(
+export default function EditEntity({
   useEntityMutations,
   useEntity,
   configForm,
-  paraEnvio
-) {
+  paraEnvio,
+  construirCampos,
+  paraNavegacion,
+}) {
   const { id } = useParams(); // Obtiene el parámetro 'id' de la URL utilizando useParams();
 
   const {
@@ -19,9 +21,9 @@ export default function EditEntityForm(
     usarEfecto,
   } = useFormEntity();
 
-  const { actualizar } = useEntityMutations();
-
   const { data: entidad, isLoading } = useEntity(id);
+
+  const { actualizar } = useEntityMutations();
 
   const [formValues, setFormValues] = useState(
     crearEstadoFomulario(configForm(entidad))
@@ -39,42 +41,31 @@ export default function EditEntityForm(
     handleToggleChange,
   };
 
+  const envio = paraEnvio(formValues);
+
   const handleSubmit = (event) => {
     event.preventDefault(); // Asegúrate de prevenir la acción predeterminada del formulario
     manejarEnvio(
       event,
-      paraEnvio.link,
+      envio.link,
       formValues,
       null,
       actualizar,
-      paraEnvio.entityId,
-      {
-        ...paraEnvio.params,
-      }
+      envio.entityId,
+      { ...envio.params }
     );
   };
 
-  const fields = (formValues, manejarEntradas) => {};
-  
+  const fields = construirCampos(formValues, manejarEntradas);
+
   return (
     <EntityForm
       valorsForm={formValues}
       manejarEnviar={handleSubmit}
       fields={fields}
       esLoading={isLoading}
-      entityId={paraEnvio.entityId}
-      title={"Editar Producto"}
-      subTitle={"Actualice los campos necesarios"}
-      icon={FaEdit}
-      actions={[
-        {
-          to: paraEnvio.link,
-          label: "Volver",
-          icon: FaBackspace,
-          estilos:
-            "border-2 border-gray-400 text-gray-700 hover:text-white hover:bg-gray-700 p-1 gap-2",
-        },
-      ]}
+      entityId={envio.entityId}
+      paraNavegacion={paraNavegacion}
     />
   );
 }
