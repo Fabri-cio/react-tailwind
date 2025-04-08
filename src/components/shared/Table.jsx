@@ -9,15 +9,15 @@ const Table = ({
 }) => {
   // Memoriza las cabeceras de la tabla
   const headers = fields.map((field) => (
-    <th key={field.key} className="px-4 py-2 text-left text-sm">
+    <th key={field.key} className="px-4 py-2 text-left text-sm font-bold">
       {field.label}
     </th>
   ));
 
   return (
     <table className="min-w-full table-auto border-2 border-gray-400 rounded-lg">
-      <thead>
-        <tr>{headers}</tr>
+      <thead className="bg-gray-800 text-white border-b-2 border-gray-400">
+        <tr className="">{headers}</tr>
       </thead>
       <tbody className="border-t-2 border-gray-400">
         {items.map((item, index) => {

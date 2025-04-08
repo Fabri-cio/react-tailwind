@@ -1,13 +1,13 @@
 import {
-  useProductMutations,
-  useCategorias,
-  useProveedores,
-  useProduct,
+  useAlmacenes,
+  useRoles,
+  useUserMutations,
+  useUser,
+
 } from "../hooks/useEntities";
 import { InputField } from "../components/shared/InputField";
 import { ToggleSwitch } from "../components/shared/ToggleSwitch";
 import { SelectField } from "../components/shared/SelectField";
-import { obtenerIdUser } from "../utils/auth";
 import {
   FaBackspace,
   FaEdit,
@@ -18,86 +18,91 @@ import {
 import EditEntity from "../components/shared/EditEntity";
 import { useFormEntity } from "../utils/useFormEntity";
 
-export default function EditProduct() {
+export default function EditUser() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
-  const logicaNegocio = {
-    idUsuario: obtenerIdUser(),
-  };
-
-  const categoriasOptions = () =>
+  const almacenOptions = () =>
     paraSelectsdestructuringYMap(
-      useCategorias,
+      useAlmacenes,
       true,
-      "id_categoria",
-      "nombre_categoria"
+      "id_almacen_tienda",
+      "nombre"
     );
 
-  const proveedoresOptions = () =>
-    paraSelectsdestructuringYMap(
-      useProveedores,
-      true,
-      "id_proveedor",
-      "nombre_proveedor"
-    );
+  const rolesOptions = () =>
+    paraSelectsdestructuringYMap(useRoles, true, "id", "name");
 
   const selects = {
-    categoriasOptions,
-    proveedoresOptions,
+    almacenOptions,
+    rolesOptions,
   };
 
   const configuracionFormulario = (entidad) => ({
-    nombre: entidad?.data?.nombre || "",
-    precio: entidad?.data?.precio || "",
-    codigo_barras: entidad?.data?.codigo_barras || "",
-    id_proveedor: entidad?.data?.id_proveedor || "",
-    categoria: entidad?.data?.categoria || "",
-    estado: entidad?.data?.estado || false,
+    first_name: entidad?.data?.first_name || "",
+    last_name: entidad?.data?.last_name || "",
+    username: entidad?.data?.username || "",
+    email: entidad?.data?.email || "",
+    birthday: entidad?.data?.birthday || "",
+    lugar_de_trabajo: entidad?.data?.lugar_de_trabajo || "",
+    role: entidad?.data?.role || "",
+    is_active: entidad?.data?.is_active || false,
   });
 
   const camposExtras = (formValues) => ({
-    id_proveedor: Number(formValues.id_proveedor),
-    categoria: Number(formValues.categoria),
-    precio: parseFloat(formValues.precio).toFixed(2),
-    usuario_modificacion: logicaNegocio.idUsuario,
+    lugar_de_trabajo: Number(formValues.lugar_de_trabajo),
+    role: Number(formValues.role),
   });
 
   const paraEnvio = (formValues) => ({
-    entityId: formValues.id_producto,
-    link: "/productList",
+    entityId: formValues.id,
+    link: "/userList",
     params: camposExtras(formValues),
   });
 
   const construirCampos = (formValues, manejarEntradas) => [
     {
       component: InputField,
-      label: "Nombre",
-      name: "nombre",
+      label: "Nombres",
+      name: "first_name",
       required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
       component: InputField,
-      label: "Precio",
-      name: "precio",
-      type: "number",
+      label: "Apellidos",
+      name: "last_name",
       required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
       component: InputField,
-      label: "Codigo de Barras",
-      name: "codigo_barras",
+      label: "Nombre de usuario",
+      name: "username",
       required: true,
       onChange: manejarEntradas.handleInputChange,
     },
-
+    {
+      component: InputField,
+      label: "Correo Electronico",
+      name: "email",
+      type: "email",
+      required: true,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+        component: InputField,
+        label: "Fecha de Nacimiento",
+        name: "birthday",
+        type: "date",
+        required: true,
+        onChange: manejarEntradas.handleInputChange,
+      },
     {
       component: SelectField,
-      label: "Categoría",
-      name: "categoria",
+      label: "Lugar de Trabajo",
+      name: "lugar_de_trabajo",
       onChange: manejarEntradas.handleInputChange,
-      options: selects.categoriasOptions(),
+      options: selects.almacenOptions(),
       actionButtons: [
         {
           to: "/editCategory",
@@ -118,27 +123,27 @@ export default function EditProduct() {
     },
     {
       component: SelectField,
-      label: "Proveedor",
-      name: "id_proveedor",
+      label: "Rol",
+      name: "role",
       onChange: manejarEntradas.handleInputChange,
-      options: selects.proveedoresOptions(),
+      options: selects.rolesOptions(),
     },
     {
       component: ToggleSwitch,
-      label: "Estado del Producto",
-      name: "estado",
-      checked: formValues.estado,
-      onChange: manejarEntradas.handleToggleChange("estado"),
+      label: "Estado del Usuario",
+      name: "is_active",
+      checked: formValues.is_active,
+      onChange: manejarEntradas.handleToggleChange("is_active"),
     },
   ];
 
   const paraNavegacion = {
-    title: "Editar Producto",
-    subTitle: "Actualice los datos del producto",
+    title: "Crear Usuario",
+    subTitle: "Ingreso los datos para crear un Usuario",
     icon: FaEdit,
     actions: [
       {
-        to: "/productList",
+        to: "/userList",
         label: "Volver",
         icon: FaBackspace,
         estilos:
@@ -149,8 +154,8 @@ export default function EditProduct() {
 
   return (
     <EditEntity
-      useEntityMutations={useProductMutations}
-      useEntity={useProduct}
+      useEntityMutations={useUserMutations}
+      useEntity={useUser}
       configForm={configuracionFormulario}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}

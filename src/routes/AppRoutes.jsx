@@ -46,8 +46,8 @@ const PrediccionResultados = lazy(() =>
 );
 // Usuarios
 const UserList = lazy(() => import("../pages/usuarios/UserList"));
-const EditUser = lazy(() => import("../components/usuarios/UserForm"));
-const CreateUser = lazy(() => import("../components/usuarios/UserForm"));
+const EditUser = lazy(() => import("../data/EditUser"));
+const CreateUser = lazy(() => import("../data/CreateUser"));
 // Inventarios
 const InventarioList = lazy(() =>
   import("../pages/inventarios/InventarioList")

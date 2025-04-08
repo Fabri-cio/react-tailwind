@@ -26,8 +26,8 @@ export const useFormEntity = () => {
     }));
   };
 
-  const manejarCambioDeEstado = (setFormValues) => (value) => {
-    setFormValues((prevState) => ({ ...prevState, estado: value }));
+  const manejarCambioDeEstado = (setFormValues) => (fieldName) => (value) => {
+    setFormValues((prevState) => ({ ...prevState, [fieldName]: value }));
   };
 
   const usarEfecto = (entidad, setFormValues, campos = {}) => {

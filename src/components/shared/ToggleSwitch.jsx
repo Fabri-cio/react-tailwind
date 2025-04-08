@@ -5,13 +5,13 @@ export function ToggleSwitch({ label, checked, onChange }) {
         <div
           role="switch"
           aria-checked={checked}
-          className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer ${
+          className={`relative w-11 h-5 flex items-center rounded-full p-1 cursor-pointer ${
             checked ? "bg-green-500" : "bg-red-400"
           }`}
           onClick={() => onChange(!checked)}
         >
           <div
-            className={`w-4 h-4 bg-white rounded-full shadow-md transform duration-300 ${
+            className={`w-3 h-3 bg-gray-200 rounded-full shadow-md transform duration-300 ${
               checked ? "translate-x-6" : "translate-x-0"
             }`}
           ></div>
