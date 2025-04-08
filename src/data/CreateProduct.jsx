@@ -1,15 +1,15 @@
-import { useFormEntity } from "../../hooks/useFormEntity";
+import { useFormEntity } from "../utils/useFormEntity";
 import {
   useProductMutations,
   useCategorias,
   useProveedores,
-} from "../../hooks/useEntities";
-import { InputField } from "../shared/InputField";
-import { SelectField } from "../shared/SelectField";
-import { ToggleSwitch } from "../shared/ToggleSwitch";
-import { obtenerIdUser } from "../../utils/auth";
+} from "../hooks/useEntities";
+import { InputField } from "../components/shared/InputField";
+import { SelectField } from "../components/shared/SelectField";
+import { ToggleSwitch } from "../components/shared/ToggleSwitch";
+import { obtenerIdUser } from "../utils/auth";
 import { FaBackspace, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
-import CreateEntity from "../shared/CreateEntity";
+import CreateEntity from "../components/shared/CreateEntity";
 
 export default function CreateProduct() {
   const { paraSelectsdestructuringYMap } = useFormEntity();

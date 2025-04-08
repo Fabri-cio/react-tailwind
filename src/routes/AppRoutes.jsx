@@ -22,9 +22,9 @@ const Home = lazy(() => import("../pages/Home"));
 const Movimientos = lazy(() => import("../pages/movimientos/Movimientos"));
 // Productos
 const ProductList = lazy(() => import("@/pages/productos/ProductList"));
-const EditProduct = lazy(() => import("../components/data/EditProduct"));
+const EditProduct = lazy(() => import("../data/EditProduct"));
 const CreateProduct = lazy(() =>
-  import("../components/data/CreateProduct")
+  import("../data/CreateProduct")
 );
 const Categorias = lazy(() => import("@/pages/productos/Categorias"));
 const Proveedores = lazy(() => import("@/pages/productos/Proveedores"));

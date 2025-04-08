@@ -60,7 +60,7 @@ const EntityForm = ({
         <ActionButton
           type="submit"
           label={entityId ? "Actualizar" : "Crear"}
-          estilos="hover:bg-gray-600 hover:text-gray-100 text-black border-2 border-gray-400 rounded-md flex items-center gap-2 transition duration-200"
+          estilos="hover:bg-gray-600 hover:text-gray-100 text-black border-2 border-gray-400 rounded-md flex items-center gap-2 transition duration-200 p-1"
         />
       </form>
 

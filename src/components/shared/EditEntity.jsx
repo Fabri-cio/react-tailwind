@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useFormEntity } from "../../hooks/useFormEntity";
+import { useFormEntity } from "../../utils/useFormEntity";
 import EntityForm from "./EntityForm";
 import { useState } from "react";
 

@@ -1,5 +1,5 @@
 import EntityForm from "./EntityForm";
-import { useFormEntity } from "../../hooks/useFormEntity";
+import { useFormEntity } from "../../utils/useFormEntity";
 import { useState } from "react";
 
 export default function CreateEntity({

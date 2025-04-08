@@ -3,14 +3,20 @@ import {
   useCategorias,
   useProveedores,
   useProduct,
-} from "../../hooks/useEntities";
-import { InputField } from "../shared/InputField";
-import { ToggleSwitch } from "../shared/ToggleSwitch";
-import { SelectField } from "../shared/SelectField";
-import { obtenerIdUser } from "../../utils/auth";
-import { FaBackspace, FaEdit, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
-import EditEntity from "../shared/EditEntity";
-import { useFormEntity } from "../../hooks/useFormEntity";
+} from "../hooks/useEntities";
+import { InputField } from "../components/shared/InputField";
+import { ToggleSwitch } from "../components/shared/ToggleSwitch";
+import { SelectField } from "../components/shared/SelectField";
+import { obtenerIdUser } from "../utils/auth";
+import {
+  FaBackspace,
+  FaEdit,
+  FaEye,
+  FaPencilAlt,
+  FaPlus,
+} from "react-icons/fa";
+import EditEntity from "../components/shared/EditEntity";
+import { useFormEntity } from "../utils/useFormEntity";
 
 export default function EditProduct() {
   const { paraSelectsdestructuringYMap } = useFormEntity();

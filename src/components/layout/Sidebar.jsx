@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SidebarMenu from "./SidebarMenu";
-import { menus } from "../data/SidebarData";
+import { menus } from "../../data/SidebarData";
 
 const Sidebar = ({ isVisible }) => {
   const [openMenu, setOpenMenu] = useState(null);
