@@ -34,15 +34,18 @@ export default function CreateEntity({
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Asegúrate de prevenir la acción predeterminada del formulario
-    manejarEnvio(
-      event,
-      envio.link,
-      formValues,
-      crear,
-      null,
-      envio.entityId,
-      { ...envio.params }
-    );
+
+     // Validación de Contraseña solo si existen los campos 'password' y 'confirm_password'
+  if ((formValues.password ?? false) && (formValues.confirm_password ?? false)) {
+    if (formValues.password !== formValues.confirm_password) {
+      alert("Las contraseñas no coinciden.");
+      return;
+    }
+  }
+
+    manejarEnvio(event, envio.link, formValues, crear, null, envio.entityId, {
+      ...envio.params,
+    });
   };
 
   const fields = construirCampos(formValues, manejarEntradas);

@@ -117,7 +117,7 @@ export default function CreateProduct() {
       label: "Estado",
       name: "estado",
       checked: formValues.estado,
-      onChange: manejarEntradas.handleToggleChange,
+      onChange: manejarEntradas.handleToggleChange("estado"),
     },
   ];
 

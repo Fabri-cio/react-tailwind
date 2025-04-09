@@ -6,7 +6,7 @@ import { ToggleSwitch } from "../components/shared/ToggleSwitch";
 import { FaBackspace, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
 import CreateEntity from "../components/shared/CreateEntity";
 
-export default function CreateProduct() {
+export default function CreateUser() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const almacenOptions = () =>
@@ -85,6 +85,22 @@ export default function CreateProduct() {
       onChange: manejarEntradas.handleInputChange,
     },
     {
+      component: InputField,
+      label: "Contraseña",
+      name: "password",
+      type: "password",
+      required: true,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+      component: InputField,
+      label: "Confirmar Contraseña",
+      name: "confirm_password",
+      type: "password",
+      required: true,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
       component: SelectField,
       label: "Lugar de Trabajo",
       name: "lugar_de_trabajo",
@@ -125,12 +141,12 @@ export default function CreateProduct() {
   ];
 
   const paraNavegacion = {
-    title: "Crear Producto",
-    subTitle: "Crea un nuevo producto",
+    title: "Crear Usuario",
+    subTitle: "Crea un nuevo usuario",
     icon: FaPlus,
     actions: [
       {
-        to: "/productList",
+        to: "/userList",
         label: "Volver",
         icon: FaBackspace,
         estilos:
