@@ -1,9 +1,10 @@
 import useData from "./useData";
 import { useEntityMutations } from "./useEntityMutations";
 import { ProductosAPI, CategoriasAPI, ProveedoresAPI } from "../api/producto.api";
-import { CustomUsersAPI, RolesApi, RegistroApi } from "../api/usuario.api";
+import { CustomUsersAPI, RolesApi, PasswordResetAPI} from "../api/usuario.api";
 import { InventariosAPI, TipMovsApi, AlmacenesApi, MovimientosAPI } from "../api/almacen.api";
 import { VentasAPI, DetVentasAPI } from "../api/venta.api";
+import { useMutationWithToast } from "./useMutationWithToast";
 
 //productos
 export const useProducts = (all_data = false, page = 1) => {
@@ -81,3 +82,11 @@ export const useDetaVentas = (all_data = false, page = 1) => {
 };
 export const useDetVenta = (id) => useData(DetVentasAPI, "detVenta", id);
 export const useDetVentaMutations = () => useEntityMutations(DetVentasAPI, "Detalle de la venta");
+
+// password reset
+export const usePasswordResetConfirm = () => {
+  return useMutationWithToast(({ token, password }) => PasswordResetAPI.confirmReset(token, password), "Reestableciendo contraseña...", "Contraseña reestablecida con éxito", null);
+}
+export const usePasswordResetRequest = () => {
+  return useMutationWithToast((email) => PasswordResetAPI.requestReset(email), "Solicitud de restablecimiento de contraseña enviada", "Error al solicitar el restablecimiento de contraseña", null);
+}

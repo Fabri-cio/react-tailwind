@@ -110,10 +110,6 @@ const Login = () => {
         </form>
 
         <div className="mt-6 text-center">
-          <a href="/register" className="text-sm text-blue-600 hover:underline">
-            ¿No tienes cuenta? ¡Regístrate!
-          </a>
-          <br />
           <a
             href="/request/password_reset"
             className="text-sm text-blue-600 hover:underline"

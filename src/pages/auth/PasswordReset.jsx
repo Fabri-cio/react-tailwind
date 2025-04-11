@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
-import { usePasswordResetConfirm } from "../../hooks/usePasswordResetConfirm";
+import { usePasswordResetConfirm } from "../../hooks/useEntities";
 
 const PasswordReset = () => {
   const navigate = useNavigate();
