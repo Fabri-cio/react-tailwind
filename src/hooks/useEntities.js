@@ -33,9 +33,6 @@ export const useUsers = (all_data = false, page = 1) => {
 export const useUser = (id) => useData(CustomUsersAPI, "user", id);
 export const useUserMutations = () => useEntityMutations(CustomUsersAPI, "Usuario");
 
-//registrar usuario
-export const useRegisterMutations = () => useEntityMutations(RegistroApi, "Registro");
-
 //roles
 export const useRoles = (all_data = false, page = 1) => {
   return useData( RolesApi, "roles", null, { all_data, page }, 1000 * 60 * 5);

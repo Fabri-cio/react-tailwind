@@ -9,7 +9,6 @@ const FallbackComponent = () => <div>Hubo un error al cargar la página</div>;
 
 //Login
 const Login = lazy(() => import("../pages/auth/Login"));
-const Register = lazy(() => import("../pages/auth/Register"));
 const PasswordResetRequest = lazy(() =>
   import("../pages/auth/PasswordResetRequest")
 );
@@ -69,7 +68,6 @@ const AppRoutes = () => {
           {/* Rutas publicas */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
             <Route
               path="/request/password_reset"
               element={<PasswordResetRequest />}

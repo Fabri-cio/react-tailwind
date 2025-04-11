@@ -42,7 +42,7 @@ function UserList() {
     loadingMessage: "Cargando usuarios...",
     errorMessage: "Error al obtener los usuarios",
     fetchDataHook: useUsers,
-    all_data: false,
+    all_data: true,
     itemKey: "id",
     entityFields: userFields,
     actions: [

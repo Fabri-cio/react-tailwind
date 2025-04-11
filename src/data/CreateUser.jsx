@@ -3,6 +3,7 @@ import { useAlmacenes, useRoles, useUserMutations } from "../hooks/useEntities";
 import { InputField } from "../components/shared/InputField";
 import { SelectField } from "../components/shared/SelectField";
 import { ToggleSwitch } from "../components/shared/ToggleSwitch";
+import { CheckBox } from "../components/shared/CheckBox";
 import { FaBackspace, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
 import CreateEntity from "../components/shared/CreateEntity";
 
@@ -34,6 +35,7 @@ export default function CreateUser() {
     lugar_de_trabajo: "",
     role: "",
     is_active: false,
+    is_superuser: false,
   };
 
   const camposExtras = (formValues) => ({
@@ -137,6 +139,13 @@ export default function CreateUser() {
       name: "is_active",
       checked: formValues.is_active,
       onChange: manejarEntradas.handleToggleChange("is_active"),
+    },
+    {
+      component: CheckBox,
+      label: "Es admininstrador",
+      name: "is_superuser",
+      checked: formValues.is_superuser,
+      onChange: manejarEntradas.handleToggleChange("is_superuser"),
     },
   ];
 

@@ -3,11 +3,11 @@ import {
   useRoles,
   useUserMutations,
   useUser,
-
 } from "../hooks/useEntities";
 import { InputField } from "../components/shared/InputField";
 import { ToggleSwitch } from "../components/shared/ToggleSwitch";
 import { SelectField } from "../components/shared/SelectField";
+import { CheckBox } from "../components/shared/CheckBox";
 import {
   FaBackspace,
   FaEdit,
@@ -76,6 +76,14 @@ export default function EditUser() {
     },
     {
       component: InputField,
+      label: "Nueva Contraseña",
+      type: "password",
+      name: "new_password",
+      required: false,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+      component: InputField,
       label: "Nombre de usuario",
       name: "username",
       required: true,
@@ -90,13 +98,13 @@ export default function EditUser() {
       onChange: manejarEntradas.handleInputChange,
     },
     {
-        component: InputField,
-        label: "Fecha de Nacimiento",
-        name: "birthday",
-        type: "date",
-        required: true,
-        onChange: manejarEntradas.handleInputChange,
-      },
+      component: InputField,
+      label: "Fecha de Nacimiento",
+      name: "birthday",
+      type: "date",
+      required: true,
+      onChange: manejarEntradas.handleInputChange,
+    },
     {
       component: SelectField,
       label: "Lugar de Trabajo",
@@ -135,11 +143,18 @@ export default function EditUser() {
       checked: formValues.is_active,
       onChange: manejarEntradas.handleToggleChange("is_active"),
     },
+    {
+      component: CheckBox,
+      label: "Es admininstrador",
+      name: "is_superuser",
+      checked: formValues.is_superuser,
+      onChange: manejarEntradas.handleToggleChange("is_superuser"),
+    },
   ];
 
   const paraNavegacion = {
-    title: "Crear Usuario",
-    subTitle: "Ingreso los datos para crear un Usuario",
+    title: "Editar Usuario",
+    subTitle: "Modifique los datos del usuario si es necesario",
     icon: FaEdit,
     actions: [
       {

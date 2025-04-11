@@ -44,7 +44,11 @@ export default function EditEntity({
   const envio = paraEnvio(formValues);
 
   const handleSubmit = (event) => {
-    event.preventDefault(); // Asegúrate de prevenir la acción predeterminada del formulario
+    event.preventDefault();
+
+    if (formValues.new_password ?? false) {
+      formValues.new_password = formValues.new_password;
+    }
     manejarEnvio(
       event,
       envio.link,
