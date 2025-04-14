@@ -49,7 +49,7 @@ const EditUser = lazy(() => import("../data/EditUser"));
 const CreateUser = lazy(() => import("../data/CreateUser"));
 // Inventarios
 const InventarioList = lazy(() =>
-  import("../pages/inventarios/InventarioList")
+  import("../data/almacenes/InventarioList")
 );
 const CrearInventario = lazy(() =>
   import("../components/inventarios/CrearInventario")
