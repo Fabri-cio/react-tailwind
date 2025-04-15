@@ -1,7 +1,6 @@
 import { FaBox, FaFilePdf, FaPlus } from "react-icons/fa";
 import EntityList from "../../components/shared/EntityList";
 import { useInventarios } from "../../hooks/useEntities";
-import { lazy } from "react";
 export default function InventarioList() {
   const inventarioCampos = () => [
     { key: "index", label: "N°." },
@@ -17,7 +16,7 @@ export default function InventarioList() {
     loadingMessage: "Cargando inventario...",
     errorMessage: "Error al obtener inventario",
     fetchDataHook: useInventarios,
-    all_data: true,
+    all_data: false,
     itemKey: "id_inventario",
     entityFields: inventarioCampos,
     actions: [
@@ -29,7 +28,7 @@ export default function InventarioList() {
           "border-gray-400 rounded-lg border-2 p-1 text-green-600 hover:bg-green-600 hover:text-white flex items-center gap-2 transition duration-200",
       },
       {
-        to: "/generarReporte",
+        to: "/reportes",
         label: "Generar Reporte",
         icon: FaFilePdf,
         estilos:

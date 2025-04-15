@@ -1,11 +1,11 @@
-import { useFormEntity } from "../utils/useFormEntity";
-import { useAlmacenes, useRoles, useUserMutations } from "../hooks/useEntities";
-import { InputField } from "../components/shared/InputField";
-import { SelectField } from "../components/shared/SelectField";
-import { ToggleSwitch } from "../components/shared/ToggleSwitch";
-import { CheckBox } from "../components/shared/CheckBox";
+import { useFormEntity } from "../../utils/useFormEntity";
+import { useAlmacenes, useRoles, useUserMutations } from "../../hooks/useEntities";
+import { InputField } from "../../components/shared/InputField";
+import { SelectField } from "../../components/shared/SelectField";
+import { ToggleSwitch } from "../../components/shared/ToggleSwitch";
+import { CheckBox } from "../../components/shared/CheckBox";
 import { FaBackspace, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
-import CreateEntity from "../components/shared/CreateEntity";
+import CreateEntity from "../../components/shared/CreateEntity";
 
 export default function CreateUser() {
   const { paraSelectsdestructuringYMap } = useFormEntity();

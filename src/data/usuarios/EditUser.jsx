@@ -3,11 +3,11 @@ import {
   useRoles,
   useUserMutations,
   useUser,
-} from "../hooks/useEntities";
-import { InputField } from "../components/shared/InputField";
-import { ToggleSwitch } from "../components/shared/ToggleSwitch";
-import { SelectField } from "../components/shared/SelectField";
-import { CheckBox } from "../components/shared/CheckBox";
+} from "../../hooks/useEntities";
+import { InputField } from "../../components/shared/InputField";
+import { ToggleSwitch } from "../../components/shared/ToggleSwitch";
+import { SelectField } from "../../components/shared/SelectField";
+import { CheckBox } from "../../components/shared/CheckBox";
 import {
   FaBackspace,
   FaEdit,
@@ -15,8 +15,8 @@ import {
   FaPencilAlt,
   FaPlus,
 } from "react-icons/fa";
-import EditEntity from "../components/shared/EditEntity";
-import { useFormEntity } from "../utils/useFormEntity";
+import EditEntity from "../../components/shared/EditEntity";
+import { useFormEntity } from "../../utils/useFormEntity";
 
 export default function EditUser() {
   const { paraSelectsdestructuringYMap } = useFormEntity();

@@ -1,17 +1,24 @@
-import { useFormEntity } from "../utils/useFormEntity";
 import {
   useProductMutations,
   useCategorias,
   useProveedores,
-} from "../hooks/useEntities";
-import { InputField } from "../components/shared/InputField";
-import { SelectField } from "../components/shared/SelectField";
-import { ToggleSwitch } from "../components/shared/ToggleSwitch";
-import { obtenerIdUser } from "../utils/auth";
-import { FaBackspace, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
-import CreateEntity from "../components/shared/CreateEntity";
+  useProduct,
+} from "../../hooks/useEntities";
+import { InputField } from "../../components/shared/InputField";
+import { ToggleSwitch } from "../../components/shared/ToggleSwitch";
+import { SelectField } from "../../components/shared/SelectField";
+import { obtenerIdUser } from "../../utils/auth";
+import {
+  FaBackspace,
+  FaEdit,
+  FaEye,
+  FaPencilAlt,
+  FaPlus,
+} from "react-icons/fa";
+import EditEntity from "../../components/shared/EditEntity";
+import { useFormEntity } from "../../utils/useFormEntity";
 
-export default function CreateProduct() {
+export default function EditProduct() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const logicaNegocio = {
@@ -25,6 +32,7 @@ export default function CreateProduct() {
       "id_categoria",
       "nombre_categoria"
     );
+
   const proveedoresOptions = () =>
     paraSelectsdestructuringYMap(
       useProveedores,
@@ -38,30 +46,31 @@ export default function CreateProduct() {
     proveedoresOptions,
   };
 
-  const configuracionFormulario = {
-    nombre: "",
-    precio: "",
-    codigo_barras: "",
-    id_proveedor: "",
-    categoria: "",
-    estado: false,
-  };
+  const configuracionFormulario = (entidad) => ({
+    nombre: entidad?.data?.nombre || "",
+    precio: entidad?.data?.precio || "",
+    codigo_barras: entidad?.data?.codigo_barras || "",
+    id_proveedor: entidad?.data?.id_proveedor || "",
+    categoria: entidad?.data?.categoria || "",
+    estado: entidad?.data?.estado || false,
+  });
 
   const camposExtras = (formValues) => ({
     id_proveedor: Number(formValues.id_proveedor),
     categoria: Number(formValues.categoria),
     precio: parseFloat(formValues.precio).toFixed(2),
-    usuario_creacion: logicaNegocio.idUsuario,
+    usuario_modificacion: logicaNegocio.idUsuario,
   });
 
   const paraEnvio = (formValues) => ({
+    entityId: formValues.id_producto,
     link: "/productList",
     params: camposExtras(formValues),
   });
 
   const construirCampos = (formValues, manejarEntradas) => [
     {
-      component: InputField, // Nombre corregido
+      component: InputField,
       label: "Nombre",
       name: "nombre",
       required: true,
@@ -77,16 +86,18 @@ export default function CreateProduct() {
     },
     {
       component: InputField,
-      label: "Código de Barras",
+      label: "Codigo de Barras",
       name: "codigo_barras",
+      required: true,
       onChange: manejarEntradas.handleInputChange,
     },
+
     {
       component: SelectField,
       label: "Categoría",
       name: "categoria",
-      options: categoriasOptions(),
       onChange: manejarEntradas.handleInputChange,
+      options: selects.categoriasOptions(),
       actionButtons: [
         {
           to: "/editCategory",
@@ -109,12 +120,12 @@ export default function CreateProduct() {
       component: SelectField,
       label: "Proveedor",
       name: "id_proveedor",
-      options: proveedoresOptions(),
       onChange: manejarEntradas.handleInputChange,
+      options: selects.proveedoresOptions(),
     },
     {
       component: ToggleSwitch,
-      label: "Estado",
+      label: "Estado del Producto",
       name: "estado",
       checked: formValues.estado,
       onChange: manejarEntradas.handleToggleChange("estado"),
@@ -122,23 +133,24 @@ export default function CreateProduct() {
   ];
 
   const paraNavegacion = {
-    title: "Crear Producto",
-    subTitle: "Crea un nuevo producto",
-    icon: FaPlus,
+    title: "Editar Producto",
+    subTitle: "Actualice los datos del producto",
+    icon: FaEdit,
     actions: [
       {
         to: "/productList",
         label: "Volver",
         icon: FaBackspace,
         estilos:
-          "border-2 border-gray-400 text-gray-700 hover:bg-gray-700 hover:text-white p-2 rounded-lg",
+          "border-2 border-gray-400 text-gray-700 hover:text-white hover:bg-gray-700 p-1 gap-2",
       },
     ],
   };
 
   return (
-    <CreateEntity
+    <EditEntity
       useEntityMutations={useProductMutations}
+      useEntity={useProduct}
       configForm={configuracionFormulario}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}

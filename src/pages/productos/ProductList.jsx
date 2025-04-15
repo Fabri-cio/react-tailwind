@@ -49,7 +49,7 @@ function ProductList() {
         label: "Nuevo producto",
         icon: FaPlus,
         estilos:
-          "hover:bg-gray-600 hover:text-white py-2 px-1 text-black border-2 rounded-md border-gray-400 flex items-center gap-2 transition duration-200",
+          "border-gray-400 rounded-lg border-2 p-1 text-green-600 hover:bg-green-600 hover:text-white flex items-center gap-2 transition duration-200",
       },
     ],
     icon: FaBox,

@@ -4,6 +4,7 @@ import ErrorMessage from "@/components/shared/ErrorMessaje";
 import Pagination from "../../components/shared/Pagination";
 import { Navigation } from "../../components/shared/Navigation";
 import { useFormEntity } from "../../utils/useFormEntity";
+import BarraBusqueda from "./BarraBusqueda";
 
 function EntityList({ entityData }) {
   const {
@@ -47,6 +48,10 @@ function EntityList({ entityData }) {
         subTitle={`${subTitle}`}
         actions={actions}
         icon={icon}
+      />
+
+      <BarraBusqueda 
+        
       />
 
       <Table

@@ -3,14 +3,15 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useMovimientos } from "../../hooks/useEntities";
 
+
 function Movimientos() {
   const {
     data: response = {},
     isLoading: loadingMovimientos,
     isError: errorMovimientos,
-  } = useMovimientos();
+  } = useMovimientos(true);
 
-  const movimientos = response.data || [];
+  const movimientos = response.results || response.data || [];
 
   console.log("Movimientos cargados:", movimientos);
 
