@@ -4,7 +4,7 @@ import ErrorMessage from "@/components/shared/ErrorMessaje";
 import Pagination from "../../components/shared/Pagination";
 import { Navigation } from "../../components/shared/Navigation";
 import { useFormEntity } from "../../utils/useFormEntity";
-import BarraBusqueda from "./BarraBusqueda";
+import { useState } from "react";
 
 function EntityList({ entityData }) {
   const {
@@ -19,6 +19,7 @@ function EntityList({ entityData }) {
     itemKey,
     actions = [],
     icon,
+    clavesBusqueda = [],
   } = entityData; // Desestructuramos entityConfig
 
   const { todosDatosOpaginacion } = useFormEntity();
@@ -37,6 +38,21 @@ function EntityList({ entityData }) {
     previous,
   } = paginacion;
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredItems =
+    !searchQuery || clavesBusqueda.length === 0
+      ? items
+      : items.filter((item) =>
+          clavesBusqueda.some((key) =>
+            item[key]
+              ?.toString()
+              .toLowerCase()
+              .trim()
+              .includes(searchQuery.toLowerCase().trim())
+          )
+        );
+
   if (isLoading) return <Loading message={loadingMessage} />;
   if (isError) return <ErrorMessage message={errorMessage} />;
 
@@ -48,14 +64,13 @@ function EntityList({ entityData }) {
         subTitle={`${subTitle}`}
         actions={actions}
         icon={icon}
-      />
-
-      <BarraBusqueda 
-        
+        onSearch={setSearchQuery}
+        clavesBusqueda={clavesBusqueda}
+        placeholder="Buscar por nombre, proveedor, codigo..."
       />
 
       <Table
-        items={items}
+        items={filteredItems}
         fields={entityFields()}
         currentPage={currentPage}
         itemsPerPage={10}
