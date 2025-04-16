@@ -4,7 +4,7 @@ import ErrorMessage from "@/components/shared/ErrorMessaje";
 import Pagination from "../../components/shared/Pagination";
 import { Navigation } from "../../components/shared/Navigation";
 import { useFormEntity } from "../../utils/useFormEntity";
-import { useState } from "react";
+import useBarraBusqueda from "../../utils/useBarraBusqueda";
 
 function EntityList({ entityData }) {
   const {
@@ -31,27 +31,15 @@ function EntityList({ entityData }) {
     handlePageChange,
     isLoading,
     isError,
-    items,
+    items,  //esto se usa pero de forma paginacion.items en useBarraBusqueda
     totalItems,
     hasPagination,
     next,
     previous,
   } = paginacion;
 
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredItems =
-    !searchQuery || clavesBusqueda.length === 0
-      ? items
-      : items.filter((item) =>
-          clavesBusqueda.some((key) =>
-            item[key]
-              ?.toString()
-              .toLowerCase()
-              .trim()
-              .includes(searchQuery.toLowerCase().trim())
-          )
-        );
+  const { consultaBusqueda, setconsultaBusqueda, articulosFiltrados } =
+    useBarraBusqueda({ fetchDataHook, paginacion, clavesBusqueda });
 
   if (isLoading) return <Loading message={loadingMessage} />;
   if (isError) return <ErrorMessage message={errorMessage} />;
@@ -64,20 +52,20 @@ function EntityList({ entityData }) {
         subTitle={`${subTitle}`}
         actions={actions}
         icon={icon}
-        onSearch={setSearchQuery}
+        onSearch={setconsultaBusqueda}
         clavesBusqueda={clavesBusqueda}
         placeholder="Buscar por nombre, proveedor, codigo..."
       />
 
       <Table
-        items={filteredItems}
+        items={articulosFiltrados}
         fields={entityFields()}
         currentPage={currentPage}
         itemsPerPage={10}
         itemKey={itemKey || "id"}
       />
 
-      {hasPagination && (
+      {hasPagination && !consultaBusqueda && (
         <Pagination
           currentPage={currentPage}
           nextPage={next}
