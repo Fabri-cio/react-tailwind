@@ -40,7 +40,7 @@ export function Navigation({
 
       {/* Barra de búsqueda */}
       {tieneBusqueda && (
-        <div className="px-1 pb-1">
+        <div className="p-1">
           <BarraBusqueda
             onSearch={onSearch}
             clavesBusqueda={clavesBusqueda}

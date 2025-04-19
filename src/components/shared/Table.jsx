@@ -15,25 +15,27 @@ const Table = ({
   ));
 
   return (
-    <table className="min-w-full table-auto border-2 border-gray-400 rounded-lg">
-      <thead className="bg-gray-800 text-white border-b-2 border-gray-400">
-        <tr className="">{headers}</tr>
-      </thead>
-      <tbody className="border-t-2 border-gray-400">
-        {items.map((item, index) => {
-          const globalIndex = (currentPage - 1) * itemsPerPage + index;
-          const key = item[itemKey] ?? globalIndex;
-          return (
-            <Row
-              key={key}
-              item={{ ...item, index: globalIndex }}
-              fields={fields}
-              index={globalIndex}
-            />
-          );
-        })}
-      </tbody>
-    </table>
+    <div className="overflow-y-auto max-h-[400px] border rounded-lg">
+      <table className="min-w-full table-auto border-2 border-gray-400 rounded-lg">
+        <thead className="sticky top-0 z-50 bg-gray-800 text-white border-b-2 border-gray-400">
+          <tr>{headers}</tr>
+        </thead>
+        <tbody className="border-t-2 border-gray-400">
+          {items.map((item, index) => {
+            const globalIndex = (currentPage - 1) * itemsPerPage + index;
+            const key = item[itemKey] ?? globalIndex;
+            return (
+              <Row
+                key={key}
+                item={{ ...item, index: globalIndex }}
+                fields={fields}
+                index={globalIndex}
+              />
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

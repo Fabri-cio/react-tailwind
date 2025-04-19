@@ -40,7 +40,7 @@ function ProductList() {
     loadingMessage: "Cargando productos...",
     errorMessage: "Error al obtener los productos",
     fetchDataHook: useProducts,
-    all_data: true,
+    all_data: false,
     itemKey: "id_producto",
     entityFields: productFields,
     clavesBusqueda: ["nombre", "codigo_barras", "nombre_proveedor"],

@@ -11,7 +11,7 @@ const Navbar = ({ toggleSidebar }) => {
       <ActionButton
         icon={FaBars}
         onClick={toggleSidebar}
-        estilos="border-2 border-gray-400 p-1"
+        estilos="border-2 border-gray-400 rounded-lg p-1"
       />
       <ActionButton label={"Navbar"} to={"/home"} />
 
