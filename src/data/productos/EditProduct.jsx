@@ -58,7 +58,7 @@ export default function EditProduct() {
   const camposExtras = (formValues) => ({
     id_proveedor: Number(formValues.id_proveedor),
     categoria: Number(formValues.categoria),
-    precio: parseFloat(formValues.precio).toFixed(2),
+    
     usuario_modificacion: logicaNegocio.idUsuario,
   });
 

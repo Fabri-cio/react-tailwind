@@ -29,9 +29,8 @@ function ProductList() {
     {
       key: "precio",
       label: "Precio Bs.",
-      render: (item) => item.precio.toFixed(2),
     },
-    { key: "codigo_barras", label: "Código" },
+    { key: "imagen", label: "Imagen" },
   ];
 
   const entityData = {
