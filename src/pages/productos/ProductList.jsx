@@ -3,6 +3,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import EntityList from "@/components/shared/EntityList";
 import { FaPlus, FaBox } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Image from '../../components/shared/Image';   
 
 function ProductList() {
   const productFields = () => [
@@ -30,7 +31,11 @@ function ProductList() {
       key: "precio",
       label: "Precio Bs.",
     },
-    { key: "imagen", label: "Imagen" },
+    {
+      key: "imagen",
+      label: "Imagen",
+      render: (item) => <Image src={item.imagen} alt={item.nombre} className="rounded-full" width="w-20" height="h-20" fallback="/fallback.png"/>,
+    },
   ];
 
   const entityData = {
