@@ -7,7 +7,7 @@ const FormattedDate = ({ date, format = "DD/MMM/YYYY" }) => {
   const año = fecha.getFullYear();
 
   if (format === "DD/MMM/YYYY") {
-    return `${dia}/${mes}/${año}`;
+    return `${dia} ${mes} ${año}`;
   }
 
   if (format === "YYYY-MM-DD") {

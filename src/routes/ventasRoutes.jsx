@@ -1,9 +1,8 @@
-import { elements } from "chart.js";
 import { lazy } from "react";
 
 const RealizarVenta = lazy(() => import("../components/ventas/RealizarVenta"));
-const Ventas = lazy(() => import("@/pages/ventas/Ventas"));
-const DetalleVenta = lazy(() => import("@/pages/ventas/DetalleVenta"));
+const VentasList = lazy(() => import("../pages/ventas/Ventas"));
+const DetalleVenta = lazy(() => import("../pages/ventas/DetalleVenta"));
 const DetalleVentas = lazy(() => import("@/pages/ventas/DetalleVentas"));
 const ReporteVentas = lazy(() => import("@/pages/ventas/ReporteVentas"));
 
@@ -15,7 +14,7 @@ export const ventasRoutes = [
   },
   {
     path: "/ventas/ver",
-    element: <Ventas />,
+    element: <VentasList />,
   },
   //detalle de ventas
   {

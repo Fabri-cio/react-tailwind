@@ -13,7 +13,7 @@ export default function Image({
   const [imgSrc, setImgSrc] = useState(src);
   const [loading, setLoading] = useState(true);
 
-  const roundedClass = rounded ? "rounded-xl" : "";
+  const roundedClass = rounded ? "rounded-full" : "";
 
   return (
     <div className={`relative overflow-hidden ${width} ${height} ${roundedClass} ${className}`}>
