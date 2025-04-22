@@ -54,7 +54,7 @@ function EntityList({ entityData }) {
         icon={icon}
         onSearch={setconsultaBusqueda}
         clavesBusqueda={clavesBusqueda}
-        placeholder="Buscar por nombre, proveedor, codigo..."
+        placeholder="Buscar"
       />
 
       <Table

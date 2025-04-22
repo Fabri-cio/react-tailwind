@@ -12,7 +12,7 @@ function VentasList() {
       label: "Fecha",
       render: (item) => (
         <Link to={`/ventas/detalleVenta/${item.id_venta}`}>
-          {item.fecha_venta}
+          <FormattedDate date={item.fecha_venta} />
         </Link>
       ),
     },

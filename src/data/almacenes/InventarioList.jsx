@@ -19,6 +19,7 @@ export default function InventarioList() {
     all_data: false,
     itemKey: "id_inventario",
     entityFields: inventarioCampos,
+    clavesBusqueda: ["id_producto_nombre", "id_almacen_tienda_nombre"],
     actions: [
       {
         to: "/createInventario",

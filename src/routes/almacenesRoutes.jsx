@@ -3,7 +3,7 @@ import { lazy } from "react";
 const CrearInventario  = lazy(() => import("../components/inventarios/CrearInventario")) 
 const RegistrarMovimiento = lazy(() => import ("../components/inventarios/RegistrarMovimiento")) 
 const InventarioList = lazy(() => import ("../data/almacenes/InventarioList")) 
-const Movimientos = lazy(() => import ("../pages/movimientos/Movimientos")) 
+const Movimientos = lazy(() => import ("../data/almacenes/MovimientosList")) 
 
 export const almacenesRoutes = [
     // movimiento 

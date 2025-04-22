@@ -45,6 +45,7 @@ function UserList() {
     all_data: false,
     itemKey: "id",
     entityFields: userFields,
+    clavesBusqueda: ["full_name", "username"],
     actions: [
       {
         to: "/createUser",

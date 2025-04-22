@@ -3,7 +3,7 @@ import { lazy } from "react";
 const RealizarVenta = lazy(() => import("../components/ventas/RealizarVenta"));
 const VentasList = lazy(() => import("../pages/ventas/Ventas"));
 const DetalleVenta = lazy(() => import("../pages/ventas/DetalleVenta"));
-const DetalleVentas = lazy(() => import("@/pages/ventas/DetalleVentas"));
+const DetalleVentasList = lazy(() => import("../data/ventas/DetalleVentasList"));
 const ReporteVentas = lazy(() => import("@/pages/ventas/ReporteVentas"));
 
 export const ventasRoutes = [
@@ -23,7 +23,7 @@ export const ventasRoutes = [
   },
   {
     path: "/ventas/detalleVentas",
-    element: <DetalleVentas />,
+    element: <DetalleVentasList />,
   },
   {
     path: "/ventas/reportes",

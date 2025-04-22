@@ -17,7 +17,7 @@ const Table = ({
   return (
     <div className="overflow-y-auto max-h-[370px] border rounded-lg">
       <table className="min-w-full table-auto border-2 border-gray-400 rounded-lg">
-        <thead className="sticky top-0 z-50 bg-gray-800 text-white border-b-2 border-gray-400">
+        <thead className="sticky top-0 z-50 bg-gray-700 text-white border-b-2 border-gray-400">
           <tr>{headers}</tr>
         </thead>
         <tbody className="border-t-2 border-gray-400">
