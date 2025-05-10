@@ -8,7 +8,6 @@ const createApiInstance = (baseURL = ApiBaseURL) => {
     baseURL,
     timeout: 10000,
     headers: {
-      "Content-Type": "application/json",
       accept: "application/json",
     },
   });

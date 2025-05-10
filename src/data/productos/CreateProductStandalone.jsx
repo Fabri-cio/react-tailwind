@@ -1,30 +1,16 @@
+import React from "react";
+import { InputField, SelectField, ToggleSwitch, CreateEntity } from "../../components/shared"
 import { useFormEntity } from "../../utils/useFormEntity";
-import {
-  useProductMutations,
-  useCategorias,
-  useProveedores,
-} from "../../hooks/useEntities";
-import { InputField } from "../../components/shared/InputField";
-import { SelectField } from "../../components/shared/SelectField";
-import { ToggleSwitch } from "../../components/shared/ToggleSwitch";
+import { useProveedores, useCategorias, useProductMutations } from "../../hooks/useEntities";
 import { obtenerIdUser } from "../../utils/auth";
-import { FaBackspace, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
-import CreateEntity from "../../components/shared/CreateEntity";
+import { FaBackspace, FaPlus } from "react-icons/fa";
 
-export default function CreateProduct() {
+export default function CreateProductStandalone() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
-
   const logicaNegocio = {
     idUsuario: obtenerIdUser(),
   };
 
-  const categoriasOptions = () =>
-    paraSelectsdestructuringYMap(
-      useCategorias,
-      true,
-      "id_categoria",
-      "nombre_categoria"
-    );
   const proveedoresOptions = () =>
     paraSelectsdestructuringYMap(
       useProveedores,
@@ -33,20 +19,24 @@ export default function CreateProduct() {
       "nombre_proveedor"
     );
 
-  const selects = {
-    categoriasOptions,
-    proveedoresOptions,
-  };
+  const categoriasOptions = () =>
+    paraSelectsdestructuringYMap(
+      useCategorias,
+      true,
+      "id_categoria",
+      "nombre_categoria"
+    );
 
-  const configuracionFormulario = {
+  // Estado inicial del formulario
+  const estadoInicial = {
     nombre: "",
     precio: "",
     codigo_barras: "",
     id_proveedor: "",
     categoria: "",
     estado: false,
-    imagen: null,
-    documento: null,
+    imagen: "",
+    documento: "",
   };
 
   const camposExtras = (formValues) => ({
@@ -54,6 +44,8 @@ export default function CreateProduct() {
     categoria: Number(formValues.categoria),
     precio: parseFloat(formValues.precio).toFixed(2),
     usuario_creacion: logicaNegocio.idUsuario,
+    imagen: formValues.imagen || null,
+    documento: formValues.documento || null,
   });
 
   const paraEnvio = (formValues) => ({
@@ -79,8 +71,17 @@ export default function CreateProduct() {
     },
     {
       component: InputField,
-      label: "Código de Barras",
+      label: "Código de Barras",
       name: "codigo_barras",
+      required: true,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+      component: SelectField,
+      label: "Proveedor",
+      name: "id_proveedor",
+      options: proveedoresOptions(),
+      required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -88,30 +89,7 @@ export default function CreateProduct() {
       label: "Categoría",
       name: "categoria",
       options: categoriasOptions(),
-      onChange: manejarEntradas.handleInputChange,
-      actionButtons: [
-        {
-          to: "/editCategory",
-          icon: FaPencilAlt,
-          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
-        },
-        {
-          to: "/addCategory",
-          icon: FaPlus,
-          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
-        },
-        {
-          to: "/categoryList",
-          icon: FaEye,
-          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
-        },
-      ],
-    },
-    {
-      component: SelectField,
-      label: "Proveedor",
-      name: "id_proveedor",
-      options: proveedoresOptions(),
+      required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -119,6 +97,7 @@ export default function CreateProduct() {
       label: "Estado",
       name: "estado",
       checked: formValues.estado,
+      required: true,
       onChange: manejarEntradas.handleToggleChange("estado"),
     },
     {
@@ -126,6 +105,7 @@ export default function CreateProduct() {
       label: "Imagen",
       name: "imagen",
       type: "file",
+      required: false,
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -133,29 +113,30 @@ export default function CreateProduct() {
       label: "Documento",
       name: "documento",
       type: "file",
+      required: false,
       onChange: manejarEntradas.handleInputChange,
     },
   ];
 
   const paraNavegacion = {
     title: "Crear Producto",
-    subTitle: "Crea un nuevo producto",
+    subTitle: "Crear Producto",
     icon: FaPlus,
     actions: [
       {
         to: "/productList",
         label: "Volver",
         icon: FaBackspace,
-        estilos:
-          "border-2 border-gray-400 text-gray-700 hover:bg-gray-700 hover:text-white p-2 rounded-lg",
+        estilos: "border-2 border-gray-400 rounded-lg p-1 text-gray-700 hover:bg-gray-700 hover:text-white",
       },
     ],
   };
 
+
   return (
     <CreateEntity
       useEntityMutations={useProductMutations}
-      configForm={configuracionFormulario}
+      configForm={estadoInicial}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}
       paraNavegacion={paraNavegacion}

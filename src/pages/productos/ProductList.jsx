@@ -1,9 +1,7 @@
 import { useProducts } from "../../hooks/useEntities";
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import EntityList from "@/components/shared/EntityList";
 import { FaPlus, FaBox } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import Image from '../../components/shared/Image';   
+import { StatusBadge, EntityList, Image } from "../../components/shared"
 
 function ProductList() {
   const productFields = () => [
@@ -34,7 +32,7 @@ function ProductList() {
     {
       key: "imagen",
       label: "Imagen",
-      render: (item) => <Image src={item.imagen} alt={item.nombre} className="rounded-full" width="w-20" height="h-20" fallback="/fallback.png"/>,
+      render: (item) => <Image src={item.imagen} alt={item.nombre} className="rounded-full" width="w-20" height="h-20" fallback="/fallback.png" />,
     },
   ];
 

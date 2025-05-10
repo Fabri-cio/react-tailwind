@@ -20,9 +20,10 @@ export const useFormEntity = () => {
   };
 
   const manejarCambioDeEntrada = (setFormValues) => (e) => {
+    const { name, type, files, value } = e.target;
     setFormValues((prevState) => ({
       ...prevState,
-      [e.target.name]: e.target.value,
+      [name]: type === "file" ? files[0] : value,
     }));
   };
 
@@ -56,9 +57,30 @@ export const useFormEntity = () => {
       ...params,
     };
 
+    // Detecta si hay algún archivo (File o Blob) en los valores
+    const contieneArchivo = Object.values(dataToSend).some(
+      (value) =>
+        value instanceof File ||
+        (typeof Blob !== "undefined" && value instanceof Blob)
+    );
+
+    let data;
+    if (contieneArchivo) {
+      // Si hay archivos, usa FormData
+      data = new FormData();
+      Object.entries(dataToSend).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          data.append(key, value);
+        }
+      });
+    } else {
+      // Si no hay archivos, usa objeto plano
+      data = dataToSend;
+    }
+
     const mutation = entityId ? updateMutation : createMutation;
     mutation.mutate(
-      { id: entityId || undefined, data: dataToSend },
+      { id: entityId || undefined, data },
       { onSuccess: () => navigate(`${entityName}`) }
     );
   };
