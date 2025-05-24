@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Image({
   src,
@@ -13,6 +13,12 @@ export default function Image({
   const [imgSrc, setImgSrc] = useState(src);
   const [loading, setLoading] = useState(true);
 
+  // Actualizar imgSrc cuando cambie la propiedad src
+  useEffect(() => {
+    setImgSrc(src);
+    setLoading(true); // Reiniciar el estado de carga cuando cambia la imagen
+  }, [src]);
+
   const roundedClass = rounded ? "rounded-full" : "";
 
   return (
@@ -23,7 +29,10 @@ export default function Image({
       <img
         src={imgSrc}
         alt={alt}
-        onError={() => setImgSrc(fallback)}
+        onError={() => {
+          setImgSrc(fallback);
+          setLoading(false);
+        }}
         onLoad={() => setLoading(false)}
         className={`w-full h-full object-cover transition-transform duration-300 ease-in-out transform hover:scale-150
           ${loading ? "invisible" : "visible"} ${roundedClass}`}

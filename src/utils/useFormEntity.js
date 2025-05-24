@@ -52,30 +52,46 @@ export const useFormEntity = () => {
     entityId,
     params = {}
   ) => {
+    // Combinar formValues con params
     const dataToSend = {
       ...formValues,
       ...params,
     };
 
-    // Detecta si hay algún archivo (File o Blob) en los valores
-    const contieneArchivo = Object.values(dataToSend).some(
-      (value) =>
-        value instanceof File ||
-        (typeof Blob !== "undefined" && value instanceof Blob)
+    // Filtrar los campos que no deben incluirse en el envío
+    const filteredData = {};
+    Object.entries(dataToSend).forEach(([key, value]) => {
+      // Si el valor es un archivo (File o Blob), lo incluimos
+      if (value instanceof File || (typeof Blob !== "undefined" && value instanceof Blob)) {
+        filteredData[key] = value;
+      }
+      // Si el valor es una cadena que parece una URL, la omitimos (es un archivo existente)
+      else if (typeof value === 'string' && (value.startsWith('http') || value.startsWith('blob:'))) {
+        // No incluimos las URLs de archivos existentes
+      }
+      // Para cualquier otro valor que no sea nulo ni indefinido, lo incluimos
+      else if (value !== null && value !== undefined) {
+        filteredData[key] = value;
+      }
+    });
+
+    // Verificar si hay archivos para enviar
+    const contieneArchivo = Object.values(filteredData).some(
+      (value) => value instanceof File || (typeof Blob !== "undefined" && value instanceof Blob)
     );
 
     let data;
     if (contieneArchivo) {
       // Si hay archivos, usa FormData
       data = new FormData();
-      Object.entries(dataToSend).forEach(([key, value]) => {
+      Object.entries(filteredData).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           data.append(key, value);
         }
       });
     } else {
       // Si no hay archivos, usa objeto plano
-      data = dataToSend;
+      data = filteredData;
     }
 
     const mutation = entityId ? updateMutation : createMutation;

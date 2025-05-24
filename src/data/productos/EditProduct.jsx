@@ -7,6 +7,7 @@ import {
 import { InputField } from "../../components/shared/InputField";
 import { ToggleSwitch } from "../../components/shared/ToggleSwitch";
 import { SelectField } from "../../components/shared/SelectField";
+import ImagePreview from "../../components/shared/ImagePreview";
 import { obtenerIdUser } from "../../utils/auth";
 import {
   FaBackspace,
@@ -53,19 +54,23 @@ export default function EditProduct() {
     id_proveedor: entidad?.data?.id_proveedor || "",
     categoria: entidad?.data?.categoria || "",
     estado: entidad?.data?.estado || false,
+    imagen: entidad?.data?.imagen || null,
+    documento: entidad?.data?.documento || null,
   });
 
   const camposExtras = (formValues) => ({
     id_proveedor: Number(formValues.id_proveedor),
     categoria: Number(formValues.categoria),
-    
+    precio: parseFloat(formValues.precio).toFixed(2),
     usuario_modificacion: logicaNegocio.idUsuario,
+    imagen: formValues.imagen,
+    documento: formValues.documento
   });
 
   const paraEnvio = (formValues) => ({
     entityId: formValues.id_producto,
     link: "/productList",
-    params: camposExtras(formValues),
+    params: camposExtras(formValues)
   });
 
   const construirCampos = (formValues, manejarEntradas) => [
@@ -91,7 +96,6 @@ export default function EditProduct() {
       required: true,
       onChange: manejarEntradas.handleInputChange,
     },
-
     {
       component: SelectField,
       label: "Categoría",
@@ -129,6 +133,53 @@ export default function EditProduct() {
       name: "estado",
       checked: formValues.estado,
       onChange: manejarEntradas.handleToggleChange("estado"),
+    },
+    {
+      name: 'imagen',
+      component: () => (
+        <div className="space-y-2">
+          <div className="font-medium text-gray-700">Imagen actual</div>
+          <ImagePreview 
+            image={formValues.imagen} 
+            alt={`Imagen de ${formValues.nombre || 'producto'}`}
+            className="h-40 w-40 mb-4"
+          />
+          <InputField
+            label="Cambiar imagen"
+            name="imagen"
+            type="file"
+            accept="image/*"
+            onChange={manejarEntradas.handleInputChange}
+          />
+        </div>
+      ),
+    },
+    {
+      name: 'documento',
+      component: () => (
+        <div className="space-y-2">
+          {formValues.documento && (
+            <div className="mb-2">
+              <span className="block text-sm font-medium text-gray-700 mb-1">Documento actual:</span>
+              <a 
+                href={formValues.documento} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline text-sm"
+              >
+                Ver documento actual
+              </a>
+            </div>
+          )}
+          <InputField
+            label={formValues.documento ? "Cambiar documento" : "Subir documento"}
+            name="documento"
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={manejarEntradas.handleInputChange}
+          />
+        </div>
+      ),
     },
   ];
 
