@@ -5,7 +5,8 @@ const EditProduct = lazy(() => import("../data/productos/EditProduct"));
 const CreateProductStandalone = lazy(() =>
     import("../data/productos/CreateProductStandalone")
 );
-const Categorias = lazy(() => import("../pages/productos/Categorias"));
+const CrearCategoria = lazy(() => import("../data/productos/CrearCategoria"));
+const EditarCategoria = lazy(() => import("../data/productos/EditCategoria"));
 const Proveedores = lazy(() => import("../pages/productos/Proveedores"));
 
 export const productoRoutes = [
@@ -24,8 +25,12 @@ export const productoRoutes = [
   },
   // categorias
   {
-    path: "/categorias",
-    element: <Categorias />,
+    path: "/editCategory/:id",
+    element: <EditarCategoria />,
+  },
+  {
+    path: "/addCategory",
+    element: <CrearCategoria />,
   },
   // proveedores
   {

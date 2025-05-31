@@ -1,7 +1,6 @@
 import { ActionButton } from "./ActionButton";
+import Loading from "./Loading";
 import { Navigation } from "./Navigation";
-import Modal from "./Modal";
-import { useState } from "react";
 
 const EntityForm = ({
   valorsForm,
@@ -11,19 +10,7 @@ const EntityForm = ({
   entityId,
   paraNavegacion,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal
-
-  const openModal = () => {
-    console.log("Abriendo modal");
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    console.log("Cerrando modal");
-    setIsModalOpen(false);
-  };
-
-  if (esLoading) return <div>Loading...</div>;
+  if (esLoading) return <Loading />;
 
   return (
     <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 mx-auto">
@@ -48,9 +35,7 @@ const EntityForm = ({
                 {actionButtons.map((button, index) => (
                   <ActionButton
                     key={index}
-                    onClick={button.to ? openModal : undefined}
-                    icon={button.icon}
-                    estilos={button.estilos}
+                    {...button}
                   />
                 ))}
               </div>
@@ -64,18 +49,6 @@ const EntityForm = ({
           estilos="hover:bg-gray-600 hover:text-gray-100 text-black border-2 border-gray-400 rounded-md flex items-center gap-2 transition duration-200 p-1"
         />
       </form>
-
-      {/* Modal */}
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <h2>Editar Información</h2>
-        <p>Contenido del modal aquí...</p>
-        <button
-          onClick={closeModal}
-          className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-        >
-          Cerrar
-        </button>
-      </Modal>
     </div>
   );
 };

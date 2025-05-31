@@ -69,7 +69,7 @@ export default function EditProduct() {
 
   const paraEnvio = (formValues) => ({
     entityId: formValues.id_producto,
-    link: "/productList",
+    link: -1,
     params: camposExtras(formValues)
   });
 
@@ -104,7 +104,7 @@ export default function EditProduct() {
       options: selects.categoriasOptions(),
       actionButtons: [
         {
-          to: "/editCategory",
+          to: `/editCategory/${formValues.categoria}`,
           icon: FaPencilAlt,
           estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
         },
@@ -189,7 +189,7 @@ export default function EditProduct() {
     icon: FaEdit,
     actions: [
       {
-        to: "/productList",
+        to: -1,
         label: "Volver",
         icon: FaBackspace,
         estilos:

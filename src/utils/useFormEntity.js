@@ -97,7 +97,21 @@ export const useFormEntity = () => {
     const mutation = entityId ? updateMutation : createMutation;
     mutation.mutate(
       { id: entityId || undefined, data },
-      { onSuccess: () => navigate(`${entityName}`) }
+      { 
+        onSuccess: (response) => {
+          // Si la respuesta incluye un link, usarlo para navegación
+          if (response?.data?.link !== undefined) {
+            if (response.data.link === -1) {
+              navigate(-1); // Navegar hacia atrás
+            } else if (typeof response.data.link === 'string') {
+              navigate(response.data.link); // Navegar a ruta específica
+            }
+          } else if (entityName) {
+            // Comportamiento por defecto si no hay link en la respuesta
+            navigate(entityName);
+          }
+        }
+      }
     );
   };
 
