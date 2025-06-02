@@ -43,7 +43,7 @@ export default function CrearCategoria() {
         icon: FaPlus,
         actions: [
           {
-            to: "/categoryList",
+            to: -1,
             label: "Volver",
             icon: FaBackspace,
             estilos:
