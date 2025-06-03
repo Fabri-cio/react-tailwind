@@ -8,6 +8,7 @@ const CreateProductStandalone = lazy(() =>
 const CrearCategoria = lazy(() => import("../data/productos/CrearCategoria"));
 const EditarCategoria = lazy(() => import("../data/productos/EditCategoria"));
 const Proveedores = lazy(() => import("../pages/productos/Proveedores"));
+const Categorias = lazy(() => import("../pages/productos/Categorias"));
 
 export const productoRoutes = [
   // productos
@@ -24,6 +25,10 @@ export const productoRoutes = [
     element: <CreateProductStandalone />,
   },
   // categorias
+  {
+    path: "/categorias",
+    element: <Categorias />,
+  },
   {
     path: "/editCategory/:id",
     element: <EditarCategoria />,
