@@ -126,6 +126,23 @@ export default function EditProduct() {
       name: "id_proveedor",
       onChange: manejarEntradas.handleInputChange,
       options: selects.proveedoresOptions(),
+      actionButtons: [
+        {
+          to: `/editProveedor/${formValues.id_proveedor}`,
+          icon: FaPencilAlt,
+          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
+        },
+        {
+          to: "/addProveedor",
+          icon: FaPlus,
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
+        },
+        {
+          to: "/proveedorList",
+          icon: FaEye,
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
+        },
+      ],
     },
     {
       component: ToggleSwitch,
