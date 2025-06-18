@@ -1,165 +1,58 @@
-import React, { useState } from "react";
-import {
-  FaUtensils,
-  FaWineBottle,
-  FaCheese,
-  FaFish,
-  FaDrumstickBite,
-  FaConciergeBell,
-  FaSearch,
-  FaPlus,
-  FaBoxOpen
-} from "react-icons/fa";
-import TarjetaCategoria from "../../components/shared/Card";
-
-// Datos de ejemplo - en una aplicación real esto vendría de tu API
-const categoriasIniciales = [
-  {
-    id: 1,
-    nombre: "Carnes y Embutidos",
-    icono: FaDrumstickBite,
-    descripcion: "Cortes de res, cerdo, pollo y embutidos varios",
-    estado: true,
-    productos: 24
-  },
-  {
-    id: 2,
-    nombre: "Lácteos y Quesos",
-    icono: FaCheese,
-    descripcion: "Leche, quesos, mantequilla y derivados lácteos",
-    estado: true,
-    productos: 18
-  },
-  {
-    id: 3,
-    nombre: "Pescados y Mariscos",
-    icono: FaFish,
-    descripcion: "Pescados frescos, congelados y mariscos",
-    estado: true,
-    productos: 15
-  },
-  {
-    id: 4,
-    nombre: "Bebidas",
-    icono: FaWineBottle,
-    descripcion: "Refrescos, jugos, aguas y bebidas alcohólicas",
-    estado: true,
-    productos: 32
-  },
-  {
-    id: 5,
-    nombre: "Comida Preparada",
-    icono: FaConciergeBell,
-    descripcion: "Platos listos para calentar y comer",
-    estado: true,
-    productos: 12
-  },
-  {
-    id: 6,
-    nombre: "Abarrotes",
-    icono: FaUtensils,
-    descripcion: "Productos básicos de despensa",
-    estado: true,
-    productos: 45
-  },
-];
+import { Navigation } from "../../components/shared/Navigation";
+import { FaCloudMeatball, FaForumbee, FaMailBulk, FaPlus } from "react-icons/fa";
+import Pagination from "../../components/shared/Pagination";
+import { useFormEntity } from "../../utils/useFormEntity";
+import { useCategorias } from "../../hooks/useEntities";
 
 const Categorias = () => {
-  const [categorias, setCategorias] = useState(categoriasIniciales);
-  const [busqueda, setBusqueda] = useState("");
-  const [filtroActivo, setFiltroActivo] = useState("todos");
-
-  const categoriasFiltradas = categorias.filter(categoria => {
-    const coincideBusqueda = categoria.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-      categoria.descripcion.toLowerCase().includes(busqueda.toLowerCase());
-
-    if (filtroActivo === "todos") return coincideBusqueda;
-    if (filtroActivo === "activos") return categoria.estado && coincideBusqueda;
-    if (filtroActivo === "inactivos") return !categoria.estado && coincideBusqueda;
-
-    return true;
-  });
-
-  const toggleEstado = (id) => {
-    setCategorias(categorias.map(cat =>
-      cat.id === id ? { ...cat, estado: !cat.estado } : cat
-    ));
-  };
-
-  const eliminarCategoria = (id) => {
-    if (window.confirm("¿Estás seguro de eliminar esta categoría?")) {
-      setCategorias(categorias.filter(cat => cat.id !== id));
-    }
-  };
-
+  const { todosDatosOpaginacion } = useFormEntity();
+  const { items } = todosDatosOpaginacion(useCategorias, true)
+  console.log(items)
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Encabezado */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Categorías</h1>
-          <p className="text-gray-600">Administra las categorías de tus productos</p>
-        </div>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 mt-4 md:mt-0">
-          <FaPlus /> Nueva Categoría
-        </button>
-      </div>
-
-      {/* Barra de búsqueda y filtros */}
-      <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaSearch className="text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Buscar categorías..."
-              className="pl-10 pr-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-            />
-          </div>
-          <div className="flex gap-2">
-            <select
-              className="border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={filtroActivo}
-              onChange={(e) => setFiltroActivo(e.target.value)}
-            >
-              <option value="todos">Todas las categorías</option>
-              <option value="activos">Activas</option>
-              <option value="inactivos">Inactivas</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Lista de categorías */}
-      <TarjetaCategoria
-        categoriasFiltradas={categoriasFiltradas}
-        alEliminarCategoria={eliminarCategoria}
-        alCambiarEstado={toggleEstado}
+    <div className="container mx-auto p-4">
+      <Navigation
+        title="Categorias"
+        subTitle="Administra las categorias de tus productos"
+        actions={[
+          {
+            to: "/createCategoria",
+            label: "Crear Categoria",
+            icon: FaPlus,
+            estilos: "hover:bg-gray-600 hover:text-gray-100 text-black border-2 border-gray-400 rounded-md flex items-center gap-2 transition duration-200 p-2",
+          },
+        ]}
       />
+      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 p-2">
+        {items.map((categoria) => (
+          <div key={categoria.id_categoria} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-semibold text-gray-800">{categoria.nombre_categoria}</h2>
+                <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                  {40} productos
+                </span>
+              </div>
+              <p className="text-gray-600 mb-4">{categoria.descripcion}</p>
+              <div className="flex justify-between items-center">
+                <span className={`px-2 py-1 text-xs font-medium rounded-full ${categoria.estado === true
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
+                  }`}>
+                  {categoria.estado}
+                </span>
+                <button
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  onClick={() => {/* Add edit functionality */ }}
+                >
+                  Editar
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
-      {/* Paginación */}
-      {categoriasFiltradas.length > 0 && (
-        <div className="mt-8 flex justify-center">
-          <nav className="inline-flex rounded-md shadow">
-            <button className="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
-              Anterior
-            </button>
-            <button className="px-3 py-2 border-t border-b border-gray-300 bg-white text-blue-600 font-medium">
-              1
-            </button>
-            <button className="px-3 py-2 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
-              2
-            </button>
-            <button className="px-3 py-2 border-t border-b border-r border-gray-300 bg-white text-gray-500 hover:bg-gray-50 rounded-r-md">
-              Siguiente
-            </button>
-          </nav>
-        </div>
-      )}
+      <Pagination />
     </div>
   );
 };
