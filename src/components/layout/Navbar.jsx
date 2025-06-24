@@ -7,7 +7,7 @@ const Navbar = ({ toggleSidebar }) => {
   const logoutUser = useLogout();
 
   return (
-    <nav className="sticky top-2 z-50 bg-white border-gray-400 border-2 rounded-lg mx-4 mt-2 flex justify-between p-4">
+    <nav className="sticky top-2 z-50 bg-white border-gray-400 border-2 rounded-lg mx-2 mt-2 flex justify-between p-4">
       <ActionButton
         icon={FaBars}
         onClick={toggleSidebar}

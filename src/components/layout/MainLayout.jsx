@@ -26,12 +26,20 @@ const MainLayout = () => {
   }, [navigate]);
 
   return (
-    <div className="h-full overflow-visible">
-      <Navbar toggleSidebar={toggleSidebar} />
-      <div className="flex h-full overflow-visible">
+    <div className="min-h-screen bg-gray-50">
+      <div className="flex h-screen overflow-hidden">
         <Sidebar isVisible={sidebarVisible} />
-        <div className="border-orange-400 border-2 rounded-lg mx-4 mt-2 mb-3 flex-1 overflow-auto">
-          <Outlet />
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Navbar toggleSidebar={toggleSidebar} />
+
+          {/* Page Content */}
+          <main className="flex-1 overflow-y-auto">
+            <div className="border-2 border-orange-900 rounded-lg h-full m-2 bg-white">
+              <Outlet />
+            </div>
+          </main>
         </div>
       </div>
     </div>
