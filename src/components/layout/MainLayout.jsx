@@ -36,7 +36,7 @@ const MainLayout = () => {
 
           {/* Page Content */}
           <main className="flex-1 overflow-y-auto">
-            <div className="border-2 border-orange-900 rounded-lg h-full m-2 bg-white">
+            <div className="border-2 border-green-500 rounded-lg h-full">
               <Outlet />
             </div>
           </main>
