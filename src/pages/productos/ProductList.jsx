@@ -45,7 +45,6 @@ function ProductList() {
     all_data: false,
     itemKey: "id_producto",
     entityFields: productFields,
-    clavesBusqueda: ["nombre", "codigo_barras", "nombre_proveedor"],
     actions: [
       {
         to: "/createProduct",
@@ -57,7 +56,6 @@ function ProductList() {
     ],
     icon: FaBox,
   };
-
   return <EntityList entityData={entityData} />;
 }
 

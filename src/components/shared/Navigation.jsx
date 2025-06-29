@@ -1,17 +1,11 @@
 import { ActionButton } from "./ActionButton";
-import BarraBusqueda from "./BarraBusqueda";
 
 export function Navigation({
   title,
   actions = [],
   subTitle = "",
   icon: Icon,
-  onSearch,
-  clavesBusqueda = [],
-  placeholder = "Buscar...",
 }) {
-  const tieneBusqueda = clavesBusqueda.length > 0;
-
   return (
     <div className="flex flex-col border-2 border-gray-400 rounded-lg">
       <div className="flex justify-between rounded-lg p-1">
@@ -28,26 +22,15 @@ export function Navigation({
         <div className="flex items-center text-sm gap-3">
           {actions.map(({ to, label, icon, estilos }, index) => (
             <ActionButton
-              key={index} // Ahora usamos el `label` como key
+              key={index}
               to={to}
               label={label}
               icon={icon}
-              estilos={estilos} // Pasamos estilos personalizados
+              estilos={estilos}
             />
           ))}
         </div>
       </div>
-
-      {/* Barra de búsqueda */}
-      {tieneBusqueda && (
-        <div className="p-2">
-          <BarraBusqueda
-            onSearch={onSearch}
-            clavesBusqueda={clavesBusqueda}
-            placeholder={placeholder}
-          />
-        </div>
-      )}
     </div>
   );
 }

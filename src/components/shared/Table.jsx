@@ -9,32 +9,39 @@ const Table = ({
 }) => {
   // Memoriza las cabeceras de la tabla
   const headers = fields.map((field) => (
-    <th key={field.key} className="px-4 py-2 text-left text-sm font-bold">
+    <th 
+      key={field.key} 
+      className="px-6 py-3 text-left text-xs font-medium text-gray-100 uppercase tracking-wider bg-gray-500 first:rounded-tl-lg last:rounded-tr-lg"
+    >
       {field.label}
     </th>
   ));
 
   return (
-    <div className="overflow-y-auto max-h-[370px] border rounded-lg">
-      <table className="min-w-full table-auto border-2 border-gray-400 rounded-lg">
-        <thead className="sticky top-0 z-50 bg-gray-700 text-white border-b-2 border-gray-400">
-          <tr>{headers}</tr>
-        </thead>
-        <tbody className="border-t-2 border-gray-400">
-          {items.map((item, index) => {
-            const globalIndex = (currentPage - 1) * itemsPerPage + index;
-            const key = item[itemKey] ?? globalIndex;
-            return (
-              <Row
-                key={key}
-                item={{ ...item, index: globalIndex }}
-                fields={fields}
-                index={globalIndex}
-              />
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="overflow-hidden rounded-lg shadow-lg border border-gray-200">
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-500">
+            <tr>
+              {headers}
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {items.map((item, index) => {
+              const globalIndex = (currentPage - 1) * itemsPerPage + index;
+              const key = item[itemKey] ?? globalIndex;
+              return (
+                <Row
+                  key={key}
+                  item={{ ...item, index: globalIndex }}
+                  fields={fields}
+                  index={globalIndex}
+                />
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
