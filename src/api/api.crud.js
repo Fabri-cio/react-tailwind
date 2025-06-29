@@ -16,4 +16,5 @@ export const createCrudOperations = (apiInstance, resource) => ({
   create: (data) => request(apiInstance, "post", `${resource}/`, data),
   update: (id, data) => request(apiInstance, "put", `${resource}/${id}/`, data),
   delete: (id) => request(apiInstance, "delete", `${resource}/${id}/`),
+  search: (search) => request(apiInstance, "get", `${resource}/?search=${search}`),
 });
