@@ -13,7 +13,7 @@ const EntityForm = ({
   if (esLoading) return <Loading />;
 
   return (
-    <div className="px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 mx-auto">
+    <div className="m-4">
       <Navigation
         title={paraNavegacion.title}
         subTitle={paraNavegacion.subTitle}
@@ -23,7 +23,7 @@ const EntityForm = ({
       <form
         onSubmit={manejarEnviar}
         encType="multipart/form-data"
-        className="space-y-3 p-2 border-2 border-gray-400 rounded-lg my-2 w-full"
+        className="space-y-3 p-2 border-2 border-gray-400 rounded-lg w-full"
       >
         {fields.map(({ component: Component, actionButtons, ...props }) => (
           <div key={props.name} className={actionButtons && "flex flex-col md:flex-row items-start"}>

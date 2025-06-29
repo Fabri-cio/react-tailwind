@@ -4,7 +4,6 @@ import ErrorMessage from "@/components/shared/ErrorMessaje";
 import Pagination from "../../components/shared/Pagination";
 import { Navigation } from "../../components/shared/Navigation";
 import { useFormEntity } from "../../utils/useFormEntity";
-import { useCategorias, useProducts } from "../../hooks/useEntities";
 
 function EntityList({ entityData }) {
   const {
@@ -38,7 +37,7 @@ function EntityList({ entityData }) {
   if (isError) return <ErrorMessage message={errorMessage} />;
 
   return (
-    <div className="space-y-1 px-2 py-1 border-2 border-gray-400 rounded-lg">
+    <div className="space-y-1 p-4"> {/* este es el div principal*/}
       <Navigation
         title={title}
         subTitle={`${subTitle}`}
