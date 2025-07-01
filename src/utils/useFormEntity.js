@@ -62,11 +62,17 @@ export const useFormEntity = () => {
     const filteredData = {};
     Object.entries(dataToSend).forEach(([key, value]) => {
       // Si el valor es un archivo (File o Blob), lo incluimos
-      if (value instanceof File || (typeof Blob !== "undefined" && value instanceof Blob)) {
+      if (
+        value instanceof File ||
+        (typeof Blob !== "undefined" && value instanceof Blob)
+      ) {
         filteredData[key] = value;
       }
       // Si el valor es una cadena que parece una URL, la omitimos (es un archivo existente)
-      else if (typeof value === 'string' && (value.startsWith('http') || value.startsWith('blob:'))) {
+      else if (
+        typeof value === "string" &&
+        (value.startsWith("http") || value.startsWith("blob:"))
+      ) {
         // No incluimos las URLs de archivos existentes
       }
       // Para cualquier otro valor que no sea nulo ni indefinido, lo incluimos
@@ -77,7 +83,9 @@ export const useFormEntity = () => {
 
     // Verificar si hay archivos para enviar
     const contieneArchivo = Object.values(filteredData).some(
-      (value) => value instanceof File || (typeof Blob !== "undefined" && value instanceof Blob)
+      (value) =>
+        value instanceof File ||
+        (typeof Blob !== "undefined" && value instanceof Blob)
     );
 
     let data;
@@ -97,20 +105,20 @@ export const useFormEntity = () => {
     const mutation = entityId ? updateMutation : createMutation;
     mutation.mutate(
       { id: entityId || undefined, data },
-      { 
+      {
         onSuccess: (response) => {
           // Si la respuesta incluye un link, usarlo para navegación
           if (response?.data?.link !== undefined) {
             if (response.data.link === -1) {
               navigate(-1); // Navegar hacia atrás
-            } else if (typeof response.data.link === 'string') {
+            } else if (typeof response.data.link === "string") {
               navigate(response.data.link); // Navegar a ruta específica
             }
           } else if (entityName) {
             // Comportamiento por defecto si no hay link en la respuesta
             navigate(entityName);
           }
-        }
+        },
       }
     );
   };
@@ -138,7 +146,9 @@ export const useFormEntity = () => {
     } = fetchDataHook(all_data, currentPage);
 
     const {
-      count = 0,
+      total_pages,
+      per_page,
+      total,
       next = null,
       previous = null,
       results,
@@ -146,7 +156,7 @@ export const useFormEntity = () => {
 
     const items = results || response.data || [];
 
-    const totalItems = count;
+    const totalItems = total;
 
     const hasPagination = next || previous;
 
@@ -160,6 +170,8 @@ export const useFormEntity = () => {
       hasPagination,
       next,
       previous,
+      per_page,
+      total_pages,
     };
   };
 

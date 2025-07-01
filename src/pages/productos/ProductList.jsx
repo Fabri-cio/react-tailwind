@@ -1,7 +1,7 @@
 import { useProducts } from "../../hooks/useEntities";
 import { FaPlus, FaBox } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { StatusBadge, EntityList, Image } from "../../components/shared"
+import { StatusBadge, EntityList, Image } from "../../components/shared";
 
 function ProductList() {
   const productFields = () => [
@@ -32,7 +32,16 @@ function ProductList() {
     {
       key: "imagen",
       label: "Imagen",
-      render: (item) => <Image src={item.imagen} alt={item.nombre} className="rounded-full" width="w-20" height="h-20" fallback="/fallback.png" />,
+      render: (item) => (
+        <Image
+          src={item.imagen}
+          alt={item.nombre}
+          className="rounded-full"
+          width="w-20"
+          height="h-20"
+          fallback="/fallback.png"
+        />
+      ),
     },
   ];
 
@@ -42,7 +51,6 @@ function ProductList() {
     loadingMessage: "Cargando productos...",
     errorMessage: "Error al obtener los productos",
     fetchDataHook: useProducts,
-    all_data: false,
     itemKey: "id_producto",
     entityFields: productFields,
     actions: [

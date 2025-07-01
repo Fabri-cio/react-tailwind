@@ -13,14 +13,15 @@ function EntityList({ entityData }) {
     loadingMessage,
     errorMessage,
     subTitle,
-    all_data,
     itemKey,
     actions = [],
     icon,
   } = entityData;
 
   const { todosDatosOpaginacion } = useFormEntity();
-  const paginacion = todosDatosOpaginacion(fetchDataHook, all_data);
+
+  const paginacion = todosDatosOpaginacion(fetchDataHook);
+
   const {
     currentPage,
     handlePageChange,
@@ -31,35 +32,38 @@ function EntityList({ entityData }) {
     hasPagination,
     next,
     previous,
+    per_page,
+    total_pages,
   } = paginacion;
 
   if (isLoading) return <Loading message={loadingMessage} />;
   if (isError) return <ErrorMessage message={errorMessage} />;
 
   return (
-    <div className="space-y-1 p-4"> {/* este es el div principal*/}
+    <div className="space-y-1 p-4">
+      {" "}
+      {/* este es el div principal*/}
       <Navigation
         title={title}
         subTitle={`${subTitle}`}
         actions={actions}
         icon={icon}
       />
-
       <Table
         items={items}
         fields={entityFields()}
         currentPage={currentPage}
-        itemsPerPage={10}
+        itemsPerPage={per_page}
         itemKey={itemKey || "id"}
       />
-
       {hasPagination && (
         <Pagination
-          currentPage={currentPage}
+          current_page={currentPage}
           nextPage={next}
           prevPage={previous}
           onPageChange={handlePageChange}
-          count={totalItems}
+          total={totalItems}
+          total_pages={total_pages}
         />
       )}
     </div>
