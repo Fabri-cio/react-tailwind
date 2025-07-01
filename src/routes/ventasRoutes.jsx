@@ -13,7 +13,7 @@ export const ventasRoutes = [
     element: <RealizarVenta />,
   },
   {
-    path: "/ventas/ver",
+    path: "/ventas",
     element: <VentasList />,
   },
   //detalle de ventas

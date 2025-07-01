@@ -27,10 +27,9 @@ function VentasList() {
     loadingMessage: "Cargando ventas...",
     errorMessage: "Error al obtener ventas",
     fetchDataHook: useVentas,
-    all_data: true,
+    all_data: false,
     itemKey: "id_venta",
     entityFields: ventasFields,
-    clavesBusqueda: ["fecha_venta", "nom_user", "nombre_tienda"],
     icon: FaSalesforce,
   };
 
