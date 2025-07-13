@@ -15,6 +15,32 @@ import {
 import { VentasAPI, DetVentasAPI } from "../api/venta.api";
 import { useMutationWithToast } from "./useMutationWithToast";
 
+export const useProductByBarcode = (codigo_barras) => {
+  return useData(
+    ProductosAPI,
+    "productos",
+    null,
+    {
+      filters: {
+        codigo_barras,
+      },
+    },
+    1000 * 60 * 5
+  );
+};
+
+// 🔍 Hook para búsqueda general por término (nombre, proveedor, categoría, código de barras)
+export const useSearchProducts = (term) => {
+  return useData(
+    ProductosAPI,
+    "productos",
+    null,
+    term,
+    1000 * 60 * 5
+  );
+};
+
+
 //productos
 export const useProducts = (all_data = false, page = 1, per_page = 10) => {
   return useData(
