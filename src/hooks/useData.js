@@ -1,37 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
+import { buildParams } from "../utils/buildParams";
 
-const useData = (api, queryKey, id, params = {}, staleTime = 1000 * 60 * 5) => {
-  const {
-    all_data = false,
-    page = 1,
-    per_page = 10,
-    search = "",
-    filters = {},
-  } = params;
-
-  const fullParams = {
-    ...filters,
-    ...(search ? { search } : {}),
-    page,
-    per_page,
-    ...(all_data ? { all_data: true } : {}),
-  };
+const useData = (api, queryKey, id, params = {}, staleTime = 1000 * 60 * 5, enabledParam = true) => {
+ 
+  const fullParams = buildParams(params); 
 
   return useQuery({
     queryKey: id ? [queryKey, id] : [queryKey, fullParams],
     queryFn: () => {
       if (id) return api.getOne(id);
-
-      const hasFilters = Object.keys(filters).length > 0;
-      const hasSearch = search && search.trim() !== "";
-
-      if (hasFilters || all_data) return api.getFiltered(fullParams);
-
-      if (hasSearch) return api.search(search, page, per_page);
-
-      return api.getAll(all_data, page, per_page);
+      // Siempre usa getFiltered, porque tu api.crud.js solo tiene ese para búsquedas, filtros y paginación
+      return api.getFiltered(fullParams);
     },
-    enabled: id ? !!id : true,
+    enabled: enabledParam,
     staleTime,
   });
 };

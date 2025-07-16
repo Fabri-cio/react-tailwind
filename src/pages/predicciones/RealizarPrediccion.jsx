@@ -7,7 +7,7 @@ function RealizarPrediccion() {
     data: response = {},
     isLoading: loadingVentas,
     isError: errorVentas,
-  } = useVentas();
+  } = useVentas(true); //true para que traiga todos los datos
 
   const ventas = response.data || [];
 

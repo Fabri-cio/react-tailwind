@@ -15,43 +15,75 @@ import {
 import { VentasAPI, DetVentasAPI } from "../api/venta.api";
 import { useMutationWithToast } from "./useMutationWithToast";
 
-export const useProductByBarcode = (codigo_barras) => {
-  return useData(
+export const useOrderedProducts = (ordering = "-fecha_creacion") =>
+  useData(
     ProductosAPI,
     "productos",
     null,
-    {
-      filters: {
-        codigo_barras,
-      },
-    },
+    { ordering, page: 1, per_page: 10 },
     1000 * 60 * 5
   );
-};
 
 // 🔍 Hook para búsqueda general por término (nombre, proveedor, categoría, código de barras)
-export const useSearchProducts = (term) => {
+export const useSearchProducts = (
+  term = "",
+  page = 1,
+  per_page = 10,
+  filters = {},
+  ordering = "",
+  search = ""
+) => {
+  // Si hay un término de búsqueda, lo usamos, de lo contrario usamos los filtros
+  const params = term
+    ? { search: term, page, per_page }
+    : { ...filters, page, per_page };
+  return useData(ProductosAPI, "productos", null, params, 1000 * 60 * 5);
+};
+
+export const useSearchProductsByBarcode = (codigo_barras = "") => {
+  const enabled = codigo_barras.trim() !== "";
   return useData(
     ProductosAPI,
     "productos",
     null,
-    term,
-    1000 * 60 * 5
+    { filters: { codigo_barras }, per_page: 1 },
+    1000 * 60 * 5,
+    enabled
   );
 };
-
 
 //productos
-export const useProducts = (all_data = false, page = 1, per_page = 10) => {
+export const useProducts = (
+  params = {},
+  enabled = true,
+  staleTime = 1000 * 60 * 5
+) => {
+  const defaultParams = {
+    all_data: false,
+    page: 1,
+    per_page: 10,
+    filters: {},
+    ordering: "",
+    search: "",
+  };
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
   return useData(
     ProductosAPI,
     "productos",
     null,
-    { all_data, page, per_page },
-    1000 * 60 * 5
+    mergedParams,
+    staleTime,
+    enabled
   );
 };
-export const useProduct = (id) => useData(ProductosAPI, "producto", id);
+
+//para obtener un solo producto
+export const useProduct = (id) =>
+  useData(ProductosAPI, "producto", id, {}, 1000 * 60 * 5, !!id);
+//para mutaciones de productos
 export const useProductMutations = () =>
   useEntityMutations(ProductosAPI, "Producto");
 
