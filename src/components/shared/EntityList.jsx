@@ -23,10 +23,25 @@ function EntityList({ entityData }) {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [allData, setAllData] = useState(false);
-  const [codigo, setCodigo] = useState("");
+
+  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState({});
+  const [ordering, setOrdering] = useState("");
 
   const manejarBusqueda = (termino) => {
-    setCodigo(termino); // Actualiza el estado para disparar la búsqueda
+    setSearch(termino); // Actualiza el estado para disparar la búsqueda
+    setPage(1); //resetea la pagina a 1
+  };
+
+  // Función para actualizar filtros específicos
+  const manejarFiltro = (campo, valor) => {
+    setFilters((prev) => ({ ...prev, [campo]: valor }));
+    setPage(1); //resetea la pagina a 1
+  };
+
+  // Función para actualizar orden
+  const manejarOrden = (campoOrden) => {
+    setOrdering(campoOrden);
   };
 
   const { todosDatosOpaginacion } = useFormEntity();
@@ -35,9 +50,9 @@ function EntityList({ entityData }) {
     all_data: allData,
     page: page,
     per_page: perPage,
-    search: "",
-    filters: { codigo_barras: codigo },
-    ordering: "",
+    search: search,
+    ordering: ordering,
+    filters: filters,
   });
 
   const {
@@ -108,10 +123,6 @@ function EntityList({ entityData }) {
           total_pages={total_pages}
         />
       )}
-      <BarraBusqueda
-        onSearch={manejarBusqueda}
-        placeholder="Buscar por codigo de barras"
-      />
       <SelectPerPage
         perPage={perPage}
         setPerPage={setPerPage}
