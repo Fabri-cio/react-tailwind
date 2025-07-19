@@ -119,15 +119,14 @@ export default function CreateProductStandalone() {
   ];
 
   const paraNavegacion = {
-    title: "Crear Producto",
-    subTitle: "Crear Producto",
+    title: "Registrar Producto",
+    subTitle: "",
     icon: FaPlus,
     actions: [
       {
         to: "/productList",
-        label: "Volver",
-        icon: FaBackspace,
-        estilos: "border-2 border-gray-400 rounded-lg p-1 text-gray-700 hover:bg-gray-700 hover:text-white",
+        label: "Cancelar",
+        estilos: "border-2 border-gray-700 rounded-lg bg-gray-600 text-white p-2 hover:bg-gray-100 hover:text-gray-600",
       },
     ],
   };

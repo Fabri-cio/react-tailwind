@@ -13,13 +13,13 @@ const Sidebar = ({ isVisible }) => {
       } h-[calc(100vh)]`}
     >
       {/* titulo */}
-      <div className="p-4 px-6 text-center flex items-center gap-2 bg-gray-800">
+      <div className="p-4 px-6 text-center flex items-center gap-2 bg-red-500">
         <FaCrown className="text-white text-2xl" />
         <h1 className="text-white text-xl font-bold">Conquistador</h1>
       </div>
 
       {/* Sección de Perfil de Usuario */}
-      <div className="px-4 py-6 border-b flex flex-col items-center justify-center text-center bg-gray-700">
+      <div className="px-4 py-6 border-b flex flex-col items-center justify-center text-center bg-orange-500">
         {/* Avatar */}
         <div className="mb-3">
           <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold text-xl">
@@ -37,9 +37,6 @@ const Sidebar = ({ isVisible }) => {
 
       {/* Contenedor del menú con scroll */}
       <div className="flex-1 overflow-y-auto">
-        <h3 className="px-4 py-2 text-sm font-medium text-gray-500 uppercase tracking-wider">
-          Menú de navegación
-        </h3>
         <ul className="px-2 space-y-2">
           {menus.map((menu, index) => (
             <SidebarMenu

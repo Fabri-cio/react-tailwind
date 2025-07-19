@@ -72,40 +72,8 @@ function EntityList({ entityData }) {
   if (isLoading) return <Loading message={loadingMessage} />;
   if (isError) return <ErrorMessage message={errorMessage} />;
 
-  const SelectPerPage = ({ perPage, setPerPage, setAllData, setPage }) => {
-    const opciones = [3, 5, 10, 20, "Todos"];
-
-    const handleChange = (e) => {
-      const value = e.target.value;
-
-      if (value === "Todos") {
-        setAllData(true);
-      } else {
-        setAllData(false);
-        setPerPage(parseInt(value));
-      }
-
-      setPage(1); //resetea la pagina a 1
-    };
-
-    return (
-      <select
-        value={allData ? "Todos" : perPage}
-        onChange={handleChange}
-        className="border border-gray-400 rounded px-2 py-1 text-sm"
-      >
-        {opciones.map((opcion) => (
-          <option key={opcion} value={opcion}>
-            Mostrar {opcion}
-          </option>
-        ))}
-      </select>
-    );
-  };
-
   return (
-    <div className="space-y-1 p-4">
-      {" "}
+    <div className="">
       {/* este es el div principal*/}
       <Navigation
         title={title}
@@ -123,12 +91,6 @@ function EntityList({ entityData }) {
           total_pages={total_pages}
         />
       )}
-      <SelectPerPage
-        perPage={perPage}
-        setPerPage={setPerPage}
-        setAllData={setAllData}
-        setPage={setPage}
-      />
       <Table
         items={items}
         fields={entityFields()}

@@ -46,8 +46,8 @@ function ProductList() {
   ];
 
   const entityData = {
-    title: "Gestión de Productos",
-    subTitle: "Listado de productos",
+    title: "Catalogo de Productos",
+    subTitle: "",
     loadingMessage: "Cargando productos...",
     errorMessage: "Error al obtener los productos",
     fetchDataHook: useProducts,
@@ -56,10 +56,8 @@ function ProductList() {
     actions: [
       {
         to: "/createProduct",
-        label: "Nuevo producto",
         icon: FaPlus,
-        estilos:
-          "border-gray-400 rounded-lg border-2 p-1 text-green-600 hover:bg-green-600 hover:text-white flex items-center gap-2 transition duration-200",
+        estilos: "text-white"
       },
     ],
     icon: FaBox,

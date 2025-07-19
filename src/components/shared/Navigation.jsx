@@ -7,14 +7,14 @@ export function Navigation({
   icon: Icon,
 }) {
   return (
-    <div className="flex flex-col border-2 border-gray-400 rounded-lg">
-      <div className="flex justify-between rounded-lg p-1">
+    <div className="flex flex-col bg-gray-400">
+      <div className="flex justify-between rounded-lg p-4">
         {/* Enlace al listado */}
         <div className="flex items-center gap-2">
-          {Icon && <Icon className="w-7 h-7 text-gray-700" />}
+          {Icon && <Icon className="w-7 h-7 text-white" />}
           <div>
-            <h1 className="font-bold text-base text-gray-800">{title}</h1>
-            {subTitle && <p className="text-gray-700 text-sm">{subTitle}</p>}
+            <h1 className="font-bold text-base text-white">{title}</h1>
+            {subTitle && <p className="text-white text-sm">{subTitle}</p>}
           </div>
         </div>
 
