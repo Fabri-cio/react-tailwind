@@ -44,13 +44,13 @@ export default function EditUser() {
     email: entidad?.data?.email || "",
     birthday: entidad?.data?.birthday || "",
     lugar_de_trabajo: entidad?.data?.lugar_de_trabajo || "",
-    role: entidad?.data?.role || "",
+    rol: entidad?.data?.rol || "",
     is_active: entidad?.data?.is_active || false,
   });
 
   const camposExtras = (formValues) => ({
     lugar_de_trabajo: Number(formValues.lugar_de_trabajo),
-    role: Number(formValues.role),
+    rol: Number(formValues.rol),
   });
 
   const paraEnvio = (formValues) => ({
@@ -132,7 +132,7 @@ export default function EditUser() {
     {
       component: SelectField,
       label: "Rol",
-      name: "role",
+      name: "rol",
       onChange: manejarEntradas.handleInputChange,
       options: selects.rolesOptions(),
     },
