@@ -16,7 +16,7 @@ function UserList() {
           to={`/editUser/${item.id}`}
           className="text-blue-400 font-bold hover:underline"
         >
-          {item.first_name + item.last_name}
+          {item.first_name + " " + item.last_name}
         </Link>
       ),
     },

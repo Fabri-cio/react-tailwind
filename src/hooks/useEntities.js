@@ -5,7 +5,7 @@ import {
   CategoriasAPI,
   ProveedoresAPI,
 } from "../api/producto.api";
-import { CustomUsersAPI, RolesApi, PasswordResetAPI } from "../api/usuario.api";
+import { UsuariosAPI, RolesApi, PasswordResetAPI } from "../api/usuario.api";
 import {
   InventariosAPI,
   TipMovsApi,
@@ -118,16 +118,16 @@ export const useProveedorMutations = () =>
 //users
 export const useUsers = (all_data = false, page = 1) => {
   return useData(
-    CustomUsersAPI,
+    UsuariosAPI,
     "users",
     null,
     { all_data, page },
     1000 * 60 * 5
   );
 };
-export const useUser = (id) => useData(CustomUsersAPI, "user", id);
+export const useUser = (id) => useData(UsuariosAPI, "user", id);
 export const useUserMutations = () =>
-  useEntityMutations(CustomUsersAPI, "Usuario");
+  useEntityMutations(UsuariosAPI, "Usuario");
 
 //roles
 export const useRoles = (all_data = false, page = 1) => {

@@ -33,14 +33,14 @@ export default function CreateUser() {
     email: "",
     birthday: "",
     lugar_de_trabajo: "",
-    role: "",
+    rol: "",
     is_active: false,
     is_superuser: false,
   };
 
   const camposExtras = (formValues) => ({
     lugar_de_trabajo: Number(formValues.lugar_de_trabajo),
-    role: Number(formValues.role),
+    rol: Number(formValues.rol),
   });
 
   const paraEnvio = (formValues) => ({
@@ -129,7 +129,7 @@ export default function CreateUser() {
     {
       component: SelectField,
       label: "Rol",
-      name: "role",
+      name: "rol",
       onChange: manejarEntradas.handleInputChange,
       options: selects.rolesOptions(),
     },
