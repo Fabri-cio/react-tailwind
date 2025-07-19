@@ -1,11 +1,29 @@
 import { useProducts } from "../../hooks/useEntities";
-import { FaPlus, FaBox } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaPlus, FaBox, FaEdit, FaHistory } from "react-icons/fa";
 import { StatusBadge, EntityList, Image } from "../../components/shared";
+import { ActionButton } from "../../components/shared/ActionButton";
 
 function ProductList() {
   const productFields = () => [
     { key: "index", label: "#" },
+    {
+      key: "actions",
+      label: "Acciones",
+      render: (item) => (
+        <div className="flex gap-2">
+          <ActionButton
+            to={`/editProduct/${item.id_producto}`}
+            icon={FaEdit}
+            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+          />
+          <ActionButton
+            to={`/historialProduct/${item.id_producto}`}
+            icon={FaHistory}
+            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+          />
+        </div>
+      ),
+    },
     {
       key: "estado",
       label: "Estado",
@@ -14,14 +32,6 @@ function ProductList() {
     {
       key: "nombre",
       label: "Nombre",
-      render: (item) => (
-        <Link
-          to={`/editProduct/${item.id_producto}`}
-          className="text-blue-400 font-bold hover:underline"
-        >
-          {item.nombre}
-        </Link>
-      ),
     },
     { key: "nombre_proveedor", label: "Proveedor" },
     { key: "nombre_categoria", label: "Categoría" },
@@ -57,7 +67,7 @@ function ProductList() {
       {
         to: "/createProduct",
         icon: FaPlus,
-        estilos: "text-white"
+        estilos: "text-white",
       },
     ],
     icon: FaBox,
