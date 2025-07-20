@@ -71,6 +71,27 @@ function ProductList() {
       },
     ],
     icon: FaBox,
+    // filtros: [
+    //   {
+    //     name: "search",
+    //     placeholder: "Buscar por nombre, proveedor o categoría",
+    //   },
+    //   { name: "codigo_barras", placeholder: "Código de barras exacto" },
+    //   { name: "precio_min", placeholder: "Precio mínimo" },
+    //   { name: "precio_max", placeholder: "Precio máximo" },
+    //   { name: "fecha_creacion_min", placeholder: "Desde fecha de creación" },
+    //   { name: "fecha_creacion_max", placeholder: "Hasta fecha de creación" },
+    //   { name: "categoria", placeholder: "Categoría (ID o selector)" },
+    //   { name: "proveedor", placeholder: "Proveedor (ID o selector)" },
+    // ],
+    ordenes: [
+      { name: "nombre", label: "Nombre (A-Z)" },
+      { name: "-nombre", label: "Nombre (Z-A)" },
+      { name: "precio", label: "Precio ascendente" },
+      { name: "-precio", label: "Precio descendente" },
+      { name: "fecha_creacion", label: "Fecha más antigua" },
+      { name: "-fecha_creacion", label: "Fecha más reciente" },
+    ],
   };
   return <EntityList entityData={entityData} />;
 }

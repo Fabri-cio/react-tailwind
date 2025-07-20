@@ -1,11 +1,6 @@
 import { ActionButton } from "./ActionButton";
 
-export function Navigation({
-  title,
-  actions = [],
-  subTitle = "",
-  icon: Icon,
-}) {
+export function Navigation({ title, actions = [], subTitle = "", icon: Icon }) {
   return (
     <div className="flex flex-col bg-gray-400">
       <div className="flex justify-between rounded-lg p-4">

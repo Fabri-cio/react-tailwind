@@ -1,4 +1,5 @@
 import { ActionButton } from "./ActionButton";
+import { SelectField } from "./SelectField";
 
 const Pagination = ({
   current_page = 1,
@@ -15,13 +16,13 @@ const Pagination = ({
   };
 
   const styleBtn =
-    " bg-white hover:bg-gray-700 hover:text-white h-6 w-10 text-black rounded-md border-2 border-gray-400 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-white disabled:text-white disabled:border-white disabled:cursor-not-allowed";
+    "hover:bg-gray-400 hover:text-white h-6 w-10 text-black rounded-md border-2 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-white disabled:text-white disabled:border-white disabled:cursor-not-allowed justify-center";
 
   return (
-    <div className="flex justify-center space-x-2 bg-whites border-2 border-gray-400 rounded-lg items-center p-1">
+    <div className="flex justify-center space-x-2  items-center p-1">
       <ActionButton
         onClick={() => handlePageChange(current_page - 1)}
-        label="<<<"
+        label="<"
         estilos={styleBtn}
         disabled={!prevPage} // Deshabilita si está en la primera página
       />
@@ -32,7 +33,7 @@ const Pagination = ({
 
       <ActionButton
         onClick={() => handlePageChange(current_page + 1)}
-        label=">>>"
+        label=">"
         estilos={styleBtn}
         disabled={!nextPage} // Deshabilita si está en la última página
       />
