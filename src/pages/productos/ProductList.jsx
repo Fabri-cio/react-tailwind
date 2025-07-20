@@ -67,7 +67,7 @@ function ProductList() {
       {
         to: "/createProduct",
         icon: FaPlus,
-        estilos: "text-white",
+        estilos: "text-white bg-green-600 rounded-full p-2",
       },
     ],
     icon: FaBox,
