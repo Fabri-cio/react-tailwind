@@ -46,6 +46,9 @@ export const menus = [
   {
     title: "Usuarios",
     icon: FaUser,
-    items: [{ label: "Lista de Usuarios", path: "/userList" }],
+    items: [
+      { label: "Usuarios", path: "/userList" },
+      { label: "Roles", path: "/roles" },
+    ],
   },
 ];
