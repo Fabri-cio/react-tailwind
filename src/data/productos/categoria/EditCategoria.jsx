@@ -1,9 +1,9 @@
 import { FaBackspace, FaEdit } from "react-icons/fa"
-import { EditEntity, ToggleSwitch } from "../../components/shared"
-import { useCategoriaMutations } from "../../hooks/useEntities"
-import { useCategoria } from "../../hooks/useEntities"
-import { InputField } from "../../components/shared/InputField"
-import ImagePreview from "../../components/shared/ImagePreview"
+import { EditEntity, ToggleSwitch } from "../../../components/shared"
+import { useCategoriaMutations } from "../../../hooks/useEntities"
+import { useCategoria } from "../../../hooks/useEntities"
+import { InputField } from "../../../components/shared/InputField"
+import ImagePreview from "../../../components/shared/ImagePreview"
 
 export default function EditCategoria() {
   const configFormulario = (entidad) => ({
@@ -75,10 +75,8 @@ export default function EditCategoria() {
     actions: [
       {
         to: -1,
-        label: "Volver",
-        icon: FaBackspace,
-        estilos:
-          "border-2 border-gray-400 text-gray-700 hover:bg-gray-700 hover:text-white p-2 rounded-lg",
+        label: "Cancelar",
+        estilos: "border-2 border-gray-700 rounded-lg bg-gray-600 text-white p-2 hover:bg-gray-100 hover:text-gray-600",
       },
     ],
   }

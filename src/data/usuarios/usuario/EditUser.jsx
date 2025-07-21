@@ -3,11 +3,11 @@ import {
   useRoles,
   useUserMutations,
   useUser,
-} from "../../hooks/useEntities";
-import { InputField } from "../../components/shared/InputField";
-import { ToggleSwitch } from "../../components/shared/ToggleSwitch";
-import { SelectField } from "../../components/shared/SelectField";
-import { CheckBox } from "../../components/shared/CheckBox";
+} from "../../../hooks/useEntities";
+import { InputField } from "../../../components/shared/InputField";
+import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
+import { SelectField } from "../../../components/shared/SelectField";
+import { CheckBox } from "../../../components/shared/CheckBox";
 import {
   FaBackspace,
   FaEdit,
@@ -15,8 +15,8 @@ import {
   FaPencilAlt,
   FaPlus,
 } from "react-icons/fa";
-import EditEntity from "../../components/shared/EditEntity";
-import { useFormEntity } from "../../utils/useFormEntity";
+import EditEntity from "../../../components/shared/EditEntity";
+import { useFormEntity } from "../../../utils/useFormEntity";
 
 export default function EditUser() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
@@ -158,11 +158,9 @@ export default function EditUser() {
     icon: FaEdit,
     actions: [
       {
-        to: "/userList",
-        label: "Volver",
-        icon: FaBackspace,
-        estilos:
-          "border-2 border-gray-400 text-gray-700 hover:text-white hover:bg-gray-700 p-1 gap-2",
+        to: -1,
+        label: "Cancelar",
+        estilos: "border-2 border-gray-700 rounded-lg bg-gray-600 text-white p-2 hover:bg-gray-100 hover:text-gray-600",
       },
     ],
   };

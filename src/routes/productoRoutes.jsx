@@ -1,21 +1,31 @@
 import { lazy } from "react";
 
-const ProductList = lazy(() => import("../pages/productos/ProductList"));
-const EditProduct = lazy(() => import("../data/productos/EditProduct"));
-const CreateProductStandalone = lazy(() =>
-    import("../data/productos/CreateProductStandalone")
+const Productos = lazy(() => import("../data/productos/producto/Productos"));
+const EditProduct = lazy(() =>
+  import("../data/productos/producto/EditProduct")
 );
-const CrearCategoria = lazy(() => import("../data/productos/CrearCategoria"));
-const EditarCategoria = lazy(() => import("../data/productos/EditCategoria"));
-const Proveedores = lazy(() => import("../pages/productos/Proveedores"));
-const Categorias = lazy(() => import("../pages/productos/Categorias"));
-const HistorialProduct = lazy(() => import("../pages/productos/HistorialProduct"));
+const CreateProduct = lazy(() =>
+  import("../data/productos/producto/CreateProduct")
+);
+const CreateCategoria = lazy(() =>
+  import("../data/productos/categoria/CreateCategoria")
+);
+const EditCategoria = lazy(() =>
+  import("../data/productos/categoria/EditCategoria")
+);
+const Proveedores = lazy(() =>
+  import("../data/productos/proveedor/Proveedores")
+);
+const Categorias = lazy(() => import("../data/productos/categoria/Categorias"));
+const HistorialProduct = lazy(() =>
+  import("../data/productos/producto/HistorialProduct")
+);
 
 export const productoRoutes = [
   // productos
   {
-    path: "/productList",
-    element: <ProductList />,
+    path: "/productos",
+    element: <Productos />,
   },
   {
     path: "/editProduct/:id",
@@ -23,7 +33,7 @@ export const productoRoutes = [
   },
   {
     path: "/createProduct",
-    element: <CreateProductStandalone />,
+    element: <CreateProduct />,
   },
   {
     path: "/historialProduct/:id",
@@ -35,12 +45,12 @@ export const productoRoutes = [
     element: <Categorias />,
   },
   {
-    path: "/editCategory/:id",
-    element: <EditarCategoria />,
+    path: "/editCategoria/:id",
+    element: <EditCategoria />,
   },
   {
-    path: "/addCategory",
-    element: <CrearCategoria />,
+    path: "/createCategoria",
+    element: <CreateCategoria />,
   },
   // proveedores
   {

@@ -1,11 +1,11 @@
 import React from "react";
-import { InputField, SelectField, ToggleSwitch, CreateEntity } from "../../components/shared"
-import { useFormEntity } from "../../utils/useFormEntity";
-import { useProveedores, useCategorias, useProductMutations } from "../../hooks/useEntities";
-import { obtenerIdUser } from "../../utils/auth";
+import { InputField, SelectField, ToggleSwitch, CreateEntity } from "../../../components/shared"
+import { useFormEntity } from "../../../utils/useFormEntity";
+import { useProveedores, useCategorias, useProductMutations } from "../../../hooks/useEntities";
+import { obtenerIdUser } from "../../../utils/auth";
 import { FaBackspace, FaPlus } from "react-icons/fa";
 
-export default function CreateProductStandalone() {
+export default function CreateProduct() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
   const logicaNegocio = {
     idUsuario: obtenerIdUser(),
@@ -124,7 +124,7 @@ export default function CreateProductStandalone() {
     icon: FaPlus,
     actions: [
       {
-        to: "/productList",
+        to: -1,
         label: "Cancelar",
         estilos: "border-2 border-gray-700 rounded-lg bg-gray-600 text-white p-2 hover:bg-gray-100 hover:text-gray-600",
       },

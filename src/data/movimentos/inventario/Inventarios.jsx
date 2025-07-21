@@ -1,5 +1,5 @@
 import React from "react";
-import { useInventarios } from "../../hooks/useEntities";
+import { useInventarios } from "../../../hooks/useEntities";
 import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/inventarios/Navigation";
 import jsPDF from "jspdf";
@@ -23,15 +23,15 @@ function Inventarios() {
       <p className="text-center text-red-600">Error: {errorInventarios}</p>
     );
 
-  // Agrupar los inventarios por tienda
-  const inventariosPorTienda = inventarios.reduce((acc, inventario) => {
+  // Agrupar los inventarios por tienda sin usar reduce
+  const inventariosPorTienda = {};
+  inventarios.forEach((inventario) => {
     const tienda = inventario.id_almacen_tienda_nombre; // Usamos el nombre de la tienda
-    if (!acc[tienda]) {
-      acc[tienda] = [];
+    if (!inventariosPorTienda[tienda]) {
+      inventariosPorTienda[tienda] = [];
     }
-    acc[tienda].push(inventario);
-    return acc;
-  }, {});
+    inventariosPorTienda[tienda].push(inventario);
+  });
 
   // Función para generar el reporte en PDF
   const generarReportePDF = () => {

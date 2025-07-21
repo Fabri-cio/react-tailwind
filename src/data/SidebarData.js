@@ -32,13 +32,13 @@ export const menus = [
   {
     title: "Inventario",
     icon: FaBoxes,
-    items: [{ label: "Ver Inventario", path: "/ver_inventario" }],
+    items: [{ label: "Ver Inventario", path: "/inventarios" }],
   },
   {
     title: "Productos",
     icon: FaBox,
     items: [
-      { label: "Productos", path: "/productList" },
+      { label: "Productos", path: "/productos" },
       { label: "Categorias", path: "/categorias" },
       { label: "Proveedores", path: "/proveedores" },
     ],
@@ -47,7 +47,7 @@ export const menus = [
     title: "Usuarios",
     icon: FaUser,
     items: [
-      { label: "Usuarios", path: "/userList" },
+      { label: "Usuarios", path: "/usuarios" },
       { label: "Roles", path: "/roles" },
     ],
   },

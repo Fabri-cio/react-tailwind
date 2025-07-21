@@ -1,10 +1,9 @@
 import { FaPlus } from "react-icons/fa"
-import CreateEntity from "../../components/shared/CreateEntity"
-import { InputField } from "../../components/shared/InputField"
-import { useCategoriaMutations } from "../../hooks/useEntities"
-import { FaBackspace } from "react-icons/fa"
+import CreateEntity from "../../../components/shared/CreateEntity"
+import { InputField } from "../../../components/shared/InputField"
+import { useCategoriaMutations } from "../../../hooks/useEntities"
 
-export default function CrearCategoria() {
+export default function CreateCategoria() {
     const configuracionFormulario = {
         nombre_categoria: "",
         descripcion: "",
@@ -44,10 +43,8 @@ export default function CrearCategoria() {
         actions: [
           {
             to: -1,
-            label: "Volver",
-            icon: FaBackspace,
-            estilos:
-              "border-2 border-gray-400 text-gray-700 hover:bg-gray-700 hover:text-white p-2 rounded-lg",
+            label: "Cancelar",
+            estilos: "border-2 border-gray-700 rounded-lg bg-gray-600 text-white p-2 hover:bg-gray-100 hover:text-gray-600",
           },
         ],
       }

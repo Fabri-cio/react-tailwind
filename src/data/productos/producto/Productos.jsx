@@ -1,7 +1,7 @@
-import { useProducts } from "../../hooks/useEntities";
+import { useProducts } from "../../../hooks/useEntities";
 import { FaPlus, FaBox, FaEdit, FaHistory } from "react-icons/fa";
-import { StatusBadge, EntityList, Image } from "../../components/shared";
-import { ActionButton } from "../../components/shared/ActionButton";
+import { StatusBadge, EntityList, Image } from "../../../components/shared";
+import { ActionButton } from "../../../components/shared/ActionButton";
 
 function ProductList() {
   const productFields = () => [

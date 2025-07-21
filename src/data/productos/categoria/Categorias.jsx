@@ -1,15 +1,21 @@
-import { Navigation } from "../../components/shared/Navigation";
-import { FaPlus, FaBoxes, FaCalendarAlt, FaEdit, FaTrash } from "react-icons/fa";
-import Pagination from "../../components/shared/Pagination";
-import { useFormEntity } from "../../utils/useFormEntity";
-import { useCategorias } from "../../hooks/useEntities";
+import { Navigation } from "../../../components/shared/Navigation";
+import {
+  FaPlus,
+  FaBoxes,
+  FaCalendarAlt,
+  FaEdit,
+  FaTrash,
+} from "react-icons/fa";
+import Pagination from "../../../components/shared/Pagination";
+import { useFormEntity } from "../../../utils/useFormEntity";
+import { useCategorias } from "../../../hooks/useEntities";
 import { useNavigate } from "react-router-dom";
 
 const Categorias = () => {
   const navigate = useNavigate();
   const { todosDatosOpaginacion } = useFormEntity();
-  const { items } = todosDatosOpaginacion(useCategorias, true)
-  console.log(items)
+  const { items } = todosDatosOpaginacion(useCategorias, true);
+  console.log(items);
   return (
     <div className="container mx-auto p-4">
       <Navigation
@@ -17,10 +23,9 @@ const Categorias = () => {
         subTitle="Administra las categorias de tus productos"
         actions={[
           {
-            to: "/createCategoria",
-            label: "Crear Categoria",
+            to: "/createProduct",
             icon: FaPlus,
-            estilos: "hover:bg-gray-600 hover:text-gray-100 text-black border-2 border-gray-400 rounded-md flex items-center gap-2 transition duration-200 p-2",
+            estilos: "text-white bg-green-600 rounded-full p-2",
           },
         ]}
       />
@@ -53,16 +58,17 @@ const Categorias = () => {
                       {categoria.nombre_categoria}
                     </h2>
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${categoria.estado
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                        }`}
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        categoria.estado
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
                     >
                       {categoria.estado ? "Activo" : "Inactivo"}
                     </span>
                   </div>
                   <span className="text-sm text-gray-500">
-                    {categoria.codigo || 'Sin código'}
+                    {categoria.codigo || "Sin código"}
                   </span>
                 </div>
                 <span className="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded-full whitespace-nowrap">
@@ -71,7 +77,7 @@ const Categorias = () => {
               </div>
 
               <p className="text-gray-600 mb-4 line-clamp-2 h-12">
-                {categoria.descripcion || 'Sin descripción'}
+                {categoria.descripcion || "Sin descripción"}
               </p>
 
               <div className="flex justify-between items-center pt-3 border-t border-gray-100">
@@ -80,13 +86,15 @@ const Categorias = () => {
                   <span>
                     {categoria.fecha_creacion
                       ? new Date(categoria.fecha_creacion).toLocaleDateString()
-                      : 'Sin fecha'}
+                      : "Sin fecha"}
                   </span>
                 </div>
 
                 <div className="flex gap-2">
                   <button
-                    onClick={() => navigate(`/editCategory/${categoria.id_categoria}`)}
+                    onClick={() =>
+                      navigate(`/editCategoria/${categoria.id_categoria}`)
+                    }
                     className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
                     title="Editar categoría"
                   >
