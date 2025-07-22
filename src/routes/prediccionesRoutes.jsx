@@ -1,7 +1,7 @@
 import { lazy } from "react";
 
 const RealizarPrediccion = lazy(() =>
-  import("../pages/predicciones/RealizarPrediccion")
+  import("../data/predicciones/RealizarPrediccion")
 );
 const DetallesPrediccion = lazy(() =>
   import("../components/predicciones/DetallesPrediccion")
