@@ -1,17 +1,17 @@
 import { FaSalesforce } from "react-icons/fa";
-import { useVentas } from "../../hooks/useEntities";
-import EntityList from "../../components/shared/EntityList";
-import FormattedDate from "../../components/shared/FormattedDate";
+import { useVentas } from "../../../hooks/useEntities";
+import EntityList from "../../../components/shared/EntityList";
+import FormattedDate from "../../../components/shared/FormattedDate";
 import { Link } from "react-router-dom";
 
-function VentasList() {
+function Ventas() {
   const ventasFields = () => [
     { key: "index", label: "N°" },
     {
       key: "fecha_venta",
       label: "Fecha",
       render: (item) => (
-        <Link to={`/ventas/detalleVenta/${item.id_venta}`}>
+        <Link to={`/ventas/detallesVenta/${item.id_venta}`}>
           <FormattedDate date={item.fecha_venta} />
         </Link>
       ),
@@ -36,4 +36,4 @@ function VentasList() {
   return <EntityList entityData={entityData} />;
 }
 
-export default VentasList;
+export default Ventas;

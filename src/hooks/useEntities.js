@@ -12,7 +12,7 @@ import {
   AlmacenesApi,
   MovimientosAPI,
 } from "../api/almacen.api";
-import { VentasAPI, DetVentasAPI } from "../api/venta.api";
+import { VentasAPI, DetVentasAPI, DetallesVentaAPI } from "../api/venta.api";
 import { useMutationWithToast } from "./useMutationWithToast";
 
 //productos
@@ -168,13 +168,64 @@ export const useTipMovMutations = () =>
   useEntityMutations(TipMovsApi, "Inventario");
 
 //ventas
-export const useVentas = (all_data = false, page = 1) => {
-  return useData(VentasAPI, "ventas", null, { all_data, page }, 1000 * 60 * 5);
+export const useVentas = (
+  params = {},
+  enabled = true,
+  staleTime = 1000 * 60 * 5
+) => {
+  const defaultParams = {
+    all_data: false,
+    page: 1,
+    per_page: 10,
+    filters: {},
+    ordering: "",
+    search: "",
+  };
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    VentasAPI,
+    "ventas",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
 };
-export const useVenta = (id) => useData(VentasAPI, "venta", id);
+export const useVenta = (id) =>
+  useData(VentasAPI, "venta", id, {}, 1000 * 60 * 5, !!id);
 export const useVentaMutations = () => useEntityMutations(VentasAPI, "Venta");
 
 //detalles de venta
+export const useDetallesVenta = (
+  params = {},
+  enabled = true,
+  staleTime = 1000 * 60 * 5
+) => {
+  const defaultParams = {
+    all_data: false,
+    page: 1,
+    per_page: 10,
+    filters: {},
+    ordering: "",
+    search: "",
+  };
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    DetallesVentaAPI,
+    "detalles-Venta",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
 export const useDetaVentas = (all_data = false, page = 1) => {
   return useData(
     DetVentasAPI,
@@ -184,6 +235,8 @@ export const useDetaVentas = (all_data = false, page = 1) => {
     1000 * 60 * 5
   );
 };
+export const useDetalleVenta = (id) =>
+  useData(DetallesVentaAPI, "detalle-venta", id, {}, 1000 * 60 * 5, !!id);
 export const useDetVenta = (id) => useData(DetVentasAPI, "detVenta", id);
 export const useDetVentaMutations = () =>
   useEntityMutations(DetVentasAPI, "Detalle de la venta");

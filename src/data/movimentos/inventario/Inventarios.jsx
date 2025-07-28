@@ -12,7 +12,8 @@ function Inventarios() {
     isError: errorInventarios,
   } = useInventarios();
 
-  const inventarios = response.data || [];
+  // Asegurarse de que inventarios sea siempre un array
+  const inventarios = Array.isArray(response?.data) ? response.data : [];
   const navigate = useNavigate();
 
   // Manejo de carga y errores
@@ -23,15 +24,20 @@ function Inventarios() {
       <p className="text-center text-red-600">Error: {errorInventarios}</p>
     );
 
-  // Agrupar los inventarios por tienda sin usar reduce
+  // Agrupar los inventarios por tienda
   const inventariosPorTienda = {};
-  inventarios.forEach((inventario) => {
-    const tienda = inventario.id_almacen_tienda_nombre; // Usamos el nombre de la tienda
-    if (!inventariosPorTienda[tienda]) {
-      inventariosPorTienda[tienda] = [];
-    }
-    inventariosPorTienda[tienda].push(inventario);
-  });
+  
+  if (Array.isArray(inventarios)) {
+    inventarios.forEach((inventario) => {
+      if (inventario?.id_almacen_tienda_nombre) {
+        const tienda = inventario.id_almacen_tienda_nombre;
+        if (!inventariosPorTienda[tienda]) {
+          inventariosPorTienda[tienda] = [];
+        }
+        inventariosPorTienda[tienda].push(inventario);
+      }
+    });
+  }
 
   // Función para generar el reporte en PDF
   const generarReportePDF = () => {

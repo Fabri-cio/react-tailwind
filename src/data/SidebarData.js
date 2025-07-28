@@ -15,7 +15,6 @@ export const menus = [
       { label: "Realizar Venta", path: "/ventas/realizar" },
       { label: "Ventas", path: "/ventas" },
       { label: "Productos Vendidos", path: "/ventas/detalleVentas" },
-      { label: "Reportes", path: "/ventas/reportes" },
     ],
     roleRequired: "Cajero",
   },
