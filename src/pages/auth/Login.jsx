@@ -18,15 +18,15 @@ const Login = () => {
       localStorage.removeItem("sessionClosed"); // Eliminar sessionClosed si existe
 
       const response = await login(data.email, data.password);
-      console.log("Inicio de sesión exitoso:", response.data);
+      console.log("Inicio de sesión exitoso:", response);
 
       // Verifica si el token está siendo guardado en localStorage
-      console.log("Token guardado:", response.data.token);
+      console.log("Token guardado:", response.token);
 
-      localStorage.setItem("Token", response.data.token);
-      localStorage.setItem("id_usuario", response.data.user.id); // Suponiendo que el backend te devuelve el id del usuario
-      localStorage.setItem("id_tienda", response.data.user.lugar_de_trabajo); // Suponiendo que el backend te devuelve el id de la tienda
-      console.log("id_usuario", response.data.user.id);
+      localStorage.setItem("Token", response.token);
+      localStorage.setItem("id_usuario", response.user.id); // Suponiendo que el backend te devuelve el id del usuario
+      localStorage.setItem("id_tienda", response.user.lugar_de_trabajo); // Suponiendo que el backend te devuelve el id de la tienda
+      console.log("id_usuario", response.user.id);
 
       setLoginSuccess(true);
       navigate(`/home`);

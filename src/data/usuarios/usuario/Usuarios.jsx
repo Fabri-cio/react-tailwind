@@ -1,7 +1,7 @@
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import FormattedDate from "../../../components/shared/FormattedDate";
 import EntityList from "../../../components/shared/EntityList";
-import { useUsers } from "../../../hooks/useEntities";
+import { useUsuarios } from "../../../hooks/useEntities";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { FaEdit, FaHistory, FaPlus, FaUber } from "react-icons/fa";
 
@@ -31,7 +31,7 @@ function UserList() {
       render: (item) => item.first_name + " " + item.last_name,
     },
     { key: "username", label: "Usuario" },
-    { key: "name_rol", label: "Rol" },
+    { key: "rol", label: "Rol" },
     { key: "name_work", label: "Lugar de Trabajo" },
 
     {
@@ -51,7 +51,7 @@ function UserList() {
     subTitle: "Listado de usuarios",
     loadingMessage: "Cargando usuarios...",
     errorMessage: "Error al obtener los usuarios",
-    fetchDataHook: useUsers,
+    fetchDataHook: useUsuarios,
     itemKey: "id",
     entityFields: userFields,
     actions: [

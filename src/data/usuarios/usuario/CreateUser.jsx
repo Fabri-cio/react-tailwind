@@ -4,7 +4,7 @@ import { InputField } from "../../../components/shared/InputField";
 import { SelectField } from "../../../components/shared/SelectField";
 import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
 import { CheckBox } from "../../../components/shared/CheckBox";
-import { FaBackspace, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
+import { FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
 import CreateEntity from "../../../components/shared/CreateEntity";
 
 export default function CreateUser() {
@@ -44,7 +44,7 @@ export default function CreateUser() {
   });
 
   const paraEnvio = (formValues) => ({
-    link: "/userList",
+    link: -1,
     params: camposExtras(formValues),
   });
 
@@ -76,6 +76,7 @@ export default function CreateUser() {
       name: "email",
       type: "email",
       required: true,
+      autoComplete: "email",
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -92,6 +93,7 @@ export default function CreateUser() {
       name: "password",
       type: "password",
       required: true,
+      autoComplete: "password",
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -100,6 +102,7 @@ export default function CreateUser() {
       name: "confirm_password",
       type: "password",
       required: true,
+      autoComplete: "confirm-password",
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -110,17 +113,17 @@ export default function CreateUser() {
       options: selects.almacenOptions(),
       actionButtons: [
         {
-          to: "/editCategory",
+          to: "/editAlmacen",
           icon: FaPencilAlt,
           estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
         },
         {
-          to: "/addCategory",
+          to: "/addAlmacen",
           icon: FaPlus,
           estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
         },
         {
-          to: "/categoryList",
+          to: "/almacenes",
           icon: FaEye,
           estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
         },
@@ -132,6 +135,23 @@ export default function CreateUser() {
       name: "rol",
       onChange: manejarEntradas.handleInputChange,
       options: selects.rolesOptions(),
+      actionButtons: [
+        {
+          to: "/editRol",
+          icon: FaPencilAlt,
+          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
+        },
+        {
+          to: "/addRol",
+          icon: FaPlus,
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
+        },
+        {
+          to: "/roles",
+          icon: FaEye,
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
+        },
+      ],
     },
     {
       component: ToggleSwitch,

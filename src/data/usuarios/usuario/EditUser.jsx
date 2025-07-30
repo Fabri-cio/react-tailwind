@@ -46,6 +46,7 @@ export default function EditUser() {
     lugar_de_trabajo: entidad?.data?.lugar_de_trabajo || "",
     rol: entidad?.data?.rol || "",
     is_active: entidad?.data?.is_active || false,
+    is_superuser: entidad?.data?.is_superuser || false,
   });
 
   const camposExtras = (formValues) => ({
@@ -55,7 +56,7 @@ export default function EditUser() {
 
   const paraEnvio = (formValues) => ({
     entityId: formValues.id,
-    link: "/userList",
+    link: -1,
     params: camposExtras(formValues),
   });
 
@@ -72,14 +73,6 @@ export default function EditUser() {
       label: "Apellidos",
       name: "last_name",
       required: true,
-      onChange: manejarEntradas.handleInputChange,
-    },
-    {
-      component: InputField,
-      label: "Nueva Contraseña",
-      type: "password",
-      name: "new_password",
-      required: false,
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -113,17 +106,17 @@ export default function EditUser() {
       options: selects.almacenOptions(),
       actionButtons: [
         {
-          to: "/editCategory",
+          to: "/editAlmacen",
           icon: FaPencilAlt,
           estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
         },
         {
-          to: "/addCategory",
+          to: "/addAlmacen",
           icon: FaPlus,
           estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
         },
         {
-          to: "/categoryList",
+          to: "/almacenes",
           icon: FaEye,
           estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
         },
@@ -135,6 +128,23 @@ export default function EditUser() {
       name: "rol",
       onChange: manejarEntradas.handleInputChange,
       options: selects.rolesOptions(),
+      actionButtons: [
+        {
+          to: "/editRol",
+          icon: FaPencilAlt,
+          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
+        },
+        {
+          to: "/addRol",
+          icon: FaPlus,
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
+        },
+        {
+          to: "/roles",
+          icon: FaEye,
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
+        },
+      ],
     },
     {
       component: ToggleSwitch,

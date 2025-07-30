@@ -1,7 +1,7 @@
-import { useRoles } from "../../../hooks/useEntities";
 import { FaUser, FaPlus, FaEye } from "react-icons/fa";
 import { EntityList } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
+import { useRoles } from "../../../hooks/useEntities";
 
 function Roles() {
   const rolesFields = () => [
@@ -13,7 +13,7 @@ function Roles() {
       render: (item) => (
         <div className="flex gap-2">
           <ActionButton
-            to={`/editRol/${item.id_rol}`}
+            to={`/editRol/${item.id}`}
             icon={FaEye}
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
@@ -28,7 +28,7 @@ function Roles() {
     loadingMessage: "Cargando roles...",
     errorMessage: "Error al obtener roles",
     fetchDataHook: useRoles,
-    itemKey: "id_rol",
+    itemKey: "id",
     entityFields: rolesFields,
     icon: FaUser,
     actions: [

@@ -79,6 +79,32 @@ export const useProveedorMutations = () =>
   useEntityMutations(ProveedoresAPI, "Proveedor");
 
 //users
+export const useUsuarios = (
+  params = {},
+  enabled = true,
+  staleTime = 1000 * 60 * 5
+) => {
+  const defaultParams = {
+    all_data: false,
+    page: 1,
+    per_page: 10,
+    filters: {},
+    ordering: "",
+    search: "",
+  };
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    UsuariosAPI,
+    "usuarios",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 export const useUsers = (all_data = false, page = 1) => {
   return useData(
     UsuariosAPI,
@@ -93,8 +119,31 @@ export const useUserMutations = () =>
   useEntityMutations(UsuariosAPI, "Usuario");
 
 //roles
-export const useRoles = (all_data = false, page = 1) => {
-  return useData(RolesApi, "roles", null, { all_data, page }, 1000 * 60 * 5);
+export const useRoles = (
+  params = {},
+  enabled = true,
+  staleTime = 1000 * 60 * 5
+) => {
+  const defaultParams = {
+    all_data: false,
+    page: 1,
+    per_page: 10,
+    filters: {},
+    ordering: "",
+    search: "",
+  };
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    RolesApi,
+    "roles",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
 };
 export const useRol = (id) => useData(RolesApi, "rol", id);
 export const useRolMutations = () => useEntityMutations(RolesApi, "Rol");

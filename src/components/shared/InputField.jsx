@@ -8,7 +8,7 @@ export function InputField({ label, type = "text", value, ...props }) {
         type={type}
         {...props}
         className="w-full p-2 text-sm border border-gray-300 rounded"
-        value={type === "file" ? undefined : value}
+        value={type === "file" ? undefined : (value ?? "")}
       />
     </div>
   );

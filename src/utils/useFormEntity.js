@@ -7,14 +7,14 @@ export const useFormEntity = () => {
 
   const options = (entity, keyId, keyNombre) =>
     entity.map((item) => ({
-      id: item[keyId], // Accede dinámicamente a la clave id
-      nombre: item[keyNombre], // Accede dinámicamente a la clave nombre
+      id: item[keyId],
+      nombre: item[keyNombre],
     }));
 
   const crearEstadoFomulario = (campos) => {
     const estadoInicial = {};
     Object.keys(campos).forEach((campo) => {
-      estadoInicial[campo] = campos[campo]; // Usa el valor original esto arregla el togle de estado F V
+      estadoInicial[campo] = campos[campo];
     });
     return estadoInicial;
   };
@@ -33,14 +33,14 @@ export const useFormEntity = () => {
 
   const usarEfecto = (entidad, setFormValues, campos = {}) => {
     useEffect(() => {
-      if (entidad?.data) {
+      if (entidad) {
         setFormValues((prevState) => ({
           ...prevState,
-          ...entidad.data,
+          ...entidad,
           ...campos,
         }));
       }
-    }, [entidad?.data, setFormValues]);
+    }, [entidad, setFormValues]);
   };
 
   const manejarEnvio = (
@@ -52,45 +52,36 @@ export const useFormEntity = () => {
     entityId,
     params = {}
   ) => {
-    // Combinar formValues con params
     const dataToSend = {
       ...formValues,
       ...params,
     };
 
-    // Filtrar los campos que no deben incluirse en el envío
     const filteredData = {};
     Object.entries(dataToSend).forEach(([key, value]) => {
-      // Si el valor es un archivo (File o Blob), lo incluimos
       if (
         value instanceof File ||
         (typeof Blob !== "undefined" && value instanceof Blob)
       ) {
         filteredData[key] = value;
-      }
-      // Si el valor es una cadena que parece una URL, la omitimos (es un archivo existente)
-      else if (
+      } else if (
         typeof value === "string" &&
         (value.startsWith("http") || value.startsWith("blob:"))
       ) {
-        // No incluimos las URLs de archivos existentes
-      }
-      // Para cualquier otro valor que no sea nulo ni indefinido, lo incluimos
-      else if (value !== null && value !== undefined) {
+        // omitimos
+      } else if (value !== null && value !== undefined) {
         filteredData[key] = value;
       }
     });
 
-    // Verificar si hay archivos para enviar
+    let data;
     const contieneArchivo = Object.values(filteredData).some(
       (value) =>
         value instanceof File ||
         (typeof Blob !== "undefined" && value instanceof Blob)
     );
 
-    let data;
     if (contieneArchivo) {
-      // Si hay archivos, usa FormData
       data = new FormData();
       Object.entries(filteredData).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
@@ -98,7 +89,6 @@ export const useFormEntity = () => {
         }
       });
     } else {
-      // Si no hay archivos, usa objeto plano
       data = filteredData;
     }
 
@@ -107,15 +97,13 @@ export const useFormEntity = () => {
       { id: entityId || undefined, data },
       {
         onSuccess: (response) => {
-          // Si la respuesta incluye un link, usarlo para navegación
-          if (response?.data?.link !== undefined) {
-            if (response.data.link === -1) {
-              navigate(-1); // Navegar hacia atrás
-            } else if (typeof response.data.link === "string") {
-              navigate(response.data.link); // Navegar a ruta específica
+          if (response?.link !== undefined) {
+            if (response.link === -1) {
+              navigate(-1);
+            } else if (typeof response.link === "string") {
+              navigate(response.link);
             }
           } else if (entityName) {
-            // Comportamiento por defecto si no hay link en la respuesta
             navigate(entityName);
           }
         },
@@ -124,34 +112,32 @@ export const useFormEntity = () => {
   };
 
   const destructuring = (hook) => {
-    const { data = {} } = hook() || {};
-    return data.data || [];
+    const data = hook() || {};
+    return data || [];
   };
 
   const paraSelectsdestructuringYMap = (hook, all_data, keyId, keyNombre) => {
-    const { data: response = {} } = hook(all_data);
-    return (response.data || []).map((item) => ({
-      id: item[keyId], // Accede dinámicamente a la clave id
-      nombre: item[keyNombre], // Accede dinámicamente a la clave nombre
+    const response = hook(all_data) || {};
+    const lista = Array.isArray(response.data) ? response.data : [];
+    return lista.map((item) => ({
+      id: item[keyId],
+      nombre: item[keyNombre],
     }));
   };
 
   const todosDatosOpaginacion = (fetchDataHook, params = {}) => {
     const { all_data = false } = params;
     const { currentPage, handlePageChange } = usePagination();
-
-    // Usar currentPage solo si no es all_data
     const pageToUse = all_data ? 1 : currentPage;
 
-    // Llamar hook con todos los params y la página correcta
     const {
       data: response = {},
       isLoading,
       isError,
-    } = fetchDataHook({ ...params, page: pageToUse });
+    } = fetchDataHook({ ...params, page: pageToUse }) || {};
 
     if (all_data) {
-      const items = response.data || [];
+      const items = response || [];
       return { items, isLoading, isError, hasPagination: false };
     } else {
       const {
@@ -161,9 +147,10 @@ export const useFormEntity = () => {
         next = null,
         previous = null,
         results,
-      } = response.data || {};
+        ...rest
+      } = response || {};
 
-      const items = results || response.data || [];
+      const items = results || rest || [];
       const totalItems = total;
       const hasPagination = Boolean(next || previous);
 
