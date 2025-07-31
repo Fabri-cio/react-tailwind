@@ -9,7 +9,6 @@ import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
 import { SelectField } from "../../../components/shared/SelectField";
 import { CheckBox } from "../../../components/shared/CheckBox";
 import {
-  FaBackspace,
   FaEdit,
   FaEye,
   FaPencilAlt,
@@ -22,15 +21,10 @@ export default function EditUser() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const almacenOptions = () =>
-    paraSelectsdestructuringYMap(
-      useAlmacenes,
-      true,
-      "id_almacen_tienda",
-      "nombre"
-    );
+    paraSelectsdestructuringYMap(useAlmacenes, "id_almacen_tienda", "nombre");
 
   const rolesOptions = () =>
-    paraSelectsdestructuringYMap(useRoles, true, "id", "name");
+    paraSelectsdestructuringYMap(useRoles, "id", "name");
 
   const selects = {
     almacenOptions,
@@ -108,17 +102,17 @@ export default function EditUser() {
         {
           to: "/editAlmacen",
           icon: FaPencilAlt,
-          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
+          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg p-1",
         },
         {
           to: "/addAlmacen",
           icon: FaPlus,
-          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white rounded-lg p-1",
         },
         {
           to: "/almacenes",
           icon: FaEye,
-          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg p-1",
         },
       ],
     },
@@ -132,17 +126,17 @@ export default function EditUser() {
         {
           to: "/editRol",
           icon: FaPencilAlt,
-          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
+          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg p-1",
         },
         {
           to: "/addRol",
           icon: FaPlus,
-          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white rounded-lg p-1",
         },
         {
           to: "/roles",
           icon: FaEye,
-          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg p-1",
         },
       ],
     },
@@ -170,7 +164,8 @@ export default function EditUser() {
       {
         to: -1,
         label: "Cancelar",
-        estilos: "border-2 border-gray-700 rounded-lg bg-gray-600 text-white p-2 hover:bg-gray-100 hover:text-gray-600",
+        estilos:
+          "border-2 border-gray-700 rounded-lg bg-gray-600 text-white p-2 hover:bg-gray-100 hover:text-gray-600",
       },
     ],
   };

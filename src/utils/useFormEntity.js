@@ -116,8 +116,8 @@ export const useFormEntity = () => {
     return data || [];
   };
 
-  const paraSelectsdestructuringYMap = (hook, all_data, keyId, keyNombre) => {
-    const response = hook(all_data) || {};
+  const paraSelectsdestructuringYMap = (hook, keyId, keyNombre) => {
+    const response = hook({all_data: true}) || {};
     const lista = Array.isArray(response.data) ? response.data : [];
     return lista.map((item) => ({
       id: item[keyId],

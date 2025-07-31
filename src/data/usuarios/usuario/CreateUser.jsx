@@ -13,13 +13,12 @@ export default function CreateUser() {
   const almacenOptions = () =>
     paraSelectsdestructuringYMap(
       useAlmacenes,
-      true,
       "id_almacen_tienda",
       "nombre"
     );
 
   const rolesOptions = () =>
-    paraSelectsdestructuringYMap(useRoles, true, "id", "name");
+    paraSelectsdestructuringYMap(useRoles, "id", "name");
 
   const selects = {
     almacenOptions,
