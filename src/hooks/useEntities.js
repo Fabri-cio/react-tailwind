@@ -106,13 +106,7 @@ export const useUsuarios = (
   );
 };
 export const useUsers = (all_data = false, page = 1) => {
-  return useData(
-    UsuariosAPI,
-    "users",
-    null,
-    { all_data, page },
-    1000 * 60 * 5
-  );
+  return useData(UsuariosAPI, "users", null, { all_data, page }, 1000 * 60 * 5);
 };
 export const useUser = (id) => useData(UsuariosAPI, "user", id);
 export const useUserMutations = () =>
@@ -136,14 +130,7 @@ export const useRoles = (
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
     { ...defaultParams, ...params };
-  return useData(
-    RolesApi,
-    "roles",
-    null,
-    mergedParams,
-    staleTime,
-    enabled
-  );
+  return useData(RolesApi, "roles", null, mergedParams, staleTime, enabled);
 };
 export const useRol = (id) => useData(RolesApi, "rol", id);
 export const useRolMutations = () => useEntityMutations(RolesApi, "Rol");
@@ -162,22 +149,41 @@ export const useInventario = (id) => useData(InventariosAPI, "inventario", id);
 export const useInventarioMutations = () =>
   useEntityMutations(InventariosAPI, "Inventario");
 
+const DEFAULT_STALE_TIME = 1000 * 60 * 5;
+const DEFAULT_PARAMS = {
+  all_data: false,
+  page: 1,
+  per_page: 10,
+  filters: {},
+  ordering: "",
+  search: "",
+};
+
 //almacenes
-export const useAlmacenes = (all_data = false, page = 1) => {
+export const useAlmacenes = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
   return useData(
     AlmacenesApi,
     "almacenes",
     null,
-    { all_data, page },
-    1000 * 60 * 5
+    mergedParams,
+    staleTime,
+    enabled
   );
 };
-export const useAlmacen = (id) => useData(AlmacenesApi, "almacen", id);
+export const useAlmacen = (id) => useData(AlmacenesApi, "almacene", id, {}, 1000 * 60 * 5, !!id);
 export const useAlmacenMutations = () =>
   useEntityMutations(AlmacenesApi, "Almacen");
 
 //movimientos
-//productos
 export const useMovimientos = (
   params = {},
   enabled = true,
@@ -234,14 +240,7 @@ export const useVentas = (
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
     { ...defaultParams, ...params };
-  return useData(
-    VentasAPI,
-    "ventas",
-    null,
-    mergedParams,
-    staleTime,
-    enabled
-  );
+  return useData(VentasAPI, "ventas", null, mergedParams, staleTime, enabled);
 };
 export const useVenta = (id) =>
   useData(VentasAPI, "venta", id, {}, 1000 * 60 * 5, !!id);

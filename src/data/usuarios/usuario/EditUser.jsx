@@ -100,12 +100,12 @@ export default function EditUser() {
       options: selects.almacenOptions(),
       actionButtons: [
         {
-          to: "/editAlmacen",
+          to: `/editAlmacen/${formValues.lugar_de_trabajo}`,
           icon: FaPencilAlt,
           estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg p-1",
         },
         {
-          to: "/addAlmacen",
+          to: "/createAlmacen",
           icon: FaPlus,
           estilos: "text-green-600 hover:bg-green-600 hover:text-white rounded-lg p-1",
         },
@@ -124,7 +124,7 @@ export default function EditUser() {
       options: selects.rolesOptions(),
       actionButtons: [
         {
-          to: "/editRol",
+          to: `/editRol/${formValues.id}`,
           icon: FaPencilAlt,
           estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg p-1",
         },

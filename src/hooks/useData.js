@@ -3,7 +3,7 @@ import { buildParams } from "../utils/buildParams";
 
 const useData = (api, queryKey, id, params = {}, staleTime = 1000 * 60 * 5, enabledParam = true) => {
  
-  const fullParams = buildParams(params); 
+  const fullParams = buildParams(params || {}); 
 
   return useQuery({
     queryKey: id ? [queryKey, id] : [queryKey, fullParams],

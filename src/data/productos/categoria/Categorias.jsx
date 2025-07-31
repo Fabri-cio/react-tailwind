@@ -10,12 +10,36 @@ import Pagination from "../../../components/shared/Pagination";
 import { useFormEntity } from "../../../utils/useFormEntity";
 import { useCategorias } from "../../../hooks/useEntities";
 import { useNavigate } from "react-router-dom";
+import { Loading, ErrorMessaje } from "../../../components/shared";
 
 const Categorias = () => {
   const navigate = useNavigate();
   const { todosDatosOpaginacion } = useFormEntity();
-  const { items } = todosDatosOpaginacion(useCategorias, true);
-  console.log(items);
+  const paginacion = todosDatosOpaginacion(useCategorias, {
+    all_data: true,
+    page: 1,
+    per_page: 10,
+    search: "",
+    filters: {},
+    ordering: "",
+  });
+
+  const {
+    items,
+    currentPage,
+    isLoading,
+    isError,
+    totalItems,
+    hasPagination,
+    next,
+    previous,
+    per_page,
+    total_pages,
+  } = paginacion;
+
+  if (isLoading) return <Loading message="Cargando categorias..." />;
+  if (isError) return <ErrorMessaje message="Error al cargar categorias" />;
+
   return (
     <div className="container mx-auto p-4">
       <Navigation
@@ -23,7 +47,7 @@ const Categorias = () => {
         subTitle="Administra las categorias de tus productos"
         actions={[
           {
-            to: "/createProduct",
+            to: "/createCategory",
             icon: FaPlus,
             estilos: "text-white bg-green-600 rounded-full p-2",
           },

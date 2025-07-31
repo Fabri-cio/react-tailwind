@@ -12,6 +12,7 @@ export { default as Pagination } from "./Pagination";
 export { default as Reporte } from "./Reporte";
 export { default as Row } from "./Row";
 export { default as Table } from "./Table";
+export { ActionButton } from "./ActionButton";
 export { InputField } from "./InputField";
 export { SelectField } from "./SelectField";
 export { ToggleSwitch } from "./ToggleSwitch";

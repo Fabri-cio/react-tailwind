@@ -10,7 +10,6 @@ import { SelectField } from "../../../components/shared/SelectField";
 import ImagePreview from "../../../components/shared/ImagePreview";
 import { obtenerIdUser } from "../../../utils/auth";
 import {
-  FaBackspace,
   FaEdit,
   FaEye,
   FaPencilAlt,
@@ -29,7 +28,6 @@ export default function EditProduct() {
   const categoriasOptions = () =>
     paraSelectsdestructuringYMap(
       useCategorias,
-      true,
       "id_categoria",
       "nombre_categoria"
     );
@@ -37,7 +35,6 @@ export default function EditProduct() {
   const proveedoresOptions = () =>
     paraSelectsdestructuringYMap(
       useProveedores,
-      true,
       "id_proveedor",
       "nombre_proveedor"
     );
