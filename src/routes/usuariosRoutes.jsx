@@ -3,7 +3,7 @@ import {lazy} from 'react'
 const Usuarios = lazy(() => import('../data/usuarios/usuario/Usuarios'))
 const EditUser = lazy(() => import('../data/usuarios/usuario/EditUser'))
 const CreateUser = lazy(() => import('../data/usuarios/usuario/CreateUser'))
-const Roles = lazy(() => import('../data/usuarios/rol/roles'))
+const Roles = lazy(() => import('../data/usuarios/rol/Roles'))
 const EditRoles = lazy(() => import('../data/usuarios/rol/EditRoles'))
 const CreateRoles = lazy(() => import('../data/usuarios/rol/CreateRoles'))
 
