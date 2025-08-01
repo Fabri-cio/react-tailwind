@@ -5,30 +5,43 @@ import {
   CategoriasAPI,
   ProveedoresAPI,
 } from "../api/producto.api";
-import { UsuariosAPI, RolesApi, PasswordResetAPI } from "../api/usuario.api";
+import {
+  UsuariosAPI,
+  RolesApi,
+  PasswordResetAPI,
+  PermisosApi,
+} from "../api/usuario.api";
 import {
   InventariosAPI,
   TipMovsApi,
   AlmacenesApi,
   MovimientosAPI,
 } from "../api/almacen.api";
-import { VentasAPI, DetVentasAPI, DetallesVentaAPI } from "../api/venta.api";
+import {
+  ClientesAPI,
+  VentasAPI,
+  DetallesVentaAPI,
+  ComprobantesVentaAPI,
+} from "../api/venta.api";
 import { useMutationWithToast } from "./useMutationWithToast";
+
+const DEFAULT_STALE_TIME = 1000 * 60 * 5;
+const DEFAULT_PARAMS = {
+  all_data: false,
+  page: 1,
+  per_page: 10,
+  filters: {},
+  ordering: "",
+  search: "",
+};
 
 //productos
 export const useProducts = (
   params = {},
   enabled = true,
-  staleTime = 1000 * 60 * 5
+  staleTime = DEFAULT_STALE_TIME
 ) => {
-  const defaultParams = {
-    all_data: false,
-    page: 1,
-    per_page: 10,
-    filters: {},
-    ordering: "",
-    search: "",
-  };
+  const defaultParams = DEFAULT_PARAMS;
 
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
@@ -42,7 +55,6 @@ export const useProducts = (
     enabled
   );
 };
-
 //para obtener un solo producto
 export const useProduct = (id) =>
   useData(ProductosAPI, "producto", id, {}, 1000 * 60 * 5, !!id);
@@ -51,30 +63,52 @@ export const useProductMutations = () =>
   useEntityMutations(ProductosAPI, "Producto");
 
 //categorias
-export const useCategorias = (all_data = false, page = 1) => {
+export const useCategorias = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
   return useData(
     CategoriasAPI,
     "categorias",
     null,
-    { all_data, page },
-    1000 * 60 * 5
+    mergedParams,
+    staleTime,
+    enabled
   );
 };
-export const useCategoria = (id) => useData(CategoriasAPI, "categoria", id);
+export const useCategoria = (id) =>
+  useData(CategoriasAPI, "categoria", id, {}, 1000 * 60 * 5, !!id);
 export const useCategoriaMutations = () =>
   useEntityMutations(CategoriasAPI, "Categoria");
 
 //proveedores
-export const useProveedores = (all_data = false, page = 1) => {
+export const useProveedores = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
   return useData(
     ProveedoresAPI,
     "proveedores",
     null,
-    { all_data, page },
-    1000 * 60 * 5
+    mergedParams,
+    staleTime,
+    enabled
   );
 };
-export const useProveedor = (id) => useData(ProveedoresAPI, "proveedor", id);
+export const useProveedor = (id) =>
+  useData(ProveedoresAPI, "proveedor", id, {}, 1000 * 60 * 5, !!id);
 export const useProveedorMutations = () =>
   useEntityMutations(ProveedoresAPI, "Proveedor");
 
@@ -82,16 +116,9 @@ export const useProveedorMutations = () =>
 export const useUsuarios = (
   params = {},
   enabled = true,
-  staleTime = 1000 * 60 * 5
+  staleTime = DEFAULT_STALE_TIME
 ) => {
-  const defaultParams = {
-    all_data: false,
-    page: 1,
-    per_page: 10,
-    filters: {},
-    ordering: "",
-    search: "",
-  };
+  const defaultParams = DEFAULT_PARAMS;
 
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
@@ -105,59 +132,73 @@ export const useUsuarios = (
     enabled
   );
 };
-export const useUsers = (all_data = false, page = 1) => {
-  return useData(UsuariosAPI, "users", null, { all_data, page }, 1000 * 60 * 5);
-};
-export const useUser = (id) => useData(UsuariosAPI, "user", id);
-export const useUserMutations = () =>
+export const useUsuario = (id) =>
+  useData(UsuariosAPI, "usuario", id, {}, 1000 * 60 * 5, !!id);
+export const useUsuarioMutations = () =>
   useEntityMutations(UsuariosAPI, "Usuario");
 
 //roles
 export const useRoles = (
   params = {},
   enabled = true,
-  staleTime = 1000 * 60 * 5
+  staleTime = DEFAULT_STALE_TIME
 ) => {
-  const defaultParams = {
-    all_data: false,
-    page: 1,
-    per_page: 10,
-    filters: {},
-    ordering: "",
-    search: "",
-  };
+  const defaultParams = DEFAULT_PARAMS;
 
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
     { ...defaultParams, ...params };
   return useData(RolesApi, "roles", null, mergedParams, staleTime, enabled);
 };
-export const useRol = (id) => useData(RolesApi, "rol", id);
+export const useRol = (id) =>
+  useData(RolesApi, "rol", id, {}, 1000 * 60 * 5, !!id);
 export const useRolMutations = () => useEntityMutations(RolesApi, "Rol");
 
+//permisos
+export const usePermisos = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    PermisosApi,
+    "permisos",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
 //inventarios
-export const useInventarios = (all_data = false, page = 1) => {
+export const useInventarios = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
   return useData(
     InventariosAPI,
     "inventarios",
     null,
-    { all_data, page },
-    1000 * 60 * 5
+    mergedParams,
+    staleTime,
+    enabled
   );
 };
-export const useInventario = (id) => useData(InventariosAPI, "inventario", id);
+export const useInventario = (id) =>
+  useData(InventariosAPI, "inventario", id, {}, 1000 * 60 * 5, !!id);
 export const useInventarioMutations = () =>
   useEntityMutations(InventariosAPI, "Inventario");
-
-const DEFAULT_STALE_TIME = 1000 * 60 * 5;
-const DEFAULT_PARAMS = {
-  all_data: false,
-  page: 1,
-  per_page: 10,
-  filters: {},
-  ordering: "",
-  search: "",
-};
 
 //almacenes
 export const useAlmacenes = (
@@ -179,7 +220,8 @@ export const useAlmacenes = (
     enabled
   );
 };
-export const useAlmacen = (id) => useData(AlmacenesApi, "almacene", id, {}, 1000 * 60 * 5, !!id);
+export const useAlmacen = (id) =>
+  useData(AlmacenesApi, "almacen", id, {}, 1000 * 60 * 5, !!id);
 export const useAlmacenMutations = () =>
   useEntityMutations(AlmacenesApi, "Almacen");
 
@@ -187,16 +229,9 @@ export const useAlmacenMutations = () =>
 export const useMovimientos = (
   params = {},
   enabled = true,
-  staleTime = 1000 * 60 * 5
+  staleTime = DEFAULT_STALE_TIME
 ) => {
-  const defaultParams = {
-    all_data: false,
-    page: 1,
-    per_page: 10,
-    filters: {},
-    ordering: "",
-    search: "",
-  };
+  const defaultParams = DEFAULT_PARAMS;
 
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
@@ -210,15 +245,26 @@ export const useMovimientos = (
     enabled
   );
 };
-export const useMovimiento = (id) => useData(MovimientosAPI, "movimiento", id);
+export const useMovimiento = (id) =>
+  useData(MovimientosAPI, "movimiento", id, {}, 1000 * 60 * 5, !!id);
 export const useMovimientoMutations = () =>
   useEntityMutations(MovimientosAPI, "Movimiento");
 
 //tipos de movimiento
-export const useTipMovs = (all_data = false, page = 1) => {
-  return useData(TipMovsApi, "tipMov", null, { all_data, page }, 1000 * 60 * 5);
+export const useTipMovs = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(TipMovsApi, "tipMov", null, mergedParams, staleTime, enabled);
 };
-export const useTipMov = (id) => useData(TipMovsApi, "tipMovs", id);
+export const useTipMov = (id) =>
+  useData(TipMovsApi, "tipMovs", id, {}, 1000 * 60 * 5, !!id);
 export const useTipMovMutations = () =>
   useEntityMutations(TipMovsApi, "Inventario");
 
@@ -226,16 +272,9 @@ export const useTipMovMutations = () =>
 export const useVentas = (
   params = {},
   enabled = true,
-  staleTime = 1000 * 60 * 5
+  staleTime = DEFAULT_STALE_TIME
 ) => {
-  const defaultParams = {
-    all_data: false,
-    page: 1,
-    per_page: 10,
-    filters: {},
-    ordering: "",
-    search: "",
-  };
+  const defaultParams = DEFAULT_PARAMS;
 
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
@@ -247,19 +286,12 @@ export const useVenta = (id) =>
 export const useVentaMutations = () => useEntityMutations(VentasAPI, "Venta");
 
 //detalles de venta
-export const useDetallesVenta = (
+export const useDetallesVentas = (
   params = {},
   enabled = true,
-  staleTime = 1000 * 60 * 5
+  staleTime = DEFAULT_STALE_TIME
 ) => {
-  const defaultParams = {
-    all_data: false,
-    page: 1,
-    per_page: 10,
-    filters: {},
-    ordering: "",
-    search: "",
-  };
+  const defaultParams = DEFAULT_PARAMS;
 
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
@@ -273,21 +305,10 @@ export const useDetallesVenta = (
     enabled
   );
 };
-
-export const useDetaVentas = (all_data = false, page = 1) => {
-  return useData(
-    DetVentasAPI,
-    "detVentas",
-    null,
-    { all_data, page },
-    1000 * 60 * 5
-  );
-};
-export const useDetalleVenta = (id) =>
+export const useDetallesVenta = (id) =>
   useData(DetallesVentaAPI, "detalle-venta", id, {}, 1000 * 60 * 5, !!id);
-export const useDetVenta = (id) => useData(DetVentasAPI, "detVenta", id);
-export const useDetVentaMutations = () =>
-  useEntityMutations(DetVentasAPI, "Detalle de la venta");
+export const useDetallesVentaMutations = () =>
+  useEntityMutations(DetallesVentaAPI, "Detalle de la venta");
 
 // password reset
 export const usePasswordResetConfirm = () => {

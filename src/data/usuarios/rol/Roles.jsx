@@ -1,25 +1,24 @@
-import { FaUser, FaPlus, FaEye } from "react-icons/fa";
+import { FaUser, FaPlus, FaEdit } from "react-icons/fa";
 import { EntityList } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { useRoles } from "../../../hooks/useEntities";
 
 function Roles() {
   const rolesFields = () => [
-    { key: "index", label: "N°" },
-    { key: "name", label: "Nombre" },
     {
       key: "actions",
-      label: "Permisos",
+      label: "Acciones",
       render: (item) => (
         <div className="flex gap-2">
           <ActionButton
             to={`/editRol/${item.id}`}
-            icon={FaEye}
+            icon={FaEdit}
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
         </div>
       ),
     },
+    { key: "name", label: "Nombre" },
   ];
 
   const entityData = {

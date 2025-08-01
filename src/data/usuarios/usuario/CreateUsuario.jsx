@@ -1,5 +1,5 @@
 import { useFormEntity } from "../../../utils/useFormEntity";
-import { useAlmacenes, useRoles, useUserMutations } from "../../../hooks/useEntities";
+import { useAlmacenes, useRoles, useUsuarioMutations } from "../../../hooks/useEntities";
 import { InputField } from "../../../components/shared/InputField";
 import { SelectField } from "../../../components/shared/SelectField";
 import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
@@ -7,7 +7,7 @@ import { CheckBox } from "../../../components/shared/CheckBox";
 import { FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
 import CreateEntity from "../../../components/shared/CreateEntity";
 
-export default function CreateUser() {
+export default function CreateUsuario() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const almacenOptions = () =>
@@ -183,7 +183,7 @@ export default function CreateUser() {
 
   return (
     <CreateEntity
-      useEntityMutations={useUserMutations}
+      useEntityMutations={useUsuarioMutations}
       configForm={configuracionFormulario}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}

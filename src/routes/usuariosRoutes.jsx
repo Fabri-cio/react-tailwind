@@ -1,19 +1,19 @@
 import {lazy} from 'react'
 
 const Usuarios = lazy(() => import('../data/usuarios/usuario/Usuarios'))
-const EditUser = lazy(() => import('../data/usuarios/usuario/EditUser'))
-const CreateUser = lazy(() => import('../data/usuarios/usuario/CreateUser'))
+const EditUsuario = lazy(() => import('../data/usuarios/usuario/EditUsuario'))
+const CreateUsuario = lazy(() => import('../data/usuarios/usuario/CreateUsuario'))
 const Roles = lazy(() => import('../data/usuarios/rol/Roles'))
-const EditRoles = lazy(() => import('../data/usuarios/rol/EditRoles'))
-const CreateRoles = lazy(() => import('../data/usuarios/rol/CreateRoles'))
+const EditRol = lazy(() => import('../data/usuarios/rol/EditRol'))
+const CreateRol = lazy(() => import('../data/usuarios/rol/CreateRol'))
 
 export const usuariosRoutes = [
     // usuarios
     { path: "/usuarios", element: <Usuarios /> },
-    { path: "/editUser/:id", element: <EditUser /> },
-    { path: "/createUser", element: <CreateUser /> },
+    { path: "/editUsuario/:id", element: <EditUsuario /> },
+    { path: "/createUsuario", element: <CreateUsuario /> },
     //roles
     { path: "/roles", element: <Roles /> },
-    { path: "/editRol/:id", element: <EditRoles /> },
-    { path: "/createRol", element: <CreateRoles /> },
+    { path: "/editRol/:id", element: <EditRol /> },
+    { path: "/createRol", element: <CreateRol /> },
 ]

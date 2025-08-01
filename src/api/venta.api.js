@@ -4,7 +4,8 @@ import { createCrudOperations } from "../api/api.crud";
 const ApiVentas = createApi("ventas")
 
 // Crear operaciones CRUD específicas para las ventas
+export const ClientesAPI = createCrudOperations(ApiVentas, "clientes");
 export const VentasAPI = createCrudOperations(ApiVentas, "ventas");
-export const DetVentasAPI = createCrudOperations(ApiVentas, "detalles-venta");
 export const DetallesVentaAPI = createCrudOperations(ApiVentas, "detalles-venta");
+export const ComprobantesVentaAPI = createCrudOperations(ApiVentas, "comprobantes-venta");
 

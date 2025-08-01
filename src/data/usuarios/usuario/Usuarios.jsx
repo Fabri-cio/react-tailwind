@@ -13,12 +13,12 @@ function UserList() {
       render: (item) => (
         <div className="flex gap-2">
           <ActionButton
-            to={`/editUser/${item.id}`}
+            to={`/editUsuario/${item.id}`}
             icon={FaEdit}
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
           <ActionButton
-            to={`/historialUser/${item.id}`}
+            to={`/historialUsuario/${item.id}`}
             icon={FaHistory}
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
@@ -56,7 +56,7 @@ function UserList() {
     entityFields: userFields,
     actions: [
       {
-        to: "/createUser",
+        to: "/createUsuario",
         icon: FaPlus,
         estilos: "text-white bg-violet-500 rounded-full p-2",
       },

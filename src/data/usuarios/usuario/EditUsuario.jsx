@@ -1,8 +1,8 @@
 import {
   useAlmacenes,
   useRoles,
-  useUserMutations,
-  useUser,
+  useUsuarioMutations,
+  useUsuario,
 } from "../../../hooks/useEntities";
 import { InputField } from "../../../components/shared/InputField";
 import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
@@ -17,7 +17,7 @@ import {
 import EditEntity from "../../../components/shared/EditEntity";
 import { useFormEntity } from "../../../utils/useFormEntity";
 
-export default function EditUser() {
+export default function EditUsuario() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const almacenOptions = () =>
@@ -172,8 +172,8 @@ export default function EditUser() {
 
   return (
     <EditEntity
-      useEntityMutations={useUserMutations}
-      useEntity={useUser}
+      useEntityMutations={useUsuarioMutations}
+      useEntity={useUsuario}
       configForm={configuracionFormulario}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}

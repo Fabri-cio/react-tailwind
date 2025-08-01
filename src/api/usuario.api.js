@@ -7,6 +7,7 @@ const ApiUsers = createApi("usuarios");
 // Crear operaciones CRUD específicas para los usuarios
 export const UsuariosAPI = createCrudOperations(ApiUsers, "usuarios");
 export const RolesApi = createCrudOperations(ApiUsers, "grupos");
+export const PermisosApi = createCrudOperations(ApiUsers, "permisos");
 
 // Funciones específicas para el login y registro
 export const login = (email, password) => request(ApiUsers, "post", "login/", { email, password });
