@@ -11,6 +11,7 @@ function DetallesProducto() {
   const location = useLocation();
   const navigate = useNavigate();
   const { producto, detalles } = location.state || {};
+  console.log(producto, detalles);
 
   if (!producto || !detalles) {
     return <p>No hay datos disponibles.</p>;

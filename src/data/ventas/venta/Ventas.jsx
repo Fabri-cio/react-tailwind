@@ -12,11 +12,11 @@ function Ventas() {
       label: "Fecha",
       render: (item) => (
         <Link to={`/ventas/detallesVenta/${item.id_venta}`}>
-          <FormattedDate date={item.fecha_venta} />
+          <FormattedDate date={item.fecha_creacion} />
         </Link>
       ),
     },
-    { key: "nom_user", label: "Cajero" },
+    { key: "usuario_creacion", label: "Cajero" },
     { key: "nombre_tienda", label: "Tienda" },
     { key: "metodo_pago", label: "Pago" },
   ];
