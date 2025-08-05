@@ -1,7 +1,7 @@
 import { createApi } from "../api/api.config";
 import { createCrudOperations } from "../api/api.crud";
 
-const ApiAlmacenes = createApi("almacenes");
+const ApiAlmacenes = createApi("inventarios");
 
 export const AlmacenesApi = createCrudOperations(ApiAlmacenes, "almacenes");
 export const TipMovsApi = createCrudOperations(ApiAlmacenes, "tipos-movimiento");
