@@ -4,33 +4,41 @@ import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/inventarios/Navigation";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { Loading, ErrorMessaje } from "../../../components/shared";
+import { useFormEntity } from "../../../utils/useFormEntity";
 
 function Inventarios() {
-  const {
-    data: response = {},
-    isLoading: loadingInventarios,
-    isError: errorInventarios,
-  } = useInventarios();
+  const { todosDatosOpaginacion } = useFormEntity();
 
-  // Asegurarse de que inventarios sea siempre un array
-  const inventarios = Array.isArray(response?.data) ? response.data : [];
-  const navigate = useNavigate();
+  const paginacion = todosDatosOpaginacion(useInventarios);
+
+  const {
+    currentPage,
+    handlePageChange,
+    isLoading,
+    isError,
+    items,
+    totalItems,
+    hasPagination,
+    next,
+    previous,
+    per_page,
+    total_pages,
+  } = paginacion;
+
+  const inventarios = items;
 
   // Manejo de carga y errores
-  if (loadingInventarios)
-    return <p className="text-center text-gray-600">Cargando inventarios...</p>;
-  if (errorInventarios)
-    return (
-      <p className="text-center text-red-600">Error: {errorInventarios}</p>
-    );
+  if (isLoading) return <Loading message="Cargando inventarios..." />;
+  if (isError) return <ErrorMessaje message="Error al cargar inventarios." />;
 
   // Agrupar los inventarios por tienda
   const inventariosPorTienda = {};
-  
+
   if (Array.isArray(inventarios)) {
     inventarios.forEach((inventario) => {
-      if (inventario?.id_almacen_tienda_nombre) {
-        const tienda = inventario.id_almacen_tienda_nombre;
+      if (inventario?.almacen_nombre) {
+        const tienda = inventario.almacen_nombre;
         if (!inventariosPorTienda[tienda]) {
           inventariosPorTienda[tienda] = [];
         }
@@ -61,14 +69,17 @@ function Inventarios() {
       // Tabla de Inventarios
       const rows = inventarios.map((inventario, index) => [
         index + 1,
-        inventario.id_producto_nombre || "Producto no disponible",
-        inventario.id_almacen_tienda_nombre || "Almacén no disponible",
+        inventario.producto_nombre || "Producto no disponible",
+        inventario.almacen_nombre || "Almacén no disponible",
         inventario.cantidad || "0",
         inventario.stock_minimo || "0",
+        inventario.stock_maximo || "0",
       ]);
 
       doc.autoTable({
-        head: [["#", "Producto", "Lugar", "Cantidad", "Stock Mínimo"]],
+        head: [
+          ["#", "Producto", "Lugar", "Cantidad", "Stock Mínimo", "Stock Máximo"],
+        ],
         body: rows,
         startY: currentY,
       });
@@ -81,16 +92,11 @@ function Inventarios() {
   };
 
   const InventarioFila = ({ inventario, index }) => {
-    const {
-      id_inventario,
-      id_producto_nombre,
-      id_almacen_tienda_nombre,
-      cantidad,
-      stock_minimo,
-    } = inventario;
+    const { id, producto_nombre, almacen_nombre, cantidad, stock_minimo, stock_maximo } =
+      inventario;
 
     const handleDetallesClick = () => {
-      navigate(`/registrarMovimiento/${id_inventario}`, {
+      navigate(`/registrarMovimiento/${id}`, {
         state: { inventario },
       });
     };
@@ -105,15 +111,16 @@ function Inventarios() {
       <tr className="hover:bg-gray-100 transition duration-200">
         <td className="border px-4 py-2 text-center">{index}</td>
         <td className="border px-4 py-2 text-center">
-          {id_producto_nombre || "Producto no disponible"}
+          {producto_nombre || "Producto no disponible"}
         </td>
         <td className="border px-4 py-2 text-center">
-          {id_almacen_tienda_nombre || "Almacén no disponible"}
+          {almacen_nombre || "Almacén no disponible"}
         </td>
         <td className={`border px-4 py-2 text-center ${cantidadClase}`}>
           {cantidad ?? "0"}
         </td>
         <td className="border px-4 py-2 text-center">{stock_minimo ?? "0"}</td>
+        <td className="border px-4 py-2 text-center">{stock_maximo ?? "0"}</td>
         <td className="py-2 px-4 border-b border-gray-200">
           <button
             onClick={handleDetallesClick}
@@ -150,6 +157,7 @@ function Inventarios() {
                   <th className="border px-4 py-2 text-center">Lugar</th>
                   <th className="border px-4 py-2 text-center">Cantidad</th>
                   <th className="border px-4 py-2 text-center">Stock Mínimo</th>
+                  <th className="border px-4 py-2 text-center">Stock Máximo</th>
                   <th className="border px-4 py-2 text-center">Acción</th>
                 </tr>
               </thead>
@@ -157,7 +165,7 @@ function Inventarios() {
                 {inventariosPorTienda[tienda].length > 0 ? (
                   inventariosPorTienda[tienda].map((inventario, index) => (
                     <InventarioFila
-                      key={inventario.id_inventario || index}
+                      key={inventario.id || index}
                       index={index + 1}
                       inventario={inventario}
                     />

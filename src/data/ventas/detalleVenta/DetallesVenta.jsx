@@ -8,7 +8,7 @@ function DetallesVenta() {
   const { id } = useParams();
   const { data: response, isLoading, isError} = useVenta(id);
 
-  const venta = response?.data;
+  const venta = response;
 
   if (isLoading) return <Loading message="Cargando detalles de la venta..." />;
 
@@ -27,17 +27,17 @@ function DetallesVenta() {
           {/* Información general de la venta */}
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <p className="text-lg font-medium text-gray-800">
-              <strong>N° Venta: </strong> {venta.id_venta}
+              <strong>N° Venta: </strong> {venta.id}
             </p>
             <p className="text-lg font-medium text-gray-800">
               <strong>Fecha:</strong>{" "}
-              {new Date(venta.fecha_venta).toLocaleString()}
+              {new Date(venta.fecha_creacion).toLocaleString()}
             </p>
             <p className="text-lg font-medium text-gray-800">
-              <strong>Usuario:</strong> {venta.nom_user}
+              <strong>Usuario:</strong> {venta.usuario_creacion}
             </p>
             <p className="text-lg font-medium text-gray-800">
-              <strong>Tienda:</strong> {venta.nombre_tienda}
+              <strong>Tienda:</strong> {venta.tienda}
             </p>
             <p className="text-lg font-medium text-gray-800">
               <strong>Método de Pago:</strong> {venta.metodo_pago}

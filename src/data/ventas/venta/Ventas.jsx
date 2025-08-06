@@ -11,7 +11,7 @@ function Ventas() {
       key: "fecha_venta",
       label: "Fecha",
       render: (item) => (
-        <Link to={`/ventas/detallesVenta/${item.id_venta}`}>
+        <Link to={`/ventas/detallesVenta/${item.id}`}>
           <FormattedDate date={item.fecha_creacion} />
         </Link>
       ),
@@ -28,7 +28,7 @@ function Ventas() {
     errorMessage: "Error al obtener ventas",
     fetchDataHook: useVentas,
     all_data: false,
-    itemKey: "id_venta",
+    itemKey: "id",
     entityFields: ventasFields,
     icon: FaSalesforce,
   };
