@@ -41,10 +41,6 @@ function ProductList() {
         <Image
           src={item.imagen}
           alt={item.nombre}
-          className="rounded-full"
-          width="w-20"
-          height="h-20"
-          fallback="/fallback.png"
         />
       ),
     },

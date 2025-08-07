@@ -17,3 +17,6 @@ export { InputField } from "./InputField";
 export { SelectField } from "./SelectField";
 export { ToggleSwitch } from "./ToggleSwitch";
 export { StatusBadge } from "./StatusBadge";
+export { default as FiltroBusquedaOrden } from "./FiltroBusquedaOrden";
+export { Navigation } from "./Navigation";
+export { SeleccionarPorPagina } from "./SeleccionarPorPagina";
