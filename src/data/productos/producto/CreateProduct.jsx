@@ -2,14 +2,10 @@ import React from "react";
 import { InputField, SelectField, ToggleSwitch, CreateEntity } from "../../../components/shared"
 import { useFormEntity } from "../../../utils/useFormEntity";
 import { useProveedores, useCategorias, useProductMutations } from "../../../hooks/useEntities";
-import { obtenerIdUser } from "../../../utils/auth";
-import { FaBackspace, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 
 export default function CreateProduct() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
-  // const logicaNegocio = {
-  //   idUsuario: obtenerIdUser(),
-  // };
 
   const proveedoresOptions = () =>
     paraSelectsdestructuringYMap(
@@ -41,19 +37,18 @@ export default function CreateProduct() {
     proveedor: Number(formValues.proveedor),
     categoria: Number(formValues.categoria),
     precio: parseFloat(formValues.precio).toFixed(2),
-    // usuario_creacion: logicaNegocio.idUsuario,
     imagen: formValues.imagen || null,
     documento: formValues.documento || null,
   });
 
   const paraEnvio = (formValues) => ({
-    link: "/productList",
+    link: -1,
     params: camposExtras(formValues),
   });
 
   const construirCampos = (formValues, manejarEntradas) => [
     {
-      component: InputField, // Nombre corregido
+      component: InputField,
       label: "Nombre",
       name: "nombre",
       required: true,
@@ -95,7 +90,7 @@ export default function CreateProduct() {
       label: "Estado",
       name: "estado",
       checked: formValues.estado,
-      required: true,
+      required: false,
       onChange: manejarEntradas.handleToggleChange("estado"),
     },
     {

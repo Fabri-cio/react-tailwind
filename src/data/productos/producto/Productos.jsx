@@ -12,13 +12,8 @@ function ProductList() {
       render: (item) => (
         <div className="flex gap-2">
           <ActionButton
-            to={`/editProduct/${item.id_producto}`}
+            to={`/editProduct/${item.id}`}
             icon={FaEdit}
-            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
-          />
-          <ActionButton
-            to={`/historialProduct/${item.id_producto}`}
-            icon={FaHistory}
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
         </div>
@@ -33,8 +28,8 @@ function ProductList() {
       key: "nombre",
       label: "Nombre",
     },
-    { key: "nombre_proveedor", label: "Proveedor" },
-    { key: "nombre_categoria", label: "Categoría" },
+    { key: "marca", label: "Proveedor" },
+    { key: "categoria", label: "Categoría" },
     {
       key: "precio",
       label: "Precio Bs.",
@@ -61,7 +56,7 @@ function ProductList() {
     loadingMessage: "Cargando productos...",
     errorMessage: "Error al obtener los productos",
     fetchDataHook: useProducts,
-    itemKey: "id_producto",
+    itemKey: "id", //id_producto.  Es muy necesario para la tabla el itemKey
     entityFields: productFields,
     actions: [
       {

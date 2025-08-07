@@ -8,7 +8,6 @@ import { InputField } from "../../../components/shared/InputField";
 import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
 import { SelectField } from "../../../components/shared/SelectField";
 import ImagePreview from "../../../components/shared/ImagePreview";
-import { obtenerIdUser } from "../../../utils/auth";
 import {
   FaEdit,
   FaEye,
@@ -21,22 +20,18 @@ import { useFormEntity } from "../../../utils/useFormEntity";
 export default function EditProduct() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
-  const logicaNegocio = {
-    idUsuario: obtenerIdUser(),
-  };
-
   const categoriasOptions = () =>
     paraSelectsdestructuringYMap(
       useCategorias,
-      "id_categoria",
-      "nombre_categoria"
+      "id",
+      "nombre"
     );
 
   const proveedoresOptions = () =>
     paraSelectsdestructuringYMap(
       useProveedores,
-      "id_proveedor",
-      "nombre_proveedor"
+      "id",
+      "marca"
     );
 
   const selects = {
@@ -48,7 +43,7 @@ export default function EditProduct() {
     nombre: entidad?.data?.nombre || "",
     precio: entidad?.data?.precio || "",
     codigo_barras: entidad?.data?.codigo_barras || "",
-    id_proveedor: entidad?.data?.id_proveedor || "",
+    proveedor: entidad?.data?.proveedor || "",
     categoria: entidad?.data?.categoria || "",
     estado: entidad?.data?.estado || false,
     imagen: entidad?.data?.imagen || null,
@@ -56,16 +51,15 @@ export default function EditProduct() {
   });
 
   const camposExtras = (formValues) => ({
-    id_proveedor: Number(formValues.id_proveedor),
+    proveedor: Number(formValues.proveedor),
     categoria: Number(formValues.categoria),
     precio: parseFloat(formValues.precio).toFixed(2),
-    usuario_modificacion: logicaNegocio.idUsuario,
     imagen: formValues.imagen,
     documento: formValues.documento
   });
 
   const paraEnvio = (formValues) => ({
-    entityId: formValues.id_producto,
+    entityId: formValues.id, // id_producto
     link: -1,
     params: camposExtras(formValues)
   });
@@ -120,12 +114,12 @@ export default function EditProduct() {
     {
       component: SelectField,
       label: "Proveedor",
-      name: "id_proveedor",
+      name: "proveedor",
       onChange: manejarEntradas.handleInputChange,
       options: selects.proveedoresOptions(),
       actionButtons: [
         {
-          to: `/editProveedor/${formValues.id_proveedor}`,
+          to: `/editProveedor/${formValues.proveedor}`,
           icon: FaPencilAlt,
           estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
         },

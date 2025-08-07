@@ -25,11 +25,8 @@ function UserList() {
         </div>
       ),
     },
-    {
-      key: "full_name",
-      label: "Nombre",
-      render: (item) => item.first_name + " " + item.last_name,
-    },
+    { key: "first_name", label: "Nombres" },
+    { key: "last_name", label: "Apellidos" },
     { key: "username", label: "Usuario" },
     { key: "rol", label: "Rol" },
     { key: "name_work", label: "Lugar de Trabajo" },
