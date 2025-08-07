@@ -7,24 +7,22 @@ import { FaBackspace, FaPlus } from "react-icons/fa";
 
 export default function CreateProduct() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
-  const logicaNegocio = {
-    idUsuario: obtenerIdUser(),
-  };
+  // const logicaNegocio = {
+  //   idUsuario: obtenerIdUser(),
+  // };
 
   const proveedoresOptions = () =>
     paraSelectsdestructuringYMap(
       useProveedores,
-      true,
-      "id_proveedor",
-      "nombre_proveedor"
+      "id",
+      "marca"
     );
 
   const categoriasOptions = () =>
     paraSelectsdestructuringYMap(
       useCategorias,
-      true,
-      "id_categoria",
-      "nombre_categoria"
+      "id",
+      "nombre"
     );
 
   // Estado inicial del formulario
@@ -32,7 +30,7 @@ export default function CreateProduct() {
     nombre: "",
     precio: "",
     codigo_barras: "",
-    id_proveedor: "",
+    proveedor: "",
     categoria: "",
     estado: false,
     imagen: "",
@@ -40,10 +38,10 @@ export default function CreateProduct() {
   };
 
   const camposExtras = (formValues) => ({
-    id_proveedor: Number(formValues.id_proveedor),
+    proveedor: Number(formValues.proveedor),
     categoria: Number(formValues.categoria),
     precio: parseFloat(formValues.precio).toFixed(2),
-    usuario_creacion: logicaNegocio.idUsuario,
+    // usuario_creacion: logicaNegocio.idUsuario,
     imagen: formValues.imagen || null,
     documento: formValues.documento || null,
   });
@@ -79,7 +77,7 @@ export default function CreateProduct() {
     {
       component: SelectField,
       label: "Proveedor",
-      name: "id_proveedor",
+      name: "proveedor",
       options: proveedoresOptions(),
       required: true,
       onChange: manejarEntradas.handleInputChange,

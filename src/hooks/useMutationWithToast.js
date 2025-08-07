@@ -14,8 +14,23 @@ export const useMutationWithToast = (
       toast.promise(mutationFn(data), {
         loading: loadingMsg,
         success: successMsg,
-        error: (error) =>
-          `Error: ${error.response?.data?.detail || error.message}`,
+        error: (error) => {
+          const data = error.response?.data;
+
+          if (data && typeof data === "object") {
+            return (
+              Object.entries(data)
+                .map(([campo, mensajes]) => {
+                  const mensaje = Array.isArray(mensajes)
+                    ? mensajes.join(", ")
+                    : mensajes;
+                  return `${campo}: ${mensaje}`;
+                })
+                .join(" | ")
+            );
+          }
+          return error.message;
+        },
       }),
     onSuccess: () => {
       if (queryKeyToInvalidate) {
@@ -23,7 +38,10 @@ export const useMutationWithToast = (
       }
     },
     onError: (error) => {
-      console.error("Error en la mutación:", error);
+      console.error(
+        "Error en la mutación:",
+        error.response?.data || error.message
+      );
     },
     onSettled: () => {
       if (queryKeyToInvalidate) {

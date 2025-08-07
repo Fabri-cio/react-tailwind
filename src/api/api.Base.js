@@ -19,28 +19,21 @@ const createApiInstance = (baseURL = ApiBaseURL) => {
       if (token) {
         config.headers.Authorization = `Token ${token}`;
       }
-      console.log(
-        "Token agregado a la solicitud:",
-        config.headers.Authorization
-      );
+      console.log("Token agregado a la solicitud:", config.headers.Authorization);
       return config;
     },
-    (error) => {
-      return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
   );
 
   // Interceptor de respuesta: maneja errores globales
   apiInstance.interceptors.response.use(
-    (response) => {
-      return response.data; //cambio clave
-    },
+    (response) => response.data, // Devuelve solo los datos
     (error) => {
-      if (error.response && error.response.status === 401) {
+      if (error.response?.status === 401) {
         localStorage.removeItem("Token"); // Eliminar token si la respuesta es 401
         console.error("Sesión expirada, redirigiendo al login.");
       }
-      return Promise.reject(error); // Devuelve el error para que se pueda manejar en otro lugar
+      return Promise.reject(error); // 🔥 Lanzamos el error completo
     }
   );
 
@@ -56,14 +49,12 @@ const request = async (apiInstance, method, url, data = null) => {
   } catch (error) {
     if (error.response) {
       console.error("Error del servidor:", error.response.data);
-      throw error.response.data;
     } else if (error.request) {
       console.error("Sin respuesta del servidor:", error.request);
-      throw new Error("El servidor no está respondiendo.");
     } else {
       console.error("Error desconocido:", error.message);
-      throw new Error(error.message);
     }
+    throw error; // 🔥 Mantenemos el error completo
   }
 };
 
