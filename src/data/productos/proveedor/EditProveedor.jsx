@@ -1,27 +1,32 @@
 import {
-  useCategoriaMutations,
-  useCategoria,
+  useProveedorMutations,
+  useProveedor,
 } from "../../../hooks/useEntities";
-import { InputField } from "../../../components/shared/InputField";
-import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
-import ImagePreview from "../../../components/shared/ImagePreview";
+import {
+  InputField,
+  ImagePreview,
+  ToggleSwitch,
+  EditEntity,
+} from "../../../components/shared";
 import { FaEdit } from "react-icons/fa";
-import EditEntity from "../../../components/shared/EditEntity";
 
-export default function EditCategoria() {
+export default function EditProveedor() {
   const configuracionFormulario = (entidad) => ({
-    nombre: entidad?.data?.nombre || "",
-    descripcion: entidad?.data?.descripcion || "",
+    marca: entidad?.data?.marca || "",
+    nombre_contacto: entidad?.data?.nombre_contacto || "",
+    telefono: entidad?.data?.telefono || "",
     estado: entidad?.data?.estado || false,
     imagen: entidad?.data?.imagen || null,
+    comentario_modificacion: entidad?.data?.comentario_modificacion || "",
   });
 
   const camposExtras = (formValues) => ({
     imagen: formValues.imagen,
+    comentario_modificacion: formValues.comentario_modificacion,
   });
 
   const paraEnvio = (formValues) => ({
-    entityId: formValues.id, // id_categoria
+    entityId: formValues.id, // id_proveedor
     link: -1,
     params: camposExtras(formValues),
   });
@@ -29,16 +34,23 @@ export default function EditCategoria() {
   const construirCampos = (formValues, manejarEntradas) => [
     {
       component: InputField,
-      label: "Nombre",
-      name: "nombre",
+      label: "Marca",
+      name: "marca",
       required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
       component: InputField,
-      label: "Descripción",
-      name: "descripcion",
-      required: true,
+      label: "Nombre de Contacto",
+      name: "nombre_contacto",
+      required: false,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+      component: InputField,
+      label: "Telefono",
+      name: "telefono",
+      required: false,
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -46,6 +58,7 @@ export default function EditCategoria() {
       label: "Estado",
       name: "estado",
       checked: formValues.estado,
+      required: false,
       onChange: manejarEntradas.handleToggleChange("estado"),
     },
     {
@@ -55,7 +68,7 @@ export default function EditCategoria() {
           <div className="font-medium text-gray-700">Imagen actual</div>
           <ImagePreview
             image={formValues.imagen}
-            alt={`Imagen de ${formValues.nombre || "categoria"}`}
+            alt={`Imagen de ${formValues.nombre || "producto"}`}
             className="h-40 w-40 mb-4"
           />
           <InputField
@@ -68,11 +81,18 @@ export default function EditCategoria() {
         </div>
       ),
     },
+    {
+      component: InputField,
+      label: "Comentario de Modificación",
+      name: "comentario_modificacion",
+      required: false,
+      onChange: manejarEntradas.handleInputChange,
+    },
   ];
 
   const paraNavegacion = {
-    title: "Editar Categoría",
-    subTitle: "Actualice los datos de la categoría",
+    title: "Editar Proveedor",
+    subTitle: "Actualice los datos del proveedor",
     icon: FaEdit,
     actions: [
       {
@@ -86,8 +106,8 @@ export default function EditCategoria() {
 
   return (
     <EditEntity
-      useEntityMutations={useCategoriaMutations}
-      useEntity={useCategoria}
+      useEntityMutations={useProveedorMutations}
+      useEntity={useProveedor}
       configForm={configuracionFormulario}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}

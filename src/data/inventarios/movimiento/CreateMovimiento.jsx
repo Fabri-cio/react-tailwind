@@ -1,26 +1,41 @@
 import React from "react";
 import {
   InputField,
-  ToggleSwitch,
+  SelectField,
   CreateEntity,
 } from "../../../components/shared";
+import { useFormEntity } from "../../../utils/useFormEntity";
 import {
-  useCategoriaMutations,
-  useProductMutations,
+  useInventarios,
+  useTiposMovimientos,
+  useMovimientoMutations,
 } from "../../../hooks/useEntities";
 import { FaPlus } from "react-icons/fa";
 
-export default function CreateCategoria() {
+export default function CreateMovimiento() {
+  const { paraSelectsdestructuringYMap } = useFormEntity();
+
+  const inventariosOptions = () =>
+    paraSelectsdestructuringYMap(useInventarios, "id", "producto_nombre");
+
+  const tiposMovimientosOptions = () =>
+    paraSelectsdestructuringYMap(
+      useTiposMovimientos,
+      "id",
+      "nombre"
+    );
+
   // Estado inicial del formulario
   const estadoInicial = {
-    nombre: "",
-    estado: false,
-    descripcion: "",
-    imagen: "",
+    inventario: "",
+    tipo: "",
+    cantidad: "",
   };
 
   const camposExtras = (formValues) => ({
-    imagen: formValues.imagen || null,
+    inventario: Number(formValues.inventario),
+    tipo: Number(formValues.tipo),
+    cantidad: Number(formValues.cantidad),
   });
 
   const paraEnvio = (formValues) => ({
@@ -30,39 +45,32 @@ export default function CreateCategoria() {
 
   const construirCampos = (formValues, manejarEntradas) => [
     {
-      component: InputField,
-      label: "Nombre",
-      name: "nombre",
+      component: SelectField,
+      label: "Inventario",
+      name: "inventario",
+      options: inventariosOptions(),
+      required: true,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+      component: SelectField,
+      label: "Tipo de Movimiento",
+      name: "tipo",
+      options: tiposMovimientosOptions(),
       required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
       component: InputField,
-      label: "Descripción",
-      name: "descripcion",
+      label: "Cantidad",
+      name: "cantidad",
       required: true,
-      onChange: manejarEntradas.handleInputChange,
-    },
-    {
-      component: ToggleSwitch,
-      label: "Estado",
-      name: "estado",
-      checked: formValues.estado,
-      required: false,
-      onChange: manejarEntradas.handleToggleChange("estado"),
-    },
-    {
-      component: InputField,
-      label: "Imagen",
-      name: "imagen",
-      type: "file",
-      required: false,
       onChange: manejarEntradas.handleInputChange,
     },
   ];
 
   const paraNavegacion = {
-    title: "Registrar Categoría",
+    title: "Registrar Movimiento",
     subTitle: "",
     icon: FaPlus,
     actions: [
@@ -77,7 +85,7 @@ export default function CreateCategoria() {
 
   return (
     <CreateEntity
-      useEntityMutations={useCategoriaMutations}
+      useEntityMutations={useMovimientoMutations}
       configForm={estadoInicial}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}

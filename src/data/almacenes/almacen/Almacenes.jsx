@@ -11,7 +11,7 @@ export default function Almacenes() {
       render: (item) => (
         <div className="flex gap-2">
           <ActionButton
-            to={`/editAlmacen/${item.id_almacen_tienda}`}
+            to={`/editAlmacen/${item.id}`}
             icon={FaEdit}
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />

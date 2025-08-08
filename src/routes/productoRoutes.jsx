@@ -20,7 +20,12 @@ const Categorias = lazy(() => import("../data/productos/categoria/Categorias"));
 const HistorialProduct = lazy(() =>
   import("../data/productos/producto/HistorialProduct")
 );
-
+const CreateProveedor = lazy(() =>
+  import("../data/productos/proveedor/CreateProveedor")
+);
+const EditProveedor = lazy(() =>
+  import("../data/productos/proveedor/EditProveedor")
+);
 export const productoRoutes = [
   // productos
   {
@@ -56,5 +61,13 @@ export const productoRoutes = [
   {
     path: "/proveedores",
     element: <Proveedores />,
+  },
+  {
+    path: "/createProveedor",
+    element: <CreateProveedor />,
+  },
+  {
+    path: "/editProveedor/:id",
+    element: <EditProveedor />,
   },
 ];

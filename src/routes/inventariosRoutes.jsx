@@ -5,12 +5,13 @@ const CrearInventario  = lazy(() => import("../data/inventarios/inventario/Creat
 const EditInventario = lazy(() => import("../data/inventarios/inventario/EditInventario")) 
 const Almacenes = lazy(() => import("../data/almacenes/almacen/Almacenes")) 
 const CreateAlmacen = lazy(() => import("../data/almacenes/almacen/CreateAlmacen")) 
-const EditAlmacen = lazy(() => import("../data/almacenes/almacen/editAlmacen")) 
-const RegistrarMovimiento = lazy(() => import ("../components/inventarios/RegistrarMovimiento")) 
-const Movimientos = lazy(() => import ("../data/almacenes/movimiento/Movimientos"))
+const EditAlmacen = lazy(() => import("../data/almacenes/almacen/EditAlmacen")) 
+const Movimientos = lazy(() => import ("../data/inventarios/movimiento/Movimientos"))
 const TiposMovimientos = lazy(() => import ("../data/inventarios/tipoMovimiento/TiposMovimientos")) 
 const CreateTipoMovimiento = lazy(() => import ("../data/inventarios/tipoMovimiento/CreateTipoMovimieto")) 
 const EditTipoMovimiento = lazy(() => import ("../data/inventarios/tipoMovimiento/EditTipoMovimiento")) 
+const CreateMovimiento = lazy(() => import ("../data/inventarios/movimiento/CreateMovimiento")) 
+const EditMovimiento = lazy(() => import ("../data/inventarios/movimiento/EditMovimiento")) 
 
 
 export const inventariosRoutes = [
@@ -24,7 +25,8 @@ export const inventariosRoutes = [
     { path: "/editAlmacen/:id", element: <EditAlmacen /> },
     // movimiento 
     { path: "/movimientos", element: <Movimientos /> },
-    { path: "/registrarMovimiento/:id", element: <RegistrarMovimiento /> },
+    { path: "/createMovimiento", element: <CreateMovimiento /> },
+    { path: "/editMovimiento/:id", element: <EditMovimiento /> },
     //tipo de movimiento
     { path: "/tiposMovimientos", element: <TiposMovimientos /> },
     { path: "/createTipoMovimiento", element: <CreateTipoMovimiento /> },

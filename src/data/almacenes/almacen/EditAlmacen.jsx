@@ -22,7 +22,7 @@ export default function EditAlmacen() {
   });
 
   const paraEnvio = (formValues) => ({
-    entityId: formValues.id_almacen_tienda,
+    entityId: formValues.id, //id_almacen_tienda
     link: -1,
     params: camposExtras(formValues),
   });

@@ -1,10 +1,10 @@
-import { useProveedores } from "../../../hooks/useEntities";
+import { useMovimientos } from "../../../hooks/useEntities";
 import { FaPlus, FaBox, FaEdit } from "react-icons/fa";
-import { StatusBadge, EntityList, Image } from "../../../components/shared";
+import { EntityList, FormattedDate } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { Link } from "react-router-dom";
 
-function Proveedores() {
+function Movimientos() {
   const campos = () => [
     { key: "index", label: "#" },
     {
@@ -13,7 +13,7 @@ function Proveedores() {
       render: (item) => (
         <div className="flex gap-2">
           <ActionButton
-            to={`/editProveedor/${item.id}`}
+            to={`/editMovimiento/${item.id}`}
             icon={FaEdit}
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
@@ -21,34 +21,32 @@ function Proveedores() {
       ),
     },
     {
-      key: "imagen",
-      label: "Imagen",
-      render: (item) => <Image src={item.imagen} alt={item.nombre} />,
-    },
-    { key: "marca", label: "Marca" },
-    { key: "nombre_contacto", label: "Nombre de Contacto" },
-    {
-      key: "telefono",
-      label: "Telefono",
+      key: "cantidad",
+      label: "Cantidad",
     },
     {
-      key: "estado",
-      label: "Estado",
-      render: (item) => <StatusBadge isActive={item.estado} />,
+      key: "producto_nombre",
+      label: "Producto",
+    },
+    { key: "almacen_nombre", label: "Almacen" },
+    { key: "tipo_nombre", label: "Tipo" },
+    {
+      key: "fecha_creacion",
+      label: "Fecha", render:(item)=><FormattedDate date={item.fecha_creacion} />
     },
   ];
 
   const entityData = {
-    title: <Link to="/proveedores">Catalogo de Proveedores</Link>,
+    title: <Link to="/movimientos">Movimientos en el Inventario</Link>,
     subTitle: "",
-    loadingMessage: "Cargando proveedores...",
-    errorMessage: "Error al obtener los proveedores",
-    fetchDataHook: useProveedores,
+    loadingMessage: "Cargando movimientos...",
+    errorMessage: "Error al obtener los movimientos",
+    fetchDataHook: useMovimientos,
     itemKey: "id", //id_producto.  Es muy necesario para la tabla el itemKey
     entityFields: campos,
     actions: [
       {
-        to: "/createProveedor",
+        to: "/createMovimiento",
         icon: FaPlus,
         estilos: "text-white bg-green-600 rounded-full p-2",
       },
@@ -60,4 +58,4 @@ function Proveedores() {
   return <EntityList entityData={entityData} />;
 }
 
-export default Proveedores;
+export default Movimientos;

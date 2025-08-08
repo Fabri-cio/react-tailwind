@@ -4,18 +4,15 @@ import {
   ToggleSwitch,
   CreateEntity,
 } from "../../../components/shared";
-import {
-  useCategoriaMutations,
-  useProductMutations,
-} from "../../../hooks/useEntities";
+import { useProveedorMutations } from "../../../hooks/useEntities";
 import { FaPlus } from "react-icons/fa";
 
-export default function CreateCategoria() {
-  // Estado inicial del formulario
+export default function CreateProveedor() {
   const estadoInicial = {
-    nombre: "",
+    marca: "",
+    nombre_contacto: "",
+    telefono: "",
     estado: false,
-    descripcion: "",
     imagen: "",
   };
 
@@ -31,15 +28,22 @@ export default function CreateCategoria() {
   const construirCampos = (formValues, manejarEntradas) => [
     {
       component: InputField,
-      label: "Nombre",
-      name: "nombre",
+      label: "Marca",
+      name: "marca",
       required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
       component: InputField,
-      label: "Descripción",
-      name: "descripcion",
+      label: "Nombre de Contacto",
+      name: "nombre_contacto",
+      required: false,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+      component: InputField,
+      label: "Telefono",
+      name: "telefono",
       required: true,
       onChange: manejarEntradas.handleInputChange,
     },
@@ -62,7 +66,7 @@ export default function CreateCategoria() {
   ];
 
   const paraNavegacion = {
-    title: "Registrar Categoría",
+    title: "Registrar Proveedor",
     subTitle: "",
     icon: FaPlus,
     actions: [
@@ -77,7 +81,7 @@ export default function CreateCategoria() {
 
   return (
     <CreateEntity
-      useEntityMutations={useCategoriaMutations}
+      useEntityMutations={useProveedorMutations}
       configForm={estadoInicial}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}
