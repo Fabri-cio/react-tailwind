@@ -117,7 +117,7 @@ export const useFormEntity = () => {
   };
 
   const paraSelectsdestructuringYMap = (hook, keyId, keyNombre) => {
-    const response = hook({all_data: true}) || {};
+    const response = hook({ all_data: true }) || {};
     const lista = Array.isArray(response.data) ? response.data : [];
     return lista.map((item) => ({
       id: item[keyId],
@@ -125,16 +125,32 @@ export const useFormEntity = () => {
     }));
   };
 
+  // Solo el cambio de la función que ya tienes dentro de useFormEntity.js
+
   const todosDatosOpaginacion = (fetchDataHook, params = {}) => {
-    const { all_data = false } = params;
-    const { currentPage, handlePageChange } = usePagination();
-    const pageToUse = all_data ? 1 : currentPage;
+    const {
+      all_data = false,
+      page = 1,
+      per_page = 10,
+      search = "",
+      filters = {},
+      ordering = "",
+    } = params;
+
+    const pageToUse = all_data ? 1 : page;
 
     const {
       data: response = {},
       isLoading,
       isError,
-    } = fetchDataHook({ ...params, page: pageToUse }) || {};
+    } = fetchDataHook({
+      all_data,
+      page: pageToUse,
+      per_page,
+      search,
+      filters,
+      ordering,
+    }) || {};
 
     if (all_data) {
       const items = response || [];
@@ -142,7 +158,7 @@ export const useFormEntity = () => {
     } else {
       const {
         total_pages,
-        per_page,
+        per_page: perPageResponse,
         total,
         next = null,
         previous = null,
@@ -155,8 +171,8 @@ export const useFormEntity = () => {
       const hasPagination = Boolean(next || previous);
 
       return {
-        currentPage,
-        handlePageChange,
+        currentPage: page,
+        handlePageChange: () => {}, // Será manejado externamente
         isLoading,
         isError,
         items,
@@ -164,7 +180,7 @@ export const useFormEntity = () => {
         hasPagination,
         next,
         previous,
-        per_page,
+        per_page: perPageResponse,
         total_pages,
       };
     }

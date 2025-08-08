@@ -2,6 +2,7 @@ import { useProducts } from "../../../hooks/useEntities";
 import { FaPlus, FaBox, FaEdit, FaHistory } from "react-icons/fa";
 import { StatusBadge, EntityList, Image } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
+import { Link } from "react-router-dom";
 
 function ProductList() {
   const productFields = () => [
@@ -37,17 +38,12 @@ function ProductList() {
     {
       key: "imagen",
       label: "Imagen",
-      render: (item) => (
-        <Image
-          src={item.imagen}
-          alt={item.nombre}
-        />
-      ),
+      render: (item) => <Image src={item.imagen} alt={item.nombre} />,
     },
   ];
 
   const entityData = {
-    title: "Catalogo de Productos",
+    title: <Link to="/productos">Catalogo de Productos</Link>,
     subTitle: "",
     loadingMessage: "Cargando productos...",
     errorMessage: "Error al obtener los productos",
@@ -70,10 +66,16 @@ function ProductList() {
     //   { name: "codigo_barras", placeholder: "Código de barras exacto" },
     //   { name: "precio_min", placeholder: "Precio mínimo" },
     //   { name: "precio_max", placeholder: "Precio máximo" },
-    //   { name: "fecha_creacion_min", placeholder: "Desde fecha de creación" },
-    //   { name: "fecha_creacion_max", placeholder: "Hasta fecha de creación" },
-    //   { name: "categoria", placeholder: "Categoría (ID o selector)" },
-    //   { name: "proveedor", placeholder: "Proveedor (ID o selector)" },
+    //   {
+    //     name: "fecha_creacion_min",
+    //     placeholder: "Desde fecha de creación",
+    //     type: "date",
+    //   },
+    //   {
+    //     name: "fecha_creacion_max",
+    //     placeholder: "Hasta fecha de creación",
+    //     type: "date",
+    //   },
     // ],
     ordenes: [
       { name: "nombre", label: "Nombre (A-Z)" },

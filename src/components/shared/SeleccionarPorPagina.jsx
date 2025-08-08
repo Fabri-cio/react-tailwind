@@ -1,9 +1,11 @@
+// Componente SeleccionarPorPagina.jsx
 export const SeleccionarPorPagina = ({
   perPage,
-  setPerPage,
-  setAllData,
-  setPage,
+  setQueryParams,
   allData,
+  search,
+  ordering,
+  filters,
 }) => {
   const opciones = [
     { id: 3, nombre: "3" },
@@ -15,13 +17,23 @@ export const SeleccionarPorPagina = ({
 
   const handleChange = (e) => {
     const value = e.target.value;
+
     if (value === "Todos") {
-      setAllData(true);
+      setQueryParams({
+        all_data: true,
+        search,
+        ordering,
+        ...filters,
+      });
     } else {
-      setAllData(false);
-      setPerPage(parseInt(value));
+      setQueryParams({
+        all_data: false,
+        per_page: parseInt(value),
+        search,
+        ordering,
+        ...filters,
+      });
     }
-    setPage(1);
   };
 
   return (
@@ -32,11 +44,7 @@ export const SeleccionarPorPagina = ({
         value={allData ? "Todos" : perPage}
         onChange={handleChange}
         className="w-20 p-2 text-sm border border-gray-300 rounded"
-        required
       >
-        <option value="" disabled>
-          Selecciona una opción
-        </option>
         {opciones.map(({ id, nombre }) => (
           <option key={id} value={id}>
             {nombre}
