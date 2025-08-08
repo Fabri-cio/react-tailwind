@@ -16,7 +16,7 @@ import {
   TipMovsApi,
   AlmacenesApi,
   MovimientosAPI,
-} from "../api/almacen.api";
+} from "../api/inventario.api";
 import {
   ClientesAPI,
   VentasAPI,
@@ -251,7 +251,7 @@ export const useMovimientoMutations = () =>
   useEntityMutations(MovimientosAPI, "Movimiento");
 
 //tipos de movimiento
-export const useTipMovs = (
+export const useTiposMovimientos = (
   params = {},
   enabled = true,
   staleTime = DEFAULT_STALE_TIME
@@ -261,12 +261,12 @@ export const useTipMovs = (
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
     { ...defaultParams, ...params };
-  return useData(TipMovsApi, "tipMov", null, mergedParams, staleTime, enabled);
+  return useData(TipMovsApi, "tipos-movimiento", null, mergedParams, staleTime, enabled);
 };
-export const useTipMov = (id) =>
-  useData(TipMovsApi, "tipMovs", id, {}, 1000 * 60 * 5, !!id);
-export const useTipMovMutations = () =>
-  useEntityMutations(TipMovsApi, "Inventario");
+export const useTipoMovimiento = (id) =>
+  useData(TipMovsApi, "tipos-movimiento", id, {}, 1000 * 60 * 5, !!id);
+export const useTipoMovimientoMutations = () =>
+  useEntityMutations(TipMovsApi, "tipos-movimiento");
 
 //ventas
 export const useVentas = (

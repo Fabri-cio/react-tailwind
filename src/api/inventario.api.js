@@ -1,5 +1,5 @@
-import { createApi } from "../api/api.config";
-import { createCrudOperations } from "../api/api.crud";
+import { createApi } from "./api.config";
+import { createCrudOperations } from "./api.crud";
 
 const ApiAlmacenes = createApi("inventarios");
 

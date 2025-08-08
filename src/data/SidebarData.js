@@ -3,8 +3,8 @@ import {
   FaBoxes,
   FaCashRegister,
   FaChartLine,
-  FaTruckMoving,
   FaUser,
+  FaShoppingCart,
 } from "react-icons/fa";
 
 export const menus = [
@@ -24,14 +24,19 @@ export const menus = [
     items: [{ label: "Realizar Predicción", path: "/realizar_prediccion" }],
   },
   {
-    title: "Movimientos",
-    icon: FaTruckMoving,
-    items: [{ label: "Lista Movimientos", path: "/ver_movimientos" }],
+    title: "Compras",
+    icon: FaShoppingCart,
+    items: [{ label: "Compras", path: "/compras" }],
   },
   {
-    title: "Inventario",
+    title: "Inventarios",
     icon: FaBoxes,
-    items: [{ label: "Ver Inventario", path: "/inventarios" }],
+    items: [
+      { label: "Inventarios", path: "/inventarios" },
+      { label: "Movimientos", path: "/movimientos" },
+      { label: "Tipo de Movimientos", path: "/tiposMovimientos" },
+      { label: "Almacenes", path: "/almacenes" },
+    ],
   },
   {
     title: "Productos",

@@ -9,7 +9,7 @@ import { homeRoutes } from "./homeRoutes";
 import { prediccionesRoutes } from "./prediccionesRoutes";
 import { productoRoutes } from "./productoRoutes";
 import { ventasRoutes } from "./ventasRoutes";
-import { almacenesRoutes } from "./almacenesRoutes";
+import { inventariosRoutes } from "./inventariosRoutes";
 import { usuariosRoutes } from "./usuariosRoutes";
 import { reportesRoutes } from "./reportesRoutes";
 
@@ -21,7 +21,7 @@ const rutasPrivadas = [
   ...prediccionesRoutes,
   ...productoRoutes,
   ...ventasRoutes,
-  ...almacenesRoutes,
+  ...inventariosRoutes,
   ...usuariosRoutes,
   ...reportesRoutes,
 ];
