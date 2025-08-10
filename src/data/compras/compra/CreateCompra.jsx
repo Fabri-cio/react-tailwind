@@ -1,57 +1,54 @@
-import React, { useState, useEffect } from "react";
 import { InputField, CreateEntity } from "../../../components/shared";
 import { useCompraMutations, usePedido } from "../../../hooks/useEntities";
 import { FaPlus } from "react-icons/fa";
-import DetalleCompraForm from "../../../components/shared/DetalleCompraForm";
 import { useParams } from "react-router-dom";
+import DetallePedidoForm from "../../../components/shared/DetallePedidoForm";
 
 export default function CreateCompra() {
   const params = useParams();
-  const { data: pedido } = usePedido(params.id);
+  const { data: pedido = {} } = usePedido(params.id);
 
   const estadoInicial = {
-    observaciones: "",
-    descuento: "",
-    detalles: [], // se llenará con datos del pedido
+    nro_factura: "",
+    razon_social: "",
+    subtotal_compra: 0,
+    descuento: 0,
     total_compra: 0,
+    detalles: pedido?.detalles || [],
+    observaciones: "",
   };
 
-  // Estado para manejar el formulario
-  const [formValues, setFormValues] = useState(estadoInicial);
-
-  // Cargar detalles desde el pedido cuando esté disponible
-  useEffect(() => {
-    if (pedido?.detalles) {
-      const detallesConvertidos = pedido.detalles.map((d) => ({
-        inventario: d.inventario, // ID de inventario
-        cantidad: d.cantidad_solicitada, // cantidad pedida
-        precio_unitario: 0,
-        descuento_unitario: 0,
-        subtotal: 0,
-      }));
-      setFormValues((prev) => ({
-        ...prev,
-        detalles: detallesConvertidos,
-      }));
-    }
-  }, [pedido]);
-
-  const camposExtras = (values) => ({
+  const camposExtras = (formValues) => ({
     pedido: pedido?.id, // relacionar la compra con el pedido
-    descuento: parseFloat(values.descuento || 0).toFixed(2),
-    detalles: values.detalles,
+    descuento: parseFloat(formValues.descuento || 0).toFixed(2),
+    detalles: formValues.detalles,
   });
 
-  const paraEnvio = (values) => ({
+  const paraEnvio = (formValues) => ({
     link: -1,
-    params: camposExtras(values),
+    params: camposExtras(formValues),
   });
 
-  const construirCampos = (values, manejarEntradas) => [
+  const construirCampos = (formValues, manejarEntradas) => [
     {
       component: InputField,
-      label: "Observaciones",
-      name: "observaciones",
+      label: "Nro. de Factura",
+      name: "nro_factura",
+      required: true,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+      component: InputField,
+      label: "Razón Social",
+      name: "razon_social",
+      required: true,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+      component: InputField,
+      label: "Subtotal",
+      name: "subtotal_compra",
+      type: "number",
       required: false,
       onChange: manejarEntradas.handleInputChange,
     },
@@ -64,9 +61,10 @@ export default function CreateCompra() {
       onChange: manejarEntradas.handleInputChange,
     },
     {
-      component: DetalleCompraForm,
+      component: DetallePedidoForm,
       label: "Detalles",
       name: "detalles",
+      isCompra: true,
       required: true,
       onChange: (nuevoDetalle) =>
         manejarEntradas.handleToggleChange("detalles")(nuevoDetalle),
@@ -76,6 +74,13 @@ export default function CreateCompra() {
       label: "Total de la Compra",
       name: "total_compra",
       type: "number",
+      required: false,
+      onChange: manejarEntradas.handleInputChange,
+    },
+    {
+      component: InputField,
+      label: "Observaciones",
+      name: "observaciones",
       required: false,
       onChange: manejarEntradas.handleInputChange,
     },
@@ -98,7 +103,7 @@ export default function CreateCompra() {
   return (
     <CreateEntity
       useEntityMutations={useCompraMutations}
-      configForm={formValues}
+      configForm={estadoInicial}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}
       paraNavegacion={paraNavegacion}

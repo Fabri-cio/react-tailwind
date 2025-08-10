@@ -12,7 +12,7 @@ export const menus = [
     title: "Ventas",
     icon: FaCashRegister,
     items: [
-      { label: "Realizar Venta", path: "/ventas/realizar" },
+      { label: "Realizar Venta", path: "/registrarVenta" },
       { label: "Ventas", path: "/ventas" },
       { label: "Productos Vendidos", path: "/ventas/detalleVentas" },
     ],

@@ -22,7 +22,7 @@ function shallowEqualArray(arr1, arr2) {
 
 export default function DetallePedidoForm({ value = [], onChange, isCompra = false }) {
   const [detalles, setDetalles] = useState(
-    value.length ? value : [{ inventario: "", cantidad_solicitada: 1 }]
+    value.length ? value : [{ producto: "", cantidad_solicitada: 1 }]
   );
 
   const lastNotifiedDetalles = useRef(null);
@@ -32,7 +32,7 @@ export default function DetallePedidoForm({ value = [], onChange, isCompra = fal
   // Sincroniza el estado interno solo si es diferente
   useEffect(() => {
     if (!shallowEqualArray(value, detalles)) {
-      setDetalles(value.length ? value : [{ inventario: "", cantidad_solicitada: 1 }]);
+      setDetalles(value.length ? value : [{ producto: "", cantidad_solicitada: 1 }]);
     }
   }, [value]); // solo cuando cambia value
 
@@ -51,7 +51,7 @@ export default function DetallePedidoForm({ value = [], onChange, isCompra = fal
   };
 
   const agregarFila = () => {
-    setDetalles([...detalles, { inventario: "", cantidad_solicitada: 1 }]);
+    setDetalles([...detalles, { producto: "", cantidad_solicitada: 1 }]);
   };
 
   const eliminarFila = (index) => {
@@ -83,8 +83,8 @@ export default function DetallePedidoForm({ value = [], onChange, isCompra = fal
               <td className="border p-2">
                 <select
                   className="w-full border p-1"
-                  value={detalle.inventario}
-                  onChange={(e) => handleChange(index, "inventario", e.target.value)}
+                  value={detalle.producto}
+                  onChange={(e) => handleChange(index, "producto", e.target.value)}
                 >
                   <option value="">-- Seleccione --</option>
                   {inventarios?.map((inv) => (

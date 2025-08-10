@@ -1,13 +1,13 @@
 import { lazy } from "react";
 
-const RealizarVenta = lazy(() => import("../components/ventas/RealizarVenta"));
+const RegistrarVenta = lazy(() => import("../data/ventas/venta/RegistrarVenta"));
 const Ventas = lazy(() => import("../data/ventas/venta/Ventas"));
 const DetallesVenta = lazy(() => import("../data/ventas/detalleVenta/DetallesVenta"));
 export const ventasRoutes = [
   //ventas
   {
-    path: "/ventas/realizar",
-    element: <RealizarVenta />,
+    path: "/registrarVenta",
+    element: <RegistrarVenta />,
   },
   {
     path: "/ventas",

@@ -20,7 +20,7 @@ export default function CreatePedido() {
     fecha_entrega: "",
     observaciones: "",
     proveedor: "",
-    detalles: [{ inventario: "", cantidad_solicitada: 1 }],
+    detalles: [{ producto: "", cantidad_solicitada: 1 }],
   };
 
   const camposExtras = (formValues) => ({
