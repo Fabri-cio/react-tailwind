@@ -12,6 +12,7 @@ import { ventasRoutes } from "./ventasRoutes";
 import { inventariosRoutes } from "./inventariosRoutes";
 import { usuariosRoutes } from "./usuariosRoutes";
 import { reportesRoutes } from "./reportesRoutes";
+import { comprasRoutes } from "./comprasRoutes";
 
 const FallbackComponent = () => <div>Hubo un error al cargar la página</div>;
 
@@ -24,6 +25,7 @@ const rutasPrivadas = [
   ...inventariosRoutes,
   ...usuariosRoutes,
   ...reportesRoutes,
+  ...comprasRoutes,
 ];
 
 const AppRoutes = () => {

@@ -23,6 +23,12 @@ import {
   DetallesVentaAPI,
   ComprobantesVentaAPI,
 } from "../api/venta.api";
+import {
+  PedidosAPI,
+  DetallesPedidoAPI,
+  ComprasAPI,
+  DetallesCompraAPI,
+} from "../api/compra.api";
 import { useMutationWithToast } from "./useMutationWithToast";
 
 const DEFAULT_STALE_TIME = 1000 * 60 * 5;
@@ -261,7 +267,14 @@ export const useTiposMovimientos = (
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
     { ...defaultParams, ...params };
-  return useData(TipMovsApi, "tipos-movimiento", null, mergedParams, staleTime, enabled);
+  return useData(
+    TipMovsApi,
+    "tipos-movimiento",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
 };
 export const useTipoMovimiento = (id) =>
   useData(TipMovsApi, "tipos-movimiento", id, {}, 1000 * 60 * 5, !!id);
@@ -309,6 +322,89 @@ export const useDetallesVenta = (id) =>
   useData(DetallesVentaAPI, "detalle-venta", id, {}, 1000 * 60 * 5, !!id);
 export const useDetallesVentaMutations = () =>
   useEntityMutations(DetallesVentaAPI, "Detalle de la venta");
+
+//pedidos
+export const usePedidos = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(PedidosAPI, "pedidos", null, mergedParams, staleTime, enabled);
+};
+export const usePedido = (id) =>
+  useData(PedidosAPI, "pedido", id, {}, 1000 * 60 * 5, !!id);
+export const usePedidoMutations = () =>
+  useEntityMutations(PedidosAPI, "Pedido");
+//detalles de pedido
+export const useDetallesPedidos = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    DetallesPedidoAPI,
+    "detalles-pedido",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+export const useDetallesPedido = (id) =>
+  useData(DetallesPedidoAPI, "detalle-pedido", id, {}, 1000 * 60 * 5, !!id);
+export const useDetallesPedidoMutations = () =>
+  useEntityMutations(DetallesPedidoAPI, "Detalle de la pedido");
+//compras
+export const useCompras = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(ComprasAPI, "compras", null, mergedParams, staleTime, enabled);
+};
+export const useCompra = (id) =>
+  useData(ComprasAPI, "compra", id, {}, 1000 * 60 * 5, !!id);
+export const useCompraMutations = () =>
+  useEntityMutations(ComprasAPI, "Compra");
+//detalles de compra
+export const useDetallesCompras = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    DetallesCompraAPI,
+    "detalles-compra",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+export const useDetallesCompra = (id) =>
+  useData(DetallesCompraAPI, "detalle-compra", id, {}, 1000 * 60 * 5, !!id);
+export const useDetallesCompraMutations = () =>
+  useEntityMutations(DetallesCompraAPI, "Detalle de la compra");
 
 // password reset
 export const usePasswordResetConfirm = () => {

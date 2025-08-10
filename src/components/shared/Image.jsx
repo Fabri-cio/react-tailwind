@@ -36,7 +36,7 @@ export default function Image({
     <img
       src={src}
       alt={alt}
-      loading="lazy"
+      // loading="lazy"
       onError={() => setImgError(true)}
       className={`object-cover ${width} ${height} ${roundedClass} ${className} hover:scale-150 transition duration-300`}
       {...props}

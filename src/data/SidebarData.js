@@ -26,7 +26,10 @@ export const menus = [
   {
     title: "Compras",
     icon: FaShoppingCart,
-    items: [{ label: "Compras", path: "/compras" }],
+    items: [
+      { label: "Pedidos", path: "/pedidos" },
+      { label: "Compras", path: "/compras" },
+    ],
   },
   {
     title: "Inventarios",
