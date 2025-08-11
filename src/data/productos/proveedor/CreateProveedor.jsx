@@ -6,6 +6,7 @@ import {
 } from "../../../components/shared";
 import { useProveedorMutations } from "../../../hooks/useEntities";
 import { FaPlus } from "react-icons/fa";
+import ImagePreview from "../../../components/shared/ImagePreview";
 
 export default function CreateProveedor() {
   const estadoInicial = {
@@ -56,12 +57,24 @@ export default function CreateProveedor() {
       onChange: manejarEntradas.handleToggleChange("estado"),
     },
     {
-      component: InputField,
-      label: "Imagen",
       name: "imagen",
-      type: "file",
-      required: false,
-      onChange: manejarEntradas.handleInputChange,
+      component: () => (
+        <div className="space-y-2">
+          <div className="font-medium text-gray-700">Imagen actual</div>
+          <ImagePreview
+            image={formValues.imagen}
+            alt={`Imagen de ${formValues.nombre || "producto"}`}
+            className="h-40 w-40 mb-4"
+          />
+          <InputField
+            label="Cambiar imagen"
+            name="imagen"
+            type="file"
+            accept="image/*"
+            onChange={manejarEntradas.handleInputChange}
+          />
+        </div>
+      ),
     },
   ];
 

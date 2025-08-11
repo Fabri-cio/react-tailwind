@@ -95,17 +95,17 @@ export default function EditProduct() {
       options: selects.categoriasOptions(),
       actionButtons: [
         {
-          to: `/editCategory/${formValues.categoria}`,
+          to: `/editCategoria/${formValues.categoria}`,
           icon: FaPencilAlt,
           estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
         },
         {
-          to: "/addCategory",
+          to: "/createCategoria",
           icon: FaPlus,
           estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
         },
         {
-          to: "/categoryList",
+          to: "/categorias",
           icon: FaEye,
           estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
         },
@@ -124,12 +124,12 @@ export default function EditProduct() {
           estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
         },
         {
-          to: "/addProveedor",
+          to: "/createProveedor",
           icon: FaPlus,
           estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
         },
         {
-          to: "/proveedorList",
+          to: "/proveedores",
           icon: FaEye,
           estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
         },
@@ -162,33 +162,33 @@ export default function EditProduct() {
         </div>
       ),
     },
-    {
-      name: 'documento',
-      component: () => (
-        <div className="space-y-2">
-          {formValues.documento && (
-            <div className="mb-2">
-              <span className="block text-sm font-medium text-gray-700 mb-1">Documento actual:</span>
-              <a 
-                href={formValues.documento} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline text-sm"
-              >
-                Ver documento actual
-              </a>
-            </div>
-          )}
-          <InputField
-            label={formValues.documento ? "Cambiar documento" : "Subir documento"}
-            name="documento"
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={manejarEntradas.handleInputChange}
-          />
-        </div>
-      ),
-    },
+    // {
+    //   name: 'documento',
+    //   component: () => (
+    //     <div className="space-y-2">
+    //       {formValues.documento && (
+    //         <div className="mb-2">
+    //           <span className="block text-sm font-medium text-gray-700 mb-1">Documento actual:</span>
+    //           <a 
+    //             href={formValues.documento} 
+    //             target="_blank" 
+    //             rel="noopener noreferrer"
+    //             className="text-blue-600 hover:underline text-sm"
+    //           >
+    //             Ver documento actual
+    //           </a>
+    //         </div>
+    //       )}
+    //       <InputField
+    //         label={formValues.documento ? "Cambiar documento" : "Subir documento"}
+    //         name="documento"
+    //         type="file"
+    //         accept=".pdf,.doc,.docx"
+    //         onChange={manejarEntradas.handleInputChange}
+    //       />
+    //     </div>
+    //   ),
+    // },
   ];
 
   const paraNavegacion = {

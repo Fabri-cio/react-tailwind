@@ -10,7 +10,7 @@ import {
   useProducts,
   useInventarioMutations,
 } from "../../../hooks/useEntities";
-import { FaPlus } from "react-icons/fa";
+import { FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
 
 export default function CreateInventario() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
@@ -53,6 +53,18 @@ export default function CreateInventario() {
       options: productosOptions(),
       required: true,
       onChange: manejarEntradas.handleInputChange,
+      actionButtons: [
+        {
+          to: "/createProduct",
+          icon: FaPlus,
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
+        },
+        {
+          to: "/productos",
+          icon: FaEye,
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
+        },
+      ],
     },
     {
       component: SelectField,
@@ -61,6 +73,18 @@ export default function CreateInventario() {
       options: almacenesOptions(),
       required: true,
       onChange: manejarEntradas.handleInputChange,
+      actionButtons: [
+        {
+          to: "/createAlmacen",
+          icon: FaPlus,
+          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
+        },
+        {
+          to: "/almacenes",
+          icon: FaEye,
+          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
+        },
+      ],
     },
     {
       component: InputField,

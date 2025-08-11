@@ -1,5 +1,5 @@
 import { useCategorias } from "../../../hooks/useEntities";
-import { FaPlus, FaBox, FaEdit } from "react-icons/fa";
+import { FaPlus, FaBox, FaEdit, FaHistory, FaTrash, FaEye, FaProductHunt } from "react-icons/fa";
 import { StatusBadge, EntityList, Image } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { Link } from "react-router-dom";
@@ -15,8 +15,29 @@ function Categorias() {
           <ActionButton
             to={`/editCategoria/${item.id}`}
             icon={FaEdit}
-            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+            estilos="hover:bg-blue-600 hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
+          <ActionButton
+            to={`/historialCategoria/${item.id}`}
+            icon={FaHistory}
+            estilos="hover:bg-yellow-600 hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+          />
+          <ActionButton
+            to={`/deleteCategoria/${item.id}`}
+            icon={FaTrash}
+            estilos="hover:bg-red-600 hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+          />
+          <ActionButton
+            to={`/verCategoria/${item.id}`}
+            icon={FaEye}
+            estilos="hover:bg-black hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+          />
+          <ActionButton
+            to={`/verProductos/${item.id}`}
+            icon={FaProductHunt}
+            estilos="hover:bg-green-600 hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+          />
+
         </div>
       ),
     },
@@ -33,10 +54,6 @@ function Categorias() {
       key: "estado",
       label: "Estado",
       render: (item) => <StatusBadge isActive={item.estado} />,
-    },
-    {
-      key: "descripcion",
-      label: "Descripción",
     },
   ];
 

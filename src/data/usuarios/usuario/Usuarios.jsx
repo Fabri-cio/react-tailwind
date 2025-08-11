@@ -44,8 +44,8 @@ function UserList() {
   ];
 
   const entityData = {
-    title: "Gestión de Usuarios",
-    subTitle: "Listado de usuarios",
+    title: "Usuarios",
+    subTitle: "Listado de usuarios del sistema",
     loadingMessage: "Cargando usuarios...",
     errorMessage: "Error al obtener los usuarios",
     fetchDataHook: useUsuarios,
@@ -55,7 +55,7 @@ function UserList() {
       {
         to: "/createUsuario",
         icon: FaPlus,
-        estilos: "text-white bg-violet-500 rounded-full p-2",
+        estilos: "text-white bg-green-700 rounded-full p-2",
       },
     ],
     icon: FaUber,

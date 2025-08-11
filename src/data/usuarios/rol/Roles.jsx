@@ -22,8 +22,8 @@ function Roles() {
   ];
 
   const entityData = {
-    title: "Gestion de Roles",
-    subTitle: "",
+    title: "Roles",
+    subTitle: "Lista de roles de usuarios",
     loadingMessage: "Cargando roles...",
     errorMessage: "Error al obtener roles",
     fetchDataHook: useRoles,

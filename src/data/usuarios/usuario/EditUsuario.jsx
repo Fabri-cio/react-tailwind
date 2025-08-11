@@ -8,12 +8,7 @@ import { InputField } from "../../../components/shared/InputField";
 import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
 import { SelectField } from "../../../components/shared/SelectField";
 import { CheckBox } from "../../../components/shared/CheckBox";
-import {
-  FaEdit,
-  FaEye,
-  FaPencilAlt,
-  FaPlus,
-} from "react-icons/fa";
+import { FaEdit, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
 import EditEntity from "../../../components/shared/EditEntity";
 import { useFormEntity } from "../../../utils/useFormEntity";
 
@@ -21,7 +16,7 @@ export default function EditUsuario() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const almacenOptions = () =>
-    paraSelectsdestructuringYMap(useAlmacenes, "id_almacen_tienda", "nombre");
+    paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre");
 
   const rolesOptions = () =>
     paraSelectsdestructuringYMap(useRoles, "id", "name");
@@ -102,17 +97,20 @@ export default function EditUsuario() {
         {
           to: `/editAlmacen/${formValues.lugar_de_trabajo}`,
           icon: FaPencilAlt,
-          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg p-1",
+          estilos:
+            "text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg p-1",
         },
         {
           to: "/createAlmacen",
           icon: FaPlus,
-          estilos: "text-green-600 hover:bg-green-600 hover:text-white rounded-lg p-1",
+          estilos:
+            "text-green-600 hover:bg-green-600 hover:text-white rounded-lg p-1",
         },
         {
           to: "/almacenes",
           icon: FaEye,
-          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg p-1",
+          estilos:
+            "text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg p-1",
         },
       ],
     },
@@ -126,17 +124,20 @@ export default function EditUsuario() {
         {
           to: `/editRol/${formValues.id}`,
           icon: FaPencilAlt,
-          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg p-1",
+          estilos:
+            "text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg p-1",
         },
         {
-          to: "/addRol",
+          to: "/createRol",
           icon: FaPlus,
-          estilos: "text-green-600 hover:bg-green-600 hover:text-white rounded-lg p-1",
+          estilos:
+            "text-green-600 hover:bg-green-600 hover:text-white rounded-lg p-1",
         },
         {
           to: "/roles",
           icon: FaEye,
-          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg p-1",
+          estilos:
+            "text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg p-1",
         },
       ],
     },

@@ -13,7 +13,7 @@ export default function CreateUsuario() {
   const almacenOptions = () =>
     paraSelectsdestructuringYMap(
       useAlmacenes,
-      "id_almacen_tienda",
+      "id",
       "nombre"
     );
 
@@ -112,12 +112,7 @@ export default function CreateUsuario() {
       options: selects.almacenOptions(),
       actionButtons: [
         {
-          to: "/editAlmacen",
-          icon: FaPencilAlt,
-          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
-        },
-        {
-          to: "/addAlmacen",
+          to: "/createAlmacen",
           icon: FaPlus,
           estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
         },
@@ -136,12 +131,7 @@ export default function CreateUsuario() {
       options: selects.rolesOptions(),
       actionButtons: [
         {
-          to: "/editRol",
-          icon: FaPencilAlt,
-          estilos: "text-yellow-600 hover:bg-yellow-600 hover:text-white p-1",
-        },
-        {
-          to: "/addRol",
+          to: "/createRol",
           icon: FaPlus,
           estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
         },
@@ -176,7 +166,7 @@ export default function CreateUsuario() {
       {
         to: -1,
         label: "Cancelar",
-        estilos: "border-2 border-gray-700 rounded-lg bg-gray-600 text-white p-2 hover:bg-gray-100 hover:text-gray-600",
+        estilos: "border-2 border-red-700 rounded-lg bg-red-700 text-white p-2 hover:bg-red-600 hover:text-red-100",
       },
     ],
   };

@@ -1,15 +1,13 @@
 import { useFormEntity } from "../../../utils/useFormEntity";
-import { InputField, SelectField } from "../../../components/shared";
+import { InputField } from "../../../components/shared";
 import { useRolMutations, usePermisos } from "../../../hooks/useEntities";
 import { useRol } from "../../../hooks/useEntities";
 import { FaEdit } from "react-icons/fa";
 import EditEntity from "../../../components/shared/EditEntity";
+import SelectorPermisos from "../../../components/shared/SelectorPermisos";
 
 export default function EditRol() {
-  const { paraSelectsdestructuringYMap } = useFormEntity();
-
-  const permisosOptions = () =>
-    paraSelectsdestructuringYMap(usePermisos, "id", "name");
+  const { data: permisosData } = usePermisos();
 
   const configuracionFormulario = (entidad) => ({
     name: entidad?.data?.name || "",
@@ -17,7 +15,9 @@ export default function EditRol() {
   });
 
   const camposExtras = (formValues) => ({
-    permissions: formValues.permissions,
+    permissions: (formValues.permissions || []).map((p) =>
+      typeof p === "object" && p !== null ? p.id : p
+    ),
   });
 
   const paraEnvio = (formValues) => ({
@@ -35,12 +35,19 @@ export default function EditRol() {
       onChange: manejarEntradas.handleInputChange,
     },
     {
-      component: SelectField,
+      component: SelectorPermisos,
+      permisosData: permisosData ,
+      value: formValues.permissions,
+      onChange: (ids) => {
+        manejarEntradas.handleInputChange({
+          target: {
+            name: "permissions",
+            value: ids,
+          },
+        });
+      },
       label: "Permisos",
       name: "permissions",
-      required: true,
-      onChange: manejarEntradas.handleInputChange,
-      options: permisosOptions(),
     },
   ];
 
