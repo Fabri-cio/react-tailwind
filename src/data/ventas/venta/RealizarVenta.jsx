@@ -25,12 +25,18 @@ function RealizarVenta() {
   const [descuentoGlobal, setDescuentoGlobal] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  // Estado nuevo para mostrar modal
+  const [showModal, setShowModal] = useState(false);
+
   // Cargar persistencia
   useEffect(() => {
     try {
       const savedItems = JSON.parse(localStorage.getItem("ventaItems") || "[]");
-      const savedDescuento = parseFloat(localStorage.getItem("ventaDescuentoGlobal") || "0");
-      if (Array.isArray(savedItems) && savedItems.length > 0) setItems(savedItems);
+      const savedDescuento = parseFloat(
+        localStorage.getItem("ventaDescuentoGlobal") || "0"
+      );
+      if (Array.isArray(savedItems) && savedItems.length > 0)
+        setItems(savedItems);
       if (!isNaN(savedDescuento)) setDescuentoGlobal(savedDescuento);
     } catch {
       // ignore parse errors
@@ -49,7 +55,9 @@ function RealizarVenta() {
     setItems((prev) => {
       const copy = [...prev];
       if (cantidad > copy[index].stockDisponible) {
-        alert(`No hay suficiente stock para "${copy[index].nombre}". Máximo disponible: ${copy[index].stockDisponible}`);
+        alert(
+          `No hay suficiente stock para "${copy[index].nombre}". Máximo disponible: ${copy[index].stockDisponible}`
+        );
         return prev;
       }
       copy[index].cantidad = cantidad;
@@ -72,7 +80,10 @@ function RealizarVenta() {
 
   // Validación y actualización de descuento global
   const actualizarDescuentoGlobal = (val) => {
-    const subtotalGeneral = items.reduce((acc, i) => acc + i.precio * i.cantidad, 0);
+    const subtotalGeneral = items.reduce(
+      (acc, i) => acc + i.precio * i.cantidad,
+      0
+    );
     const descuentoProductos = items.reduce((acc, i) => acc + i.descuento, 0);
     const maxDescuento = subtotalGeneral - descuentoProductos;
     const descuento = Math.min(Math.max(0, parseFloat(val) || 0), maxDescuento);
@@ -117,7 +128,9 @@ function RealizarVenta() {
   // Agregar producto desde búsqueda por nombre (más tolerante)
   const agregarProductoPorNombre = (nombre) => {
     const nombreNormalized = nombre.trim().toLowerCase();
-    const prod = productos.find((p) => p.producto_nombre.toLowerCase() === nombreNormalized);
+    const prod = productos.find(
+      (p) => p.producto_nombre.toLowerCase() === nombreNormalized
+    );
     if (prod) {
       setItems((prev) => {
         const index = prev.findIndex((item) => item.id === prod.id);
@@ -160,31 +173,43 @@ function RealizarVenta() {
   );
 
   // Cálculo de totales
-  const subtotalGeneral = items.reduce((acc, i) => acc + i.precio * i.cantidad, 0);
+  const subtotalGeneral = items.reduce(
+    (acc, i) => acc + i.precio * i.cantidad,
+    0
+  );
   const descuentoProductos = items.reduce((acc, i) => acc + i.descuento, 0);
   const descuentoTotal = descuentoProductos + descuentoGlobal;
   const totalFinal = subtotalGeneral - descuentoTotal;
 
-  // Confirmar venta (simulación)
-  const finalizarVenta = async () => {
+  // Al hacer clic en "Finalizar venta", abrir modal
+  const handleFinalizarClick = () => {
     if (items.length === 0) {
       alert("No hay productos para vender.");
       return;
     }
+    setShowModal(true);
+  };
+
+  // Confirmar venta (real)
+  const confirmarVenta = async () => {
     setLoading(true);
     try {
-      // Aquí va la llamada a backend, si aplica
+      // Aquí va la llamada a backend si aplica
       alert("Venta realizada con éxito");
       setItems([]);
       setDescuentoGlobal(0);
       localStorage.removeItem("ventaItems");
       localStorage.removeItem("ventaDescuentoGlobal");
+      setShowModal(false);
     } catch (e) {
       alert("Error al realizar la venta. Intente de nuevo.");
     } finally {
       setLoading(false);
     }
   };
+
+  // Cancelar modal
+  const cancelarModal = () => setShowModal(false);
 
   return (
     <div>
@@ -316,15 +341,188 @@ function RealizarVenta() {
         </p>
       </div>
 
-      {/* Botón finalizar venta */}
+      {/* Botón finalizar venta ahora abre modal */}
       <button
-        onClick={finalizarVenta}
+        onClick={handleFinalizarClick}
         disabled={loading || items.length === 0}
         style={{ marginTop: 20 }}
         aria-label="Finalizar venta"
       >
         {loading ? "Procesando..." : "Finalizar venta"}
       </button>
+
+      {/* Modal */}
+      {showModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+          aria-modal="true"
+          role="dialog"
+          aria-labelledby="modalTitulo"
+          aria-describedby="modalDescripcion"
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 8,
+              width: "90%",
+              maxWidth: 600,
+              maxHeight: "80%",
+              overflowY: "auto",
+            }}
+          >
+            <h2 id="modalTitulo">Factura de la Venta</h2>
+            <div id="modalDescripcion">
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        textAlign: "left",
+                      }}
+                    >
+                      Producto
+                    </th>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        textAlign: "right",
+                      }}
+                    >
+                      Cantidad
+                    </th>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        textAlign: "right",
+                      }}
+                    >
+                      Precio Unitario
+                    </th>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        textAlign: "right",
+                      }}
+                    >
+                      Descuento
+                    </th>
+                    <th
+                      style={{
+                        borderBottom: "1px solid #ccc",
+                        textAlign: "right",
+                      }}
+                    >
+                      Subtotal
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item) => {
+                    const subtotal =
+                      item.precio * item.cantidad - item.descuento;
+                    return (
+                      <tr key={item.id}>
+                        <td>{item.nombre}</td>
+                        <td style={{ textAlign: "right" }}>{item.cantidad}</td>
+                        <td style={{ textAlign: "right" }}>
+                          {item.precio.toFixed(2)}
+                        </td>
+                        <td style={{ textAlign: "right" }}>
+                          {item.descuento.toFixed(2)}
+                        </td>
+                        <td style={{ textAlign: "right" }}>
+                          {subtotal.toFixed(2)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td
+                      colSpan="4"
+                      style={{ textAlign: "right", fontWeight: "bold" }}
+                    >
+                      Subtotal productos:
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      {subtotalGeneral.toFixed(2)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colSpan="4"
+                      style={{ textAlign: "right", fontWeight: "bold" }}
+                    >
+                      Descuento productos:
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      {descuentoProductos.toFixed(2)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colSpan="4"
+                      style={{ textAlign: "right", fontWeight: "bold" }}
+                    >
+                      Descuento global:
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      {descuentoGlobal.toFixed(2)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colSpan="4"
+                      style={{
+                        textAlign: "right",
+                        fontWeight: "bold",
+                        fontSize: "1.2em",
+                      }}
+                    >
+                      Total final:
+                    </td>
+                    <td style={{ textAlign: "right", fontSize: "1.2em" }}>
+                      {totalFinal.toFixed(2)}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div style={{ marginTop: 20, textAlign: "right" }}>
+              <button
+                onClick={cancelarModal}
+                disabled={loading}
+                style={{ marginRight: 10 }}
+                aria-label="Cancelar venta"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmarVenta}
+                disabled={loading}
+                aria-label="Confirmar venta"
+              >
+                {loading ? "Procesando..." : "Confirmar venta"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

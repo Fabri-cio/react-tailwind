@@ -1,6 +1,6 @@
 import { useInventarios } from "../../../hooks/useEntities";
 import { FaPlus, FaBox, FaEdit } from "react-icons/fa";
-import { StatusBadge, EntityList } from "../../../components/shared";
+import { EntityList, Image } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { Link } from "react-router-dom";
 
@@ -21,6 +21,11 @@ function InventarioList() {
       ),
     },
     {
+      key: "imagen",
+      label: "Imagen",
+      render: (item) => <Image src={item.imagen} alt={item.producto_nombre} />,
+    },
+    {
       key: "producto_nombre",
       label: "Producto",
     },
@@ -28,9 +33,31 @@ function InventarioList() {
       key: "almacen_nombre",
       label: "Almacén",
     },
-    { key: "stock_minimo", label: <div className="bg-red-600 text-white p-2 rounded-md text-center w-24">Stock Mínimo</div> },
-    { key: "cantidad", label: <div className="bg-green-600 text-white p-2 rounded-md text-center w-24"> Cantidad Stock</div> },
-    { key: "stock_maximo", label: <div className="bg-blue-600 text-white p-2 rounded-md text-center w-24">Stock Máximo</div> },
+    {
+      key: "stock_minimo",
+      label: (
+        <div className="bg-red-600 text-white p-2 rounded-md text-center w-24">
+          Stock Mínimo
+        </div>
+      ),
+    },
+    {
+      key: "cantidad",
+      label: (
+        <div className="bg-green-600 text-white p-2 rounded-md text-center w-24">
+          {" "}
+          Cantidad Stock
+        </div>
+      ),
+    },
+    {
+      key: "stock_maximo",
+      label: (
+        <div className="bg-blue-600 text-white p-2 rounded-md text-center w-24">
+          Stock Máximo
+        </div>
+      ),
+    },
   ];
 
   const entityData = {
@@ -48,7 +75,7 @@ function InventarioList() {
         estilos: "text-white bg-green-600 rounded-full p-2",
       },
     ],
-    icon: FaBox, 
+    icon: FaBox,
     filtros: [],
     ordenes: [],
   };
