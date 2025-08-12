@@ -1,6 +1,11 @@
 import useData from "./useData";
 import { useEntityMutations } from "./useEntityMutations";
 import {
+  ConfiguracionesModelosApi,
+  DetallesPrediccionesApi,
+  PrediccionesApi,
+} from "../api/prediccion.api";
+import {
   ProductosAPI,
   CategoriasAPI,
   ProveedoresAPI,
@@ -405,6 +410,95 @@ export const useDetallesCompra = (id) =>
   useData(DetallesCompraAPI, "detalle-compra", id, {}, 1000 * 60 * 5, !!id);
 export const useDetallesCompraMutations = () =>
   useEntityMutations(DetallesCompraAPI, "Detalle de la compra");
+
+//predicciones
+export const useConfiguracionesModelos = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    ConfiguracionesModelosApi,
+    "configuraciones-modelo",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+export const useConfiguracionModelo = (id) =>
+  useData(
+    ConfiguracionesModelosApi,
+    "configuracion-modelo",
+    id,
+    {},
+    1000 * 60 * 5,
+    !!id
+  );
+export const useConfiguracionModeloMutations = () =>
+  useEntityMutations(ConfiguracionesModelosApi, "Configuracion de modelo");
+
+//detalles de predicciones
+export const useDetallesPredicciones = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    DetallesPrediccionesApi,
+    "detalles-predicciones",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+export const useDetallesPrediccion = (id) =>
+  useData(
+    DetallesPrediccionesApi,
+    "detalle-predicciones",
+    id,
+    {},
+    1000 * 60 * 5,
+    !!id
+  );
+export const useDetallesPrediccionesMutations = () =>
+  useEntityMutations(DetallesPrediccionesApi, "Detalle de la predicciones");
+
+//predicciones
+export const usePredicciones = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    PrediccionesApi,
+    "predicciones",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+export const usePrediccion = (id) =>
+  useData(PrediccionesApi, "prediccion", id, {}, 1000 * 60 * 5, !!id);
+export const usePrediccionesMutations = () =>
+  useEntityMutations(PrediccionesApi, "Prediccion");
 
 // password reset
 export const usePasswordResetConfirm = () => {

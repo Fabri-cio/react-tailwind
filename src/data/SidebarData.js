@@ -13,19 +13,23 @@ export const menus = [
     icon: FaCashRegister,
     items: [
       { label: "Realizar Venta", path: "/realizarVenta" },
-      { label: "Ventas", path: "/ventas" },
-      { label: "Productos Vendidos", path: "/ventas/detalleVentas" },
+      // { label: "Ventas", path: "/ventas" , },
+      // { label: "Productos Vendidos", path: "/ventas/detalleVentas" , },
     ],
-    roleRequired: "Cajero",
   },
   {
     title: "Predicción",
     icon: FaChartLine,
-    items: [{ label: "Realizar Predicción", path: "/realizar_prediccion" }],
+    items: [
+      { label: "Realizar Predicción", path: "/realizar_prediccion" },
+      { label: "Configuraciones de Modelos", path: "/configuracionesModelos" },
+    ],
+    roleRequired: "admin",
   },
   {
     title: "Compras",
     icon: FaShoppingCart,
+    roleRequired: "admin",
     items: [
       { label: "Pedidos", path: "/pedidos" },
       { label: "Compras", path: "/compras" },
@@ -34,6 +38,7 @@ export const menus = [
   {
     title: "Inventarios",
     icon: FaBoxes,
+    roleRequired: "admin",
     items: [
       { label: "Inventarios", path: "/inventarios" },
       { label: "Movimientos", path: "/movimientos" },
@@ -44,6 +49,7 @@ export const menus = [
   {
     title: "Productos",
     icon: FaBox,
+    roleRequired: "admin",
     items: [
       { label: "Productos", path: "/productos" },
       { label: "Categorias", path: "/categorias" },
@@ -53,6 +59,7 @@ export const menus = [
   {
     title: "Usuarios",
     icon: FaUser,
+    roleRequired: "admin",
     items: [
       { label: "Usuarios", path: "/usuarios" },
       { label: "Roles", path: "/roles" },

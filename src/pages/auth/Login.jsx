@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { login } from "../../api/usuario.api"; // Ahora usando el método de api.Base
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -9,24 +10,16 @@ const Login = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
 
+  // Obtener loginUser del contexto para actualizar estado global
+  const { loginUser } = useContext(AuthContext);
+
   const submission = async (data) => {
     try {
-      // Eliminar datos antiguos antes de iniciar sesión
-      localStorage.removeItem("Token");
-      localStorage.removeItem("id_usuario");
-      localStorage.removeItem("id_tienda");
-      localStorage.removeItem("sessionClosed"); // Eliminar sessionClosed si existe
-
       const response = await login(data.email, data.password);
       console.log("Inicio de sesión exitoso:", response);
 
-      // Verifica si el token está siendo guardado en localStorage
-      console.log("Token guardado:", response.token);
-
-      localStorage.setItem("Token", response.token);
-      localStorage.setItem("id_usuario", response.user.id); // Suponiendo que el backend te devuelve el id del usuario
-      localStorage.setItem("id_tienda", response.user.lugar_de_trabajo); // Suponiendo que el backend te devuelve el id de la tienda
-      console.log("id_usuario", response.user.id);
+      // Usar la función del contexto para actualizar usuario y localStorage
+      loginUser(response);
 
       setLoginSuccess(true);
       navigate(`/home`);

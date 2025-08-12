@@ -19,7 +19,10 @@ const createApiInstance = (baseURL = ApiBaseURL) => {
       if (token) {
         config.headers.Authorization = `Token ${token}`;
       }
-      console.log("Token agregado a la solicitud:", config.headers.Authorization);
+      console.log(
+        "Token agregado a la solicitud:",
+        config.headers.Authorization
+      );
       return config;
     },
     (error) => Promise.reject(error)
@@ -27,13 +30,24 @@ const createApiInstance = (baseURL = ApiBaseURL) => {
 
   // Interceptor de respuesta: maneja errores globales
   apiInstance.interceptors.response.use(
-    (response) => response.data, // Devuelve solo los datos
+    (response) => {
+      console.log("Respuesta exitosa:", response);
+      return response.data; // Devuelve sólo los datos
+    },
     (error) => {
       if (error.response?.status === 401) {
-        localStorage.removeItem("Token"); // Eliminar token si la respuesta es 401
+        localStorage.removeItem("Token"); // Eliminar token si la sesión expiró
         console.error("Sesión expirada, redirigiendo al login.");
+        // Aquí puedes lanzar un evento para que otros componentes lo detecten si quieres
+        window.dispatchEvent(new Event("session-expired"));
+      } else if (error.response) {
+        console.error("Error del servidor:", error.response.data);
+      } else if (error.request) {
+        console.error("Sin respuesta del servidor:", error.request);
+      } else {
+        console.error("Error desconocido:", error.message);
       }
-      return Promise.reject(error); // 🔥 Lanzamos el error completo
+      return Promise.reject(error); // Mantener el error completo
     }
   );
 
@@ -47,13 +61,6 @@ const request = async (apiInstance, method, url, data = null) => {
     console.log("Petición exitosa:", response);
     return response; // 👈 ya es el .data gracias al interceptor
   } catch (error) {
-    if (error.response) {
-      console.error("Error del servidor:", error.response.data);
-    } else if (error.request) {
-      console.error("Sin respuesta del servidor:", error.request);
-    } else {
-      console.error("Error desconocido:", error.message);
-    }
     throw error; // 🔥 Mantenemos el error completo
   }
 };
