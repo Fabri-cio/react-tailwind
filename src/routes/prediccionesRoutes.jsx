@@ -12,6 +12,12 @@ const PrediccionResultados = lazy(() =>
 const ConfiguracionesModelos = lazy(() =>
   import("../data/predicciones/configuracionModelo/ConfiguracionesModelos")
 );
+const CreateConfiguracionModelo = lazy(() =>
+  import("../data/predicciones/configuracionModelo/CreateConfiguracionModelo")
+);
+const EditConfiguracionModelo = lazy(() =>
+  import("../data/predicciones/configuracionModelo/EditConfiguracionModelo")
+);
 export const prediccionesRoutes = [
   //predicciones
   {
@@ -30,5 +36,13 @@ export const prediccionesRoutes = [
   {
     path: "/configuracionesModelos",
     element: <ConfiguracionesModelos />,
+  },
+  {
+    path: "/createConfiguracionModelo",
+    element: <CreateConfiguracionModelo />,
+  },
+  {
+    path: "/editConfiguracionModelo/:id",
+    element: <EditConfiguracionModelo />,
   },
 ];

@@ -1,11 +1,9 @@
 import {
   useTipoMovimientoMutations,
-  useAlmacenes,
-  useProducts,
   useTipoMovimiento,
 } from "../../../hooks/useEntities";
 import { InputField, SelectField } from "../../../components/shared";
-import { FaEdit, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import EditEntity from "../../../components/shared/EditEntity";
 
 export default function EditTipoMovimiento() {

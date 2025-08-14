@@ -21,4 +21,4 @@ export { default as FiltroBusquedaOrden } from "./FiltroBusquedaOrden";
 export { Navigation } from "./Navigation";
 export { SeleccionarPorPagina } from "./SeleccionarPorPagina";
 export { default as ImagePreview } from "./ImagePreview";
-
+export { default as CamposListas } from "./CamposListas";

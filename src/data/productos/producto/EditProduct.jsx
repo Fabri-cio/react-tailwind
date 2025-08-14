@@ -18,6 +18,7 @@ import EditEntity from "../../../components/shared/EditEntity";
 import { useFormEntity } from "../../../utils/useFormEntity";
 
 export default function EditProduct() {
+
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const categoriasOptions = () =>

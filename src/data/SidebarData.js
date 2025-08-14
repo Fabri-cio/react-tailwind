@@ -13,9 +13,10 @@ export const menus = [
     icon: FaCashRegister,
     items: [
       { label: "Realizar Venta", path: "/realizarVenta" },
-      // { label: "Ventas", path: "/ventas" , },
+      { label: "Ventas", path: "/ventas", roleRequired: "Cajero" || "admin" },
       // { label: "Productos Vendidos", path: "/ventas/detalleVentas" , },
     ],
+    roleRequired: "admin",
   },
   {
     title: "Predicción",
@@ -38,7 +39,6 @@ export const menus = [
   {
     title: "Inventarios",
     icon: FaBoxes,
-    roleRequired: "admin",
     items: [
       { label: "Inventarios", path: "/inventarios" },
       { label: "Movimientos", path: "/movimientos" },

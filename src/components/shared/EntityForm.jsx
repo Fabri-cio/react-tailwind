@@ -25,9 +25,9 @@ const EntityForm = ({
         encType="multipart/form-data"
         className="space-y-3 p-2 border-2 border-gray-200 bg-white w-full"
       >
-        {fields.map(({ component: Component, actionButtons, ...props }) => (
+        {fields.map(({ component: Component, actionButtons, id, ...props }, index) => (
           <div
-            key={props.name}
+            key={id || `${props.name}-${index}`}
             className={actionButtons && "flex flex-col md:flex-row items-start"}
           >
             <Component {...props} value={valorsForm[props.name]} />
@@ -35,8 +35,8 @@ const EntityForm = ({
             {/* Renderizando los botones adicionales */}
             {actionButtons && (
               <div className="mt-8 flex flex-wrap m-1">
-                {actionButtons.map((button, index) => (
-                  <ActionButton key={index} {...button} />
+                {actionButtons.map((button, indexBtn) => (
+                  <ActionButton key={indexBtn} {...button} />
                 ))}
               </div>
             )}

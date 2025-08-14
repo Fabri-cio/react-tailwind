@@ -5,7 +5,7 @@ import { ActionButton } from "../../../components/shared/ActionButton";
 import { Link } from "react-router-dom";
 
 function ConfiguracionesModelos() {
-  const configuracionModeloCampos = () => [
+  const campos = () => [
     { key: "index", label: "#" },
     {
       key: "actions",
@@ -50,7 +50,7 @@ function ConfiguracionesModelos() {
     errorMessage: "Error al obtener las configuraciones de modelos",
     fetchDataHook: useConfiguracionesModelos,
     itemKey: "id", //id_producto.  Es muy necesario para la tabla el itemKey
-    entityFields: configuracionModeloCampos,
+    entityFields: campos,
     actions: [
       {
         to: "/createConfiguracionModelo",
