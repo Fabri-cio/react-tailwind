@@ -1,38 +1,57 @@
-import React from "react";
-
-// Define qué campos van a tener los diferentes tipos de listas
-const camposPorTipo = {
-  changepoints: ["ds"],
-  eventos_especiales: ["holiday", "ds", "lower_window", "upper_window"],
-  estacionalidades_personalizadas: ["name", "period", "fourier_order", "mode"],
-  regresores_adicionales: ["name", "prior_scale", "mode"],
-};
-
-// Componente que renderiza una lista dinámica de inputs
-export default function CamposListas({ label, name, value = [], onChange }) {
-  // Obtiene los campos según el tipo de lista
-  const campos = camposPorTipo[name] || ["value"];
-
-  // Función para agregar un nuevo elemento a la lista
-  const handleAdd = () => {
-    // Se crea un objeto vacío con todos los campos y un id único
-    const nuevaLista = [
-      ...value,
-      { id: Date.now(), ...Object.fromEntries(campos.map((c) => [c, ""])) },
-    ];
-    // Se llama al onChange del formulario para actualizar el estado
-    onChange({ target: { name, value: nuevaLista } });
+export default function CamposListas({
+  label,
+  name,
+  value = [],
+  onChange,
+  visible = true,
+}) {
+  const camposPorTipo = {
+    changepoints: ["ds"],
+    eventos_especiales: ["holiday", "ds", "lower_window", "upper_window"],
+    estacionalidades_personalizadas: ["name", "period", "fourier_order", "mode"],
+    regresores_adicionales: ["name", "prior_scale", "mode"],
   };
 
-  // Función que actualiza un campo específico de un elemento
+  const camposNumericos = [
+    "lower_window",
+    "upper_window",
+    "period",
+    "fourier_order",
+    "prior_scale",
+  ];
+
+  const campos = camposPorTipo[name] || ["value"];
+
+  // Ocultar completamente si no es visible
+  if (!visible) return null;
+
+  const handleAdd = () => {
+    const nuevoElemento = { _internalId: Date.now() };
+    campos.forEach((campo) => {
+      if (campo === "ds") {
+        nuevoElemento[campo] = ""; // Fecha vacía
+      } else if (camposNumericos.includes(campo)) {
+        nuevoElemento[campo] = 0;
+      } else {
+        nuevoElemento[campo] = "";
+      }
+    });
+    onChange({ target: { name, value: [...value, nuevoElemento] } });
+  };
+
   const handleFieldChange = (index, campo, campoValor) => {
+    let nuevoValor;
+    if (camposNumericos.includes(campo)) {
+      nuevoValor = Number(campoValor);
+    } else {
+      nuevoValor = campoValor;
+    }
     const nuevaLista = value.map((item, i) =>
-      i === index ? { ...item, [campo]: campoValor } : item
+      i === index ? { ...item, [campo]: nuevoValor } : item
     );
     onChange({ target: { name, value: nuevaLista } });
   };
 
-  // Función para eliminar un elemento de la lista
   const handleRemove = (index) => {
     const nuevaLista = value.filter((_, i) => i !== index);
     onChange({ target: { name, value: nuevaLista } });
@@ -40,31 +59,38 @@ export default function CamposListas({ label, name, value = [], onChange }) {
 
   return (
     <div className="mb-4">
-      {/* Título de la sección */}
       <label className="font-semibold mb-2 block">{label}</label>
 
-      {/* Itera sobre los elementos de la lista */}
-      {value.map((item, index) => (
+      {value.map((item) => (
         <div
-          key={item.id || index} // Cada elemento necesita un key único para React
+          key={item._internalId}
           className="border p-2 mb-2 rounded flex gap-2 items-end"
         >
-          {/* Renderiza los inputs de cada campo */}
-          {campos.map((campo) => (
-            <input
-              key={campo} // Cada input también necesita un key
-              type="text"
-              placeholder={campo}
-              value={item[campo] || ""}
-              onChange={(e) => handleFieldChange(index, campo, e.target.value)}
-              className="border p-1 rounded flex-1"
-            />
-          ))}
+          {campos.map((campo) => {
+            // Detectar tipo de input
+            const inputType =
+              campo === "ds"
+                ? "date"
+                : camposNumericos.includes(campo)
+                ? "number"
+                : "text";
 
-          {/* Botón para eliminar este elemento */}
+            return (
+              <input
+                key={campo}
+                type={inputType}
+                placeholder={campo}
+                value={item[campo] || ""}
+                onChange={(e) =>
+                  handleFieldChange(value.indexOf(item), campo, e.target.value)
+                }
+                className="border p-1 rounded flex-1"
+              />
+            );
+          })}
           <button
             type="button"
-            onClick={() => handleRemove(index)}
+            onClick={() => handleRemove(value.indexOf(item))}
             className="bg-red-500 text-white p-1 rounded"
           >
             Eliminar
@@ -72,7 +98,6 @@ export default function CamposListas({ label, name, value = [], onChange }) {
         </div>
       ))}
 
-      {/* Botón para agregar un nuevo elemento */}
       <button
         type="button"
         onClick={handleAdd}

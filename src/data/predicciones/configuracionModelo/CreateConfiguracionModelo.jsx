@@ -31,8 +31,8 @@ export default function CreateConfiguracionModelo() {
     nombre_config: "",
     //crecimiento y saturación
     modo_crecimiento: "linear",
-    capacidad_maxima: null,
-    capacidad_minima: null,
+    capacidad_maxima: "",
+    capacidad_minima: "",
     //intervalos
     intervalo_confianza: "0.80",
     //estacionalidades estandar
@@ -84,11 +84,18 @@ export default function CreateConfiguracionModelo() {
     holidays_prior_scale: formValues.holidays_prior_scale,
     changepoint_prior_scale: formValues.changepoint_prior_scale,
     n_changepoints: formValues.n_changepoints,
-    changepoints: formValues.changepoints,
     usar_feriados: formValues.usar_feriados,
-    eventos_especiales: formValues.eventos_especiales,
-    estacionalidades_personalizadas: formValues.estacionalidades_personalizadas,
-    regresores_adicionales: formValues.regresores_adicionales,
+    changepoints: formValues.changepoints.map(({ ds }) => ds),
+    eventos_especiales: formValues.eventos_especiales.map(
+      ({ _internalId, ...rest }) => rest
+    ),
+    estacionalidades_personalizadas:
+      formValues.estacionalidades_personalizadas.map(
+        ({ _internalId, ...rest }) => rest
+      ),
+    regresores_adicionales: formValues.regresores_adicionales.map(
+      ({ _internalId, ...rest }) => rest
+    ),
     incluir_incertidumbre_tendencia: formValues.incluir_incertidumbre_tendencia,
     incluir_incertidumbre_estacionalidad:
       formValues.incluir_incertidumbre_estacionalidad,
@@ -165,19 +172,15 @@ export default function CreateConfiguracionModelo() {
       onChange: manejarEntradas.handleToggleChange("usar_est_anual"),
     },
     {
-      component: ({ value, ...props }) =>
-        formValues.usar_est_anual ? (
-          <InputField
-            label="Fourier Anual"
-            name="fourier_anual"
-            type="number"
-            placeholder="Ingrese el fourier anual"
-            required={true}
-            onChange={manejarEntradas.handleInputChange}
-            {...props}
-          />
-        ) : null,
+      component: InputField,
+      label: "Fourier Anual",
+      name: "fourier_anual",
+      type: "number",
+      placeholder: "Ingrese el fourier anual",
+      required: true,
+      value: formValues.fourier_anual,
       onChange: manejarEntradas.handleInputChange,
+      visible: formValues.usar_est_anual,
     },
     {
       component: ToggleSwitch,
@@ -188,19 +191,15 @@ export default function CreateConfiguracionModelo() {
       onChange: manejarEntradas.handleToggleChange("usar_est_semanal"),
     },
     {
-      component: ({ value, ...props }) =>
-        formValues.usar_est_semanal ? (
-          <InputField
-            label="Fourier Semanal"
-            name="fourier_semanal"
-            type="number"
-            placeholder="Ingrese el fourier semanal"
-            required={true}
-            onChange={manejarEntradas.handleInputChange}
-            {...props}
-          />
-        ) : null,
+      component: InputField,
+      label: "Fourier Semanal",
+      name: "fourier_semanal",
+      type: "number",
+      placeholder: "Ingrese el fourier semanal",
+      required: true,
+      value: formValues.fourier_semanal,
       onChange: manejarEntradas.handleInputChange,
+      visible: formValues.usar_est_semanal,
     },
     {
       component: ToggleSwitch,
@@ -211,18 +210,15 @@ export default function CreateConfiguracionModelo() {
       onChange: manejarEntradas.handleToggleChange("usar_est_diaria"),
     },
     {
-      component: ({ value, ...props }) =>
-        formValues.usar_est_diaria ? (
-          <InputField
-            label="Fourier Diaria"
-            name="fourier_diaria"
-            type="number"
-            placeholder="Ingrese el fourier diaria"
-            required={false}
-            onChange={manejarEntradas.handleInputChange}
-            {...props}
-          />
-        ) : null,
+      component: InputField,
+      label: "Fourier Diaria",
+      name: "fourier_diaria",
+      type: "number",
+      placeholder: "Ingrese el fourier diaria",
+      required: true,
+      value: formValues.fourier_diaria,
+      onChange: manejarEntradas.handleInputChange,
+      visible: formValues.usar_est_diaria,
     },
     {
       component: SelectField,
@@ -280,7 +276,7 @@ export default function CreateConfiguracionModelo() {
       component: CamposListas,
       label: "Puntos de Cambio",
       name: "changepoints",
-      value: formValues.changepoints.map((d) => ({ ds: d })),
+      value: formValues.changepoints,
       onChange: manejarEntradas.handleInputChange,
     },
 
@@ -295,39 +291,29 @@ export default function CreateConfiguracionModelo() {
       required: true,
       onChange: manejarEntradas.handleToggleChange("usar_feriados"),
     },
-
     {
-      component: ({ value, ...props }) =>
-        formValues.usar_feriados ? (
-          <CamposListas
-            label="Eventos Especiales"
-            name="eventos_especiales"
-            value={formValues.eventos_especiales}
-            onChange={manejarEntradas.handleInputChange}
-          />
-        ) : null,
+      component: CamposListas,
+      label: "Eventos Especiales",
+      name: "eventos_especiales",
+      value: formValues.eventos_especiales,
+      onChange: manejarEntradas.handleInputChange,
+      visible: formValues.usar_feriados,
     },
     {
-      component: ({ value, ...props }) =>
-        formValues.usar_feriados ? (
-          <CamposListas
-            label="Estacionalidades Personalizadas"
-            name="estacionalidades_personalizadas"
-            value={formValues.estacionalidades_personalizadas}
-            onChange={manejarEntradas.handleInputChange}
-          />
-        ) : null,
+      component: CamposListas,
+      label: "Estacionalidades Personalizadas",
+      name: "estacionalidades_personalizadas",
+      value: formValues.estacionalidades_personalizadas,
+      onChange: manejarEntradas.handleInputChange,
+      visible: formValues.usar_feriados,
     },
     {
-      component: ({ value, ...props }) =>
-        formValues.usar_feriados ? (
-          <CamposListas
-            label="Regresores Adicionales"
-            name="regresores_adicionales"
-            value={formValues.regresores_adicionales}
-            onChange={manejarEntradas.handleInputChange}
-          />
-        ) : null,
+      component: CamposListas,
+      label: "Regresores Adicionales",
+      name: "regresores_adicionales",
+      value: formValues.regresores_adicionales,
+      onChange: manejarEntradas.handleInputChange,
+      visible: formValues.usar_feriados,
     },
     // ======================================
     // Sección: Incertidumbre
