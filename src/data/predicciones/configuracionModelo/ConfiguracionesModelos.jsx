@@ -1,8 +1,9 @@
 import { useConfiguracionesModelos } from "../../../hooks/useEntities";
-import { FaPlus, FaBox, FaEdit } from "react-icons/fa";
-import { StatusBadge, EntityList } from "../../../components/shared";
+import { FaPlus, FaBox, FaEdit, FaTrash } from "react-icons/fa";
+import { EntityList } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { Link } from "react-router-dom";
+import { StatusBadge } from "../../../components/shared";
 
 function ConfiguracionesModelos() {
   const campos = () => [
@@ -26,16 +27,12 @@ function ConfiguracionesModelos() {
       render: (item) => <StatusBadge isActive={item.estado} />,
     },
     {
-      key: "nombre",
+      key: "nombre_config",
       label: "Nombre",
     },
     {
-      key: "modo_crecimiento",
-      label: "Modo de crecimiento",
-    },
-    {
-      key: "capacidad_maxima",
-      label: "Capacidad máxima",
+      key: "descripcion",
+      label: "Descripción",
     },
     {
       key: "intervalo_confianza",
