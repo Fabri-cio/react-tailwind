@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Line, Bar, Pie, Scatter } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
-import { useInventarioVenta } from "../../hooks/useEntities";
+import {
+  useInventarioVenta,
+  useConfiguracionesModelos,
+} from "../../hooks/useEntities";
+import { SelectField } from "../shared";
 
 ChartJS.register(...registerables);
 
 function DetallesProducto() {
+  const [modeloSeleccionado, setModeloSeleccionado] = useState(null);
+
   const { id } = useParams();
-  const { data: inventarioVenta, isLoading } = useInventarioVenta(id);
   const navigate = useNavigate();
+
+  const { data: inventarioVenta, isLoading } = useInventarioVenta(id);
+  const { data: modelosData } =
+    useConfiguracionesModelos({ all_data: true }) || [];
+
+  // Guardamos los modelos tal cual vienen del backend para tener todos los campos
+  const modelosOptions = Array.isArray(modelosData) ? modelosData : [];
 
   const producto = inventarioVenta?.producto_nombre;
   const ventas = inventarioVenta?.ventas || [];
@@ -114,6 +126,11 @@ function DetallesProducto() {
 
   // Exportar CSV y predicción
   const enviarCSVyObtenerPrediccion = async () => {
+    if (!modeloSeleccionado) {
+      alert("Selecciona un modelo antes de predecir");
+      return;
+    }
+
     const formData = new FormData();
     const csvRows = ['"ds","y"'];
 
@@ -128,10 +145,16 @@ function DetallesProducto() {
     const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
     formData.append("file", blob, `${producto}_detalles.csv`);
 
+    // Se envía todo el objeto seleccionado
+    formData.append("config", JSON.stringify(modeloSeleccionado));
+
     try {
       const response = await fetch(
         "http://localhost:8000/api/v1/predicciones/prediccion/csv/",
-        { method: "POST", body: formData }
+        {
+          method: "POST",
+          body: formData,
+        }
       );
       const data = await response.json();
       if (response.ok) {
@@ -158,7 +181,6 @@ function DetallesProducto() {
         Gráficos para: {producto}
       </h3>
 
-      {/* Gráficos */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h4 className="text-lg font-semibold mb-4">Gráfico de Líneas</h4>
@@ -178,7 +200,6 @@ function DetallesProducto() {
         </div>
       </div>
 
-      {/* Estadísticas */}
       <div className="bg-gray-100 p-4 rounded-lg shadow">
         <h4 className="text-lg font-semibold mb-2">Estadísticas</h4>
         <p>
@@ -214,39 +235,33 @@ function DetallesProducto() {
             </li>
           ))}
         </ul>
+
+        <SelectField
+          label="Modelo"
+          name="modelo"
+          value={modeloSeleccionado?.id || ""}
+          onChange={(e) => {
+            const modelo = modelosOptions.find(
+              (m) => m.id === Number(e.target.value)
+            );
+            setModeloSeleccionado(modelo);
+            console.log("===== CONFIG SELECCIONADA =====");
+            console.log(modelo);
+            console.log("============================");
+          }}
+          options={modelosOptions.map((m) => ({
+            id: m.id,
+            nombre: m.nombre_config,
+          }))}
+        />
       </div>
 
-      {/* Botón CSV */}
       <button
         onClick={enviarCSVyObtenerPrediccion}
         className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600 mb-4"
       >
         Exportar a CSV y Predecir
       </button>
-
-      {/* Tabla de Detalles */}
-      <table className="min-w-full table-auto mt-6">
-        <thead>
-          <tr className="border-b">
-            <th className="px-4 py-2 text-left">Cantidad Vendida</th>
-            <th className="px-4 py-2 text-left">Fecha</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ventas.map((venta, idx) =>
-            venta.detalles.map((detalle, jdx) => (
-              <tr key={`${idx}-${jdx}`} className="border-b">
-                <td className="px-4 py-2">{detalle.cantidad}</td>
-                <td className="px-4 py-2">
-                  {format(new Date(venta.fecha_creacion), "dd/MM/yyyy HH:mm", {
-                    locale: es,
-                  })}
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
     </div>
   );
 }

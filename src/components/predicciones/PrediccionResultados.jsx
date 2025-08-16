@@ -16,6 +16,8 @@ function PrediccionResultados() {
   const navigate = useNavigate();
   const { forecast } = location.state || {};
 
+  console.log(forecast)
+
   if (!forecast) {
     return <p>No hay resultados de predicción disponibles.</p>;
   }
