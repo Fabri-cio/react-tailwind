@@ -22,7 +22,7 @@ export const menus = [
     title: "Predicción",
     icon: FaChartLine,
     items: [
-      { label: "Realizar Predicción", path: "/realizar_prediccion" },
+      { label: "Realizar Predicción", path: "/seleccionarProducto" },
       { label: "Configuraciones de Modelos", path: "/configuracionesModelos" },
     ],
     roleRequired: "admin",

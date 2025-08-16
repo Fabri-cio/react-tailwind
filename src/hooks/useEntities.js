@@ -21,6 +21,7 @@ import {
   TipMovsApi,
   AlmacenesApi,
   MovimientosAPI,
+  InventariosVentasAPI,
 } from "../api/inventario.api";
 import {
   ClientesAPI,
@@ -517,3 +518,28 @@ export const usePasswordResetRequest = () => {
     null
   );
 };
+
+
+//inventarios ventas
+export const useInventariosVentas = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    InventariosVentasAPI,
+    "inventarios-ventas",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+export const useInventarioVenta = (id) =>
+  useData(InventariosVentasAPI, "inventario-venta", id, {}, 1000 * 60 * 5, !!id);
+

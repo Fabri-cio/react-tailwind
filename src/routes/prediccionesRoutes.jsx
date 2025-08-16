@@ -1,7 +1,7 @@
 import { lazy } from "react";
 
-const RealizarPrediccion = lazy(() =>
-  import("../data/predicciones/RealizarPrediccion")
+const SeleccionarProducto = lazy(() =>
+  import("../data/predicciones/SeleccionarProducto")
 );
 const DetallesPrediccion = lazy(() =>
   import("../components/predicciones/DetallesPrediccion")
@@ -21,11 +21,11 @@ const EditConfiguracionModelo = lazy(() =>
 export const prediccionesRoutes = [
   //predicciones
   {
-    path: "/realizar_prediccion",
-    element: <RealizarPrediccion />,
+    path: "/seleccionarProducto",
+    element: <SeleccionarProducto />,
   },
   {
-    path: "/detalles-prediccion",
+    path: "/detalles-prediccion/:id",
     element: <DetallesPrediccion />,
   },
   {
