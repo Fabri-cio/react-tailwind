@@ -1,21 +1,18 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import SidebarMenu from "./SidebarMenu";
 import { menus } from "../../data/SidebarData";
 import { FaCrown } from "react-icons/fa";
-import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 const Sidebar = ({ isVisible }) => {
   const { user } = useContext(AuthContext);
   const [openMenu, setOpenMenu] = useState(null);
 
-  // Filtrar menús completos según rol del usuario
+  // Filtrar menús según roles del usuario
   const filteredMenus = menus.filter((menu) => {
-    if (!menu.roleRequired) return true; // Si no tiene restricción, mostrar siempre
-    if (Array.isArray(menu.roleRequired)) {
-      return menu.roleRequired.includes(user?.rol);
-    }
-    return menu.roleRequired === user?.rol;
+    if (!menu.roleRequired) return true; // Mostrar si no hay restricción
+    // Si el usuario tiene al menos un rol requerido, mostrar menú
+    return menu.roleRequired.some((role) => user?.rol?.includes(role));
   });
 
   return (
@@ -24,15 +21,14 @@ const Sidebar = ({ isVisible }) => {
         isVisible ? "flex flex-col" : "hidden"
       } h-[calc(100vh)]`}
     >
-      {/* titulo */}
+      {/* Título */}
       <div className="p-4 px-6 text-center flex items-center gap-2 bg-red-500">
         <FaCrown className="text-white text-2xl" />
         <h1 className="text-white text-xl font-bold">Conquistador</h1>
       </div>
 
-      {/* Sección de Perfil de Usuario */}
+      {/* Sección Perfil */}
       <div className="px-4 py-6 border-b flex flex-col items-center justify-center text-center bg-orange-500">
-        {/* Avatar */}
         <div className="mb-3">
           <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold text-xl">
             {user?.fullName
@@ -42,14 +38,13 @@ const Sidebar = ({ isVisible }) => {
               .join("")}
           </div>
         </div>
-        {/* Información del usuario */}
         <div className="text-center">
           <p className="text-sm font-medium text-white">{user?.fullName}</p>
           <p className="text-xs text-white">{user?.email}</p>
         </div>
       </div>
 
-      {/* Contenedor del menú con scroll */}
+      {/* Menú con scroll */}
       <div className="flex-1 overflow-y-auto">
         <ul className="px-2 space-y-2">
           {filteredMenus.map((menu, index) => (
@@ -58,7 +53,7 @@ const Sidebar = ({ isVisible }) => {
               title={menu.title}
               icon={menu.icon}
               items={menu.items}
-              userRole={user?.rol}
+              userRoles={user?.rol}
               isOpen={openMenu === menu.title}
               toggleMenu={() =>
                 setOpenMenu(openMenu === menu.title ? null : menu.title)

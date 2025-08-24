@@ -1,45 +1,46 @@
 import { useFormEntity } from "../../../utils/useFormEntity";
-import { useAlmacenes, useRoles, useUsuarioMutations } from "../../../hooks/useEntities";
-import { InputField } from "../../../components/shared/InputField";
-import { SelectField } from "../../../components/shared/SelectField";
-import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
-import { CheckBox } from "../../../components/shared/CheckBox";
-import { FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
-import CreateEntity from "../../../components/shared/CreateEntity";
+import {
+  useAlmacenes,
+  useRoles,
+  useUsuarioMutations,
+} from "../../../hooks/useEntities";
+import {
+  InputField,
+  SelectField,
+  ToggleSwitch,
+  CheckBox,
+  SelectorDual,
+  CreateEntity,
+} from "../../../components/shared";
+
+import { FaEye, FaPlus } from "react-icons/fa";
 
 export default function CreateUsuario() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
+  const { data: rolesData } = useRoles({all_data: true});
 
   const almacenOptions = () =>
-    paraSelectsdestructuringYMap(
-      useAlmacenes,
-      "id",
-      "nombre"
-    );
-
-  const rolesOptions = () =>
-    paraSelectsdestructuringYMap(useRoles, "id", "name");
+    paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre");
 
   const selects = {
     almacenOptions,
-    rolesOptions,
   };
 
-  const configuracionFormulario = {
+  const estadoInicial = {
     first_name: "",
     last_name: "",
     username: "",
     email: "",
     birthday: "",
     lugar_de_trabajo: "",
-    rol: "",
+    roles: [],
     is_active: false,
     is_superuser: false,
   };
 
   const camposExtras = (formValues) => ({
     lugar_de_trabajo: Number(formValues.lugar_de_trabajo),
-    rol: Number(formValues.rol),
+    roles: formValues.roles,
   });
 
   const paraEnvio = (formValues) => ({
@@ -124,11 +125,22 @@ export default function CreateUsuario() {
       ],
     },
     {
-      component: SelectField,
-      label: "Rol",
-      name: "rol",
-      onChange: manejarEntradas.handleInputChange,
-      options: selects.rolesOptions(),
+      component: SelectorDual,
+      data: rolesData,
+      value: formValues.roles,
+      onChange: (ids) => {
+        manejarEntradas.handleInputChange({
+          target: {
+            name: "roles",
+            value: ids,
+          },
+        });
+      },
+      labelLeft: "Roles Disponibles",
+      labelRight: "Roles Seleccionados",
+      itemLabel: "name",  // campo de la data de permisos nombre
+      label: "Roles",
+      name: "roles",
       actionButtons: [
         {
           to: "/createRol",
@@ -166,7 +178,8 @@ export default function CreateUsuario() {
       {
         to: -1,
         label: "Cancelar",
-        estilos: "border-2 border-red-700 rounded-lg bg-red-700 text-white p-2 hover:bg-red-600 hover:text-red-100",
+        estilos:
+          "border-2 border-red-700 rounded-lg bg-red-700 text-white p-2 hover:bg-red-600 hover:text-red-100",
       },
     ],
   };
@@ -174,7 +187,7 @@ export default function CreateUsuario() {
   return (
     <CreateEntity
       useEntityMutations={useUsuarioMutations}
-      configForm={configuracionFormulario}
+      configForm={estadoInicial}
       paraEnvio={paraEnvio}
       construirCampos={construirCampos}
       paraNavegacion={paraNavegacion}

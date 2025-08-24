@@ -1,13 +1,11 @@
-import { useFormEntity } from "../../../utils/useFormEntity";
-import { InputField } from "../../../components/shared";
+import { InputField, SelectorDual, EditEntity } from "../../../components/shared";
 import { useRolMutations, usePermisos } from "../../../hooks/useEntities";
 import { useRol } from "../../../hooks/useEntities";
 import { FaEdit } from "react-icons/fa";
-import EditEntity from "../../../components/shared/EditEntity";
-import SelectorPermisos from "../../../components/shared/SelectorPermisos";
+
 
 export default function EditRol() {
-  const { data: permisosData } = usePermisos();
+  const { data: permisosData } = usePermisos({all_data: true});
 
   const configuracionFormulario = (entidad) => ({
     name: entidad?.data?.name || "",
@@ -35,8 +33,8 @@ export default function EditRol() {
       onChange: manejarEntradas.handleInputChange,
     },
     {
-      component: SelectorPermisos,
-      permisosData: permisosData ,
+      component: SelectorDual,
+      data: permisosData,
       value: formValues.permissions,
       onChange: (ids) => {
         manejarEntradas.handleInputChange({
@@ -46,6 +44,9 @@ export default function EditRol() {
           },
         });
       },
+      labelLeft: "Permisos Disponibles",
+      labelRight: "Permisos Seleccionados",
+      itemLabel: "name",  // campo de la data de permisos nombre
       label: "Permisos",
       name: "permissions",
     },

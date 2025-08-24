@@ -4,26 +4,27 @@ import {
   useUsuarioMutations,
   useUsuario,
 } from "../../../hooks/useEntities";
-import { InputField } from "../../../components/shared/InputField";
-import { ToggleSwitch } from "../../../components/shared/ToggleSwitch";
-import { SelectField } from "../../../components/shared/SelectField";
-import { CheckBox } from "../../../components/shared/CheckBox";
+import {
+  InputField,
+  SelectorDual,
+  ToggleSwitch,
+  CheckBox,
+  SelectField,
+  EditEntity,
+} from "../../../components/shared";
+
 import { FaEdit, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
-import EditEntity from "../../../components/shared/EditEntity";
 import { useFormEntity } from "../../../utils/useFormEntity";
 
 export default function EditUsuario() {
+  const { data: rolesData } = useRoles({ all_data: true });
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const almacenOptions = () =>
     paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre");
 
-  const rolesOptions = () =>
-    paraSelectsdestructuringYMap(useRoles, "id", "name");
-
   const selects = {
     almacenOptions,
-    rolesOptions,
   };
 
   const configuracionFormulario = (entidad) => ({
@@ -33,14 +34,16 @@ export default function EditUsuario() {
     email: entidad?.data?.email || "",
     birthday: entidad?.data?.birthday || "",
     lugar_de_trabajo: entidad?.data?.lugar_de_trabajo || "",
-    rol: entidad?.data?.rol || "",
+    roles: entidad?.data?.roles || [],
     is_active: entidad?.data?.is_active || false,
     is_superuser: entidad?.data?.is_superuser || false,
   });
 
   const camposExtras = (formValues) => ({
     lugar_de_trabajo: Number(formValues.lugar_de_trabajo),
-    rol: Number(formValues.rol),
+    roles: (formValues.roles || []).map((p) =>
+      typeof p === "object" && p !== null ? p.id : p
+    ),
   });
 
   const paraEnvio = (formValues) => ({
@@ -115,11 +118,22 @@ export default function EditUsuario() {
       ],
     },
     {
-      component: SelectField,
-      label: "Rol",
-      name: "rol",
-      onChange: manejarEntradas.handleInputChange,
-      options: selects.rolesOptions(),
+      component: SelectorDual,
+      data: rolesData,
+      value: formValues.roles,
+      onChange: (ids) => {
+        manejarEntradas.handleInputChange({
+          target: {
+            name: "roles",
+            value: ids,
+          },
+        });
+      },
+      labelLeft: "Roles Disponibles",
+      labelRight: "Roles Seleccionados",
+      itemLabel: "name", // campo de la data de permisos nombre
+      label: "Roles",
+      name: "roles",
       actionButtons: [
         {
           to: `/editRol/${formValues.id}`,

@@ -1,8 +1,11 @@
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import FormattedDate from "../../../components/shared/FormattedDate";
-import EntityList from "../../../components/shared/EntityList";
+import {
+  StatusBadge,
+  EntityList,
+  ActionButton,
+  FormattedDate,
+} from "@/components/shared";
 import { useUsuarios } from "../../../hooks/useEntities";
-import { ActionButton } from "../../../components/shared/ActionButton";
+
 import { FaEdit, FaHistory, FaPlus, FaUber } from "react-icons/fa";
 
 function UserList() {
@@ -28,7 +31,11 @@ function UserList() {
     { key: "first_name", label: "Nombres" },
     { key: "last_name", label: "Apellidos" },
     { key: "username", label: "Usuario" },
-    { key: "rol", label: "Rol" },
+    {
+      key: "roles",
+      label: "Roles",
+      render: (item) => item.roles.map((role) => role.name).join(", "),
+    }, //esto en un array [{id, name}]
     { key: "name_work", label: "Lugar de Trabajo" },
 
     {

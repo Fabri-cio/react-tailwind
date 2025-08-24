@@ -22,3 +22,5 @@ export { Navigation } from "./Navigation";
 export { SeleccionarPorPagina } from "./SeleccionarPorPagina";
 export { default as ImagePreview } from "./ImagePreview";
 export { default as CamposListas } from "./CamposListas";
+export { default as SelectorDual } from "./SelectorDual";
+export { CheckBox } from "./CheckBox";
