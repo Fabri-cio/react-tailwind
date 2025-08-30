@@ -14,9 +14,10 @@ export const menus = [
     items: [
       { label: "Realizar Venta", path: "/realizarVenta" },
       { label: "Ventas", path: "/ventas", roleRequired: ["Cajero", "admin"] },
+      { label: "Clientes", path: "/clientes", roleRequired: ["Cajero", "admin"] },
       // { label: "Productos Vendidos", path: "/ventas/detalleVentas" , },
     ],
-    roleRequired: ["admin"],
+    roleRequired: ["Cajero", "admin"],
   },
   {
     title: "Predicción",

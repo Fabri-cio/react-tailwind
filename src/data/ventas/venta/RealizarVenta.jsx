@@ -1,18 +1,16 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useInventarios } from "../../../hooks/useEntities";
+import CreateCliente from "../cliente/CreateCliente";
 
 function RealizarVenta() {
   const { data: productos = [] } = useInventarios({ all_data: true });
 
-  // Mapa rápido para búsqueda por código de barras (incluye códigos alternativos)
   const productosMap = useMemo(() => {
     const map = {};
     productos.forEach((p) => {
       map[p.producto_barcode] = p;
       if (p.codigosAdicionales && Array.isArray(p.codigosAdicionales)) {
-        p.codigosAdicionales.forEach((c) => {
-          map[c] = p;
-        });
+        p.codigosAdicionales.forEach((c) => (map[c] = p));
       }
     });
     return map;
@@ -25,60 +23,62 @@ function RealizarVenta() {
   const [descuentoGlobal, setDescuentoGlobal] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // Estado nuevo para mostrar modal
-  const [showModal, setShowModal] = useState(false);
+  const [quiereComprobante, setQuiereComprobante] = useState(false);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+  const [busquedaCliente, setBusquedaCliente] = useState("");
+  const [clientes, setClientes] = useState([]);
 
-  // Cargar persistencia
+  const [showModalCliente, setShowModalCliente] = useState(false);
+  const [clienteEditar, setClienteEditar] = useState(null);
+  const [showModalVenta, setShowModalVenta] = useState(false);
+
+  // Persistencia
   useEffect(() => {
     try {
       const savedItems = JSON.parse(localStorage.getItem("ventaItems") || "[]");
       const savedDescuento = parseFloat(
         localStorage.getItem("ventaDescuentoGlobal") || "0"
       );
-      if (Array.isArray(savedItems) && savedItems.length > 0)
-        setItems(savedItems);
+      if (Array.isArray(savedItems) && savedItems.length) setItems(savedItems);
       if (!isNaN(savedDescuento)) setDescuentoGlobal(savedDescuento);
-    } catch {
-      // ignore parse errors
-    }
+    } catch {}
   }, []);
 
-  // Guardar persistencia
   useEffect(() => {
     localStorage.setItem("ventaItems", JSON.stringify(items));
     localStorage.setItem("ventaDescuentoGlobal", descuentoGlobal);
   }, [items, descuentoGlobal]);
 
-  // Validación y actualización de cantidad
+  // Funciones productos
   const actualizarCantidad = (index, val) => {
     const cantidad = Math.max(1, parseInt(val) || 1);
     setItems((prev) => {
       const copy = [...prev];
       if (cantidad > copy[index].stockDisponible) {
         alert(
-          `No hay suficiente stock para "${copy[index].nombre}". Máximo disponible: ${copy[index].stockDisponible}`
+          `No hay suficiente stock para "${copy[index].nombre}". Máximo: ${copy[index].stockDisponible}`
         );
         return prev;
       }
       copy[index].cantidad = cantidad;
-      const subtotal = copy[index].precio * cantidad;
-      if (copy[index].descuento > subtotal) copy[index].descuento = subtotal;
+      if (copy[index].descuento > copy[index].precio * cantidad)
+        copy[index].descuento = copy[index].precio * cantidad;
       return copy;
     });
   };
 
-  // Validación y actualización de descuento por producto
   const actualizarDescuento = (index, val) => {
     setItems((prev) => {
       const copy = [...prev];
       const subtotal = copy[index].precio * copy[index].cantidad;
-      const descuento = Math.min(Math.max(0, parseFloat(val) || 0), subtotal);
-      copy[index].descuento = descuento;
+      copy[index].descuento = Math.min(
+        Math.max(0, parseFloat(val) || 0),
+        subtotal
+      );
       return copy;
     });
   };
 
-  // Validación y actualización de descuento global
   const actualizarDescuentoGlobal = (val) => {
     const subtotalGeneral = items.reduce(
       (acc, i) => acc + i.precio * i.cantidad,
@@ -86,159 +86,150 @@ function RealizarVenta() {
     );
     const descuentoProductos = items.reduce((acc, i) => acc + i.descuento, 0);
     const maxDescuento = subtotalGeneral - descuentoProductos;
-    const descuento = Math.min(Math.max(0, parseFloat(val) || 0), maxDescuento);
-    setDescuentoGlobal(descuento);
+    setDescuentoGlobal(
+      Math.min(Math.max(0, parseFloat(val) || 0), maxDescuento)
+    );
   };
 
-  // Agregar producto desde código de barras
   const agregarProductoPorCodigo = () => {
     if (!codigo.trim()) return;
     const prod = productosMap[codigo.trim()];
-    if (prod) {
-      setItems((prev) => {
-        const index = prev.findIndex((item) => item.id === prod.id);
-        if (index !== -1) {
-          const copy = [...prev];
-          if (copy[index].cantidad + 1 > copy[index].stockDisponible) {
-            alert(`No hay suficiente stock para "${copy[index].nombre}".`);
-            return prev;
-          }
-          copy[index].cantidad += 1;
-          return copy;
-        } else {
-          return [
-            ...prev,
-            {
-              id: prod.id,
-              nombre: prod.producto_nombre,
-              cantidad: 1,
-              precio: parseFloat(prod.precio),
-              descuento: 0,
-              stockDisponible: prod.cantidad,
-            },
-          ];
+    if (!prod) return alert("Producto no encontrado por código");
+    setItems((prev) => {
+      const index = prev.findIndex((i) => i.id === prod.id);
+      if (index !== -1) {
+        const copy = [...prev];
+        if (copy[index].cantidad + 1 > copy[index].stockDisponible) {
+          alert(`No hay suficiente stock para "${copy[index].nombre}".`);
+          return prev;
         }
-      });
-      setCodigo("");
-    } else {
-      alert("Producto no encontrado por código de barras");
-    }
+        copy[index].cantidad += 1;
+        return copy;
+      }
+      return [
+        ...prev,
+        {
+          id: prod.id,
+          nombre: prod.producto_nombre,
+          cantidad: 1,
+          precio: parseFloat(prod.precio),
+          descuento: 0,
+          stockDisponible: prod.cantidad,
+        },
+      ];
+    });
+    setCodigo("");
   };
 
-  // Agregar producto desde búsqueda por nombre (más tolerante)
   const agregarProductoPorNombre = (nombre) => {
     const nombreNormalized = nombre.trim().toLowerCase();
     const prod = productos.find(
       (p) => p.producto_nombre.toLowerCase() === nombreNormalized
     );
-    if (prod) {
-      setItems((prev) => {
-        const index = prev.findIndex((item) => item.id === prod.id);
-        if (index !== -1) {
-          const copy = [...prev];
-          if (copy[index].cantidad + 1 > copy[index].stockDisponible) {
-            alert(`No hay suficiente stock para "${copy[index].nombre}".`);
-            return prev;
-          }
-          copy[index].cantidad += 1;
-          return copy;
-        } else {
-          return [
-            ...prev,
-            {
-              id: prod.id,
-              nombre: prod.producto_nombre,
-              cantidad: 1,
-              precio: parseFloat(prod.precio),
-              descuento: 0,
-              stockDisponible: prod.cantidad,
-            },
-          ];
+    if (!prod) return alert("Producto no encontrado por nombre");
+    setItems((prev) => {
+      const index = prev.findIndex((i) => i.id === prod.id);
+      if (index !== -1) {
+        const copy = [...prev];
+        if (copy[index].cantidad + 1 > copy[index].stockDisponible) {
+          alert(`No hay suficiente stock para "${copy[index].nombre}".`);
+          return prev;
         }
-      });
-      setBusquedaNombre("");
-    } else {
-      alert("Producto no encontrado por nombre");
-    }
+        copy[index].cantidad += 1;
+        return copy;
+      }
+      return [
+        ...prev,
+        {
+          id: prod.id,
+          nombre: prod.producto_nombre,
+          cantidad: 1,
+          precio: parseFloat(prod.precio),
+          descuento: 0,
+          stockDisponible: prod.cantidad,
+        },
+      ];
+    });
+    setBusquedaNombre("");
   };
 
-  // Eliminar producto de la lista
-  const eliminarItem = (index) => {
+  const eliminarItem = (index) =>
     setItems((prev) => prev.filter((_, i) => i !== index));
-  };
 
-  // Productos filtrados para autocompletar búsqueda por nombre
-  const productosFiltrados = productos.filter((p) =>
-    p.producto_nombre.toLowerCase().includes(busquedaNombre.toLowerCase())
-  );
-
-  // Cálculo de totales
+  // Totales
   const subtotalGeneral = items.reduce(
     (acc, i) => acc + i.precio * i.cantidad,
     0
   );
   const descuentoProductos = items.reduce((acc, i) => acc + i.descuento, 0);
-  const descuentoTotal = descuentoProductos + descuentoGlobal;
-  const totalFinal = subtotalGeneral - descuentoTotal;
+  const totalFinal = subtotalGeneral - (descuentoProductos + descuentoGlobal);
 
-  // Al hacer clic en "Finalizar venta", abrir modal
+  // Filtrados
+  const productosFiltrados = productos.filter((p) =>
+    p.producto_nombre.toLowerCase().includes(busquedaNombre.toLowerCase())
+  );
+  const clientesFiltrados = clientes.filter((c) =>
+    c.nombre.toLowerCase().includes(busquedaCliente.toLowerCase())
+  );
+
+  // Venta
   const handleFinalizarClick = () => {
-    if (items.length === 0) {
-      alert("No hay productos para vender.");
-      return;
-    }
-    setShowModal(true);
+    if (!items.length) return alert("No hay productos para vender.");
+    setShowModalVenta(true);
   };
 
-  // Confirmar venta (real)
   const confirmarVenta = async () => {
     setLoading(true);
     try {
-      // Aquí va la llamada a backend si aplica
-      alert("Venta realizada con éxito");
+      alert(
+        `Venta realizada con éxito${
+          clienteSeleccionado ? ` a ${clienteSeleccionado.nombre}` : ""
+        }`
+      );
       setItems([]);
       setDescuentoGlobal(0);
+      setClienteSeleccionado(null);
       localStorage.removeItem("ventaItems");
       localStorage.removeItem("ventaDescuentoGlobal");
-      setShowModal(false);
-    } catch (e) {
-      alert("Error al realizar la venta. Intente de nuevo.");
+      setShowModalVenta(false);
+    } catch {
+      alert("Error al realizar la venta");
     } finally {
       setLoading(false);
     }
   };
 
-  // Cancelar modal
-  const cancelarModal = () => setShowModal(false);
+  // Guardar cliente desde CreateCliente
+  const handleGuardarCliente = (clienteNuevo) => {
+    setClientes((prev) => [...prev, clienteNuevo]);
+    setClienteSeleccionado(clienteNuevo);
+    setShowModalCliente(false);
+  };
 
   return (
-    <div>
-      <h1>POS - Venta</h1>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">POS - Venta</h1>
 
       {/* Código de barras */}
-      <label htmlFor="codigoInput">Código de barras:</label>
       <input
-        id="codigoInput"
         type="text"
         value={codigo}
         onChange={(e) => setCodigo(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && agregarProductoPorCodigo()}
-        placeholder="Escanear código de barras"
+        placeholder="Código de barras"
+        className="w-full border p-2 rounded mb-2"
         autoFocus
-        aria-label="Escanear código de barras"
       />
 
       {/* Búsqueda por nombre */}
-      <div style={{ marginTop: 20 }}>
-        <label htmlFor="nombreBusqueda">Búsqueda por nombre:</label>
+      <div className="flex mb-4 space-x-2">
         <input
-          id="nombreBusqueda"
           type="text"
           value={busquedaNombre}
           onChange={(e) => setBusquedaNombre(e.target.value)}
-          placeholder="Escribe el nombre del producto"
+          placeholder="Buscar producto por nombre"
           list="productos-sugeridos"
-          aria-label="Buscar producto por nombre"
+          className="flex-1 border p-2 rounded"
         />
         <datalist id="productos-sugeridos">
           {productosFiltrados.map((p) => (
@@ -247,275 +238,229 @@ function RealizarVenta() {
         </datalist>
         <button
           onClick={() => agregarProductoPorNombre(busquedaNombre)}
-          disabled={!busquedaNombre}
-          style={{ marginLeft: 10 }}
-          aria-label="Agregar producto por nombre"
+          className="px-3 py-2 bg-blue-500 text-white rounded"
         >
-          Agregar por nombre
+          Agregar
         </button>
       </div>
 
-      {/* Tabla de productos */}
-      <table
-        border="1"
-        style={{ width: "100%", marginTop: "20px" }}
-        aria-label="Lista de productos para venta"
-      >
-        <thead>
+      {/* Tabla productos */}
+      <table className="w-full border-collapse border mb-4 text-sm">
+        <thead className="bg-gray-100">
           <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Descuento</th>
-            <th>Subtotal</th>
-            <th>Acción</th>
+            <th className="border p-2">Producto</th>
+            <th className="border p-2">Cantidad</th>
+            <th className="border p-2">Precio</th>
+            <th className="border p-2">Descuento</th>
+            <th className="border p-2">Subtotal</th>
+            <th className="border p-2">Acción</th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item, i) => {
-            const subtotal = item.precio * item.cantidad - item.descuento;
-            return (
-              <tr key={i}>
-                <td>{item.nombre}</td>
-                <td>
-                  <input
-                    type="number"
-                    value={item.cantidad}
-                    min={1}
-                    max={item.stockDisponible}
-                    onChange={(e) => actualizarCantidad(i, e.target.value)}
-                    style={{ width: "50px" }}
-                    aria-label={`Cantidad de ${item.nombre}`}
-                  />
-                </td>
-                <td>{item.precio.toFixed(2)}</td>
-                <td>
-                  <input
-                    type="number"
-                    value={item.descuento}
-                    min={0}
-                    max={item.precio * item.cantidad}
-                    onChange={(e) => actualizarDescuento(i, e.target.value)}
-                    style={{ width: "60px" }}
-                    aria-label={`Descuento de ${item.nombre}`}
-                  />
-                </td>
-                <td>{subtotal.toFixed(2)}</td>
-                <td>
-                  <button
-                    onClick={() => eliminarItem(i)}
-                    aria-label={`Eliminar ${item.nombre}`}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
+          {items.map((i, idx) => (
+            <tr key={i.id}>
+              <td className="border p-2">{i.nombre}</td>
+              <td className="border p-2">
+                <input
+                  type="number"
+                  value={i.cantidad}
+                  min={1}
+                  max={i.stockDisponible}
+                  onChange={(e) => actualizarCantidad(idx, e.target.value)}
+                  className="w-16 border p-1 rounded"
+                />
+              </td>
+              <td className="border p-2">{i.precio.toFixed(2)}</td>
+              <td className="border p-2">
+                <input
+                  type="number"
+                  value={i.descuento}
+                  min={0}
+                  max={i.precio * i.cantidad}
+                  onChange={(e) => actualizarDescuento(idx, e.target.value)}
+                  className="w-20 border p-1 rounded"
+                />
+              </td>
+              <td className="border p-2">
+                {(i.precio * i.cantidad - i.descuento).toFixed(2)}
+              </td>
+              <td className="border p-2">
+                <button
+                  onClick={() => eliminarItem(idx)}
+                  className="px-2 py-1 bg-red-500 text-white rounded"
+                >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
-      {/* Resumen y descuentos */}
-      <div style={{ marginTop: 20 }}>
-        <p>
-          <strong>Subtotal productos:</strong> {subtotalGeneral.toFixed(2)}
-        </p>
-        <p>
-          <strong>Descuento productos:</strong> {descuentoProductos.toFixed(2)}
-        </p>
-        <p>
-          <label htmlFor="descuentoGlobalInput">Descuento global:</label>{" "}
+      {/* Resumen */}
+      <div className="mb-4 space-y-1">
+        <p>Subtotal: {subtotalGeneral.toFixed(2)}</p>
+        <p>Descuento productos: {descuentoProductos.toFixed(2)}</p>
+        <div className="flex items-center space-x-2">
+          <label>Descuento global:</label>
           <input
-            id="descuentoGlobalInput"
             type="number"
             value={descuentoGlobal}
             min={0}
             max={subtotalGeneral - descuentoProductos}
             onChange={(e) => actualizarDescuentoGlobal(e.target.value)}
-            style={{ width: "80px" }}
-            aria-label="Descuento global"
+            className="w-24 border p-1 rounded"
           />
-        </p>
-        <p>
-          <strong>Total final:</strong> {totalFinal.toFixed(2)}
-        </p>
+        </div>
+        <p>Total final: {totalFinal.toFixed(2)}</p>
       </div>
 
-      {/* Botón finalizar venta ahora abre modal */}
+      {/* Checkbox comprobante y clientes */}
+      <div className="mb-4">
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={quiereComprobante}
+            onChange={(e) => setQuiereComprobante(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <span>¿Desea comprobante?</span>
+        </label>
+
+        {quiereComprobante && (
+          <div className="mt-2 border p-4 rounded bg-gray-50 space-y-2">
+            <input
+              type="text"
+              value={busquedaCliente}
+              onChange={(e) => setBusquedaCliente(e.target.value)}
+              placeholder="Buscar cliente"
+              className="w-full border p-2 rounded"
+            />
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setShowModalCliente(true)}
+                className="px-3 py-1 bg-green-500 text-white rounded"
+              >
+                Crear Cliente
+              </button>
+            </div>
+            {clientesFiltrados.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setClienteSeleccionado(c)}
+                className={`block w-full text-left px-2 py-1 rounded ${
+                  clienteSeleccionado?.id === c.id
+                    ? "bg-blue-200"
+                    : "hover:bg-gray-200"
+                }`}
+              >
+                {c.nombre}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {clienteSeleccionado && (
+          <p className="mt-2 text-green-700 font-semibold">
+            Cliente seleccionado: {clienteSeleccionado.nombre}
+          </p>
+        )}
+      </div>
+
+      {/* Botón finalizar */}
       <button
         onClick={handleFinalizarClick}
-        disabled={loading || items.length === 0}
-        style={{ marginTop: 20 }}
-        aria-label="Finalizar venta"
+        disabled={!items.length || loading}
+        className="px-4 py-2 bg-blue-600 text-white rounded"
       >
         {loading ? "Procesando..." : "Finalizar venta"}
       </button>
 
-      {/* Modal */}
-      {showModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-          aria-modal="true"
-          role="dialog"
-          aria-labelledby="modalTitulo"
-          aria-describedby="modalDescripcion"
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              padding: 20,
-              borderRadius: 8,
-              width: "90%",
-              maxWidth: 600,
-              maxHeight: "80%",
-              overflowY: "auto",
-            }}
-          >
-            <h2 id="modalTitulo">Factura de la Venta</h2>
-            <div id="modalDescripcion">
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr>
-                    <th
-                      style={{
-                        borderBottom: "1px solid #ccc",
-                        textAlign: "left",
-                      }}
-                    >
-                      Producto
-                    </th>
-                    <th
-                      style={{
-                        borderBottom: "1px solid #ccc",
-                        textAlign: "right",
-                      }}
-                    >
-                      Cantidad
-                    </th>
-                    <th
-                      style={{
-                        borderBottom: "1px solid #ccc",
-                        textAlign: "right",
-                      }}
-                    >
-                      Precio Unitario
-                    </th>
-                    <th
-                      style={{
-                        borderBottom: "1px solid #ccc",
-                        textAlign: "right",
-                      }}
-                    >
-                      Descuento
-                    </th>
-                    <th
-                      style={{
-                        borderBottom: "1px solid #ccc",
-                        textAlign: "right",
-                      }}
-                    >
-                      Subtotal
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((item) => {
-                    const subtotal =
-                      item.precio * item.cantidad - item.descuento;
-                    return (
-                      <tr key={item.id}>
-                        <td>{item.nombre}</td>
-                        <td style={{ textAlign: "right" }}>{item.cantidad}</td>
-                        <td style={{ textAlign: "right" }}>
-                          {item.precio.toFixed(2)}
-                        </td>
-                        <td style={{ textAlign: "right" }}>
-                          {item.descuento.toFixed(2)}
-                        </td>
-                        <td style={{ textAlign: "right" }}>
-                          {subtotal.toFixed(2)}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td
-                      colSpan="4"
-                      style={{ textAlign: "right", fontWeight: "bold" }}
-                    >
-                      Subtotal productos:
-                    </td>
-                    <td style={{ textAlign: "right" }}>
-                      {subtotalGeneral.toFixed(2)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      colSpan="4"
-                      style={{ textAlign: "right", fontWeight: "bold" }}
-                    >
-                      Descuento productos:
-                    </td>
-                    <td style={{ textAlign: "right" }}>
-                      {descuentoProductos.toFixed(2)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      colSpan="4"
-                      style={{ textAlign: "right", fontWeight: "bold" }}
-                    >
-                      Descuento global:
-                    </td>
-                    <td style={{ textAlign: "right" }}>
-                      {descuentoGlobal.toFixed(2)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      colSpan="4"
-                      style={{
-                        textAlign: "right",
-                        fontWeight: "bold",
-                        fontSize: "1.2em",
-                      }}
-                    >
-                      Total final:
-                    </td>
-                    <td style={{ textAlign: "right", fontSize: "1.2em" }}>
-                      {totalFinal.toFixed(2)}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
+      {/* Modal Cliente con CreateCliente */}
+      {showModalCliente && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-md w-full max-w-md">
+            <CreateCliente />
+          </div>
+        </div>
+      )}
 
-            <div style={{ marginTop: 20, textAlign: "right" }}>
+      {/* Modal Venta */}
+      {showModalVenta && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded w-full max-w-2xl max-h-[80%] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4">Factura de la Venta</h2>
+            {clienteSeleccionado && (
+              <p className="mb-2">Cliente: {clienteSeleccionado.nombre}</p>
+            )}
+
+            <table className="w-full border-collapse border mb-2 text-sm">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="border p-2">Producto</th>
+                  <th className="border p-2">Cantidad</th>
+                  <th className="border p-2">Precio</th>
+                  <th className="border p-2">Descuento</th>
+                  <th className="border p-2">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((i) => (
+                  <tr key={i.id}>
+                    <td className="border p-2">{i.nombre}</td>
+                    <td className="border p-2">{i.cantidad}</td>
+                    <td className="border p-2">{i.precio.toFixed(2)}</td>
+                    <td className="border p-2">{i.descuento.toFixed(2)}</td>
+                    <td className="border p-2">
+                      {(i.precio * i.cantidad - i.descuento).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="4" className="text-right font-bold">
+                    Subtotal productos:
+                  </td>
+                  <td className="border p-2">{subtotalGeneral.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td colSpan="4" className="text-right font-bold">
+                    Descuento productos:
+                  </td>
+                  <td className="border p-2">
+                    {descuentoProductos.toFixed(2)}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="4" className="text-right font-bold">
+                    Descuento global:
+                  </td>
+                  <td className="border p-2">{descuentoGlobal.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td colSpan="4" className="text-right font-bold text-lg">
+                    Total final:
+                  </td>
+                  <td className="border p-2 text-lg">
+                    {totalFinal.toFixed(2)}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+
+            <div className="flex justify-end space-x-2 mt-4">
               <button
-                onClick={cancelarModal}
+                onClick={() => setShowModalVenta(false)}
                 disabled={loading}
-                style={{ marginRight: 10 }}
-                aria-label="Cancelar venta"
+                className="px-4 py-2 bg-gray-300 rounded"
               >
                 Cancelar
               </button>
               <button
                 onClick={confirmarVenta}
                 disabled={loading}
-                aria-label="Confirmar venta"
+                className="px-4 py-2 bg-green-500 text-white rounded"
               >
                 {loading ? "Procesando..." : "Confirmar venta"}
               </button>

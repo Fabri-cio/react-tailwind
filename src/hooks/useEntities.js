@@ -329,6 +329,23 @@ export const useDetallesVenta = (id) =>
 export const useDetallesVentaMutations = () =>
   useEntityMutations(DetallesVentaAPI, "Detalle de la venta");
 
+//clientes
+export const useClientes = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(ClientesAPI, "clientes", null, mergedParams, staleTime, enabled);
+};
+export const useCliente = (id) =>
+  useData(ClientesAPI, "cliente", id, {}, 1000 * 60 * 5, !!id);
+export const useClienteMutations = () => useEntityMutations(ClientesAPI, "Cliente");
+
 //pedidos
 export const usePedidos = (
   params = {},
