@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useInventarios, useClientes } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
 import Modal from "../../../components/shared/Modal";
+import { FaTrash } from "react-icons/fa";
 
 function RealizarVenta() {
   const { data: productos = [] } = useInventarios({ all_data: true });
@@ -23,20 +24,17 @@ function RealizarVenta() {
   const [items, setItems] = useState([]);
   const [descuentoGlobal, setDescuentoGlobal] = useState(0);
   const [loading, setLoading] = useState(false);
-
   const [quiereComprobante, setQuiereComprobante] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
-
   const [showModalCliente, setShowModalCliente] = useState(false);
   const [showModalVenta, setShowModalVenta] = useState(false);
-
   const [busquedaCliente, setBusquedaCliente] = useState("");
   const [cargarClientes, setCargarClientes] = useState(false);
 
   // Cargar clientes solo cuando se marque el checkbox
   const { data: clientesData = [] } = useClientes(
     { all_data: true },
-    cargarClientes // enabled solo cuando se necesita
+    cargarClientes
   );
 
   // Persistencia localStorage
@@ -56,7 +54,7 @@ function RealizarVenta() {
     localStorage.setItem("ventaDescuentoGlobal", descuentoGlobal);
   }, [items, descuentoGlobal]);
 
-  // Funciones productos
+  // Funciones de productos
   const actualizarCantidad = (index, val) => {
     const cantidad = Math.max(1, parseInt(val) || 1);
     setItems((prev) => {
@@ -140,7 +138,7 @@ function RealizarVenta() {
         const copy = [...prev];
         if (copy[index].cantidad + 1 > copy[index].stockDisponible) {
           alert(`No hay suficiente stock para "${copy[index].nombre}".`);
-          return prev;
+          return copy;
         }
         copy[index].cantidad += 1;
         return copy;
@@ -175,10 +173,26 @@ function RealizarVenta() {
   const productosFiltrados = productos.filter((p) =>
     p.producto_nombre.toLowerCase().includes(busquedaNombre.toLowerCase())
   );
-
   const clientesFiltrados = (clientesData || []).filter((c) =>
     c.nombre.toLowerCase().includes(busquedaCliente.toLowerCase())
   );
+
+  // Funciones de limpieza
+  const limpiarCarritoManual = () => {
+    if (!window.confirm("¿Desea limpiar todo el carrito?")) return;
+    limpiarCarritoAutomatico();
+  };
+
+  const limpiarCarritoAutomatico = () => {
+    setItems([]);
+    setDescuentoGlobal(0);
+    setClienteSeleccionado(null);
+    setBusquedaCliente("");
+    setQuiereComprobante(false);
+    setCargarClientes(false);
+    localStorage.removeItem("ventaItems");
+    localStorage.removeItem("ventaDescuentoGlobal");
+  };
 
   // Venta
   const handleFinalizarClick = () => {
@@ -194,11 +208,7 @@ function RealizarVenta() {
           clienteSeleccionado ? ` a ${clienteSeleccionado.nombre}` : ""
         }`
       );
-      setItems([]);
-      setDescuentoGlobal(0);
-      setClienteSeleccionado(null);
-      localStorage.removeItem("ventaItems");
-      localStorage.removeItem("ventaDescuentoGlobal");
+      limpiarCarritoAutomatico(); // Limpieza automática sin preguntar
       setShowModalVenta(false);
     } catch {
       alert("Error al realizar la venta");
@@ -215,7 +225,9 @@ function RealizarVenta() {
 
   return (
     <div className="p-4 bg-white">
-      <h1 className="text-2xl font-bold mb-4">POS - Venta</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center text-red-500">
+        Punto de Venta
+      </h1>
 
       {/* Código de barras */}
       <input
@@ -245,155 +257,168 @@ function RealizarVenta() {
         </datalist>
         <button
           onClick={() => agregarProductoPorNombre(busquedaNombre)}
-          className="px-3 py-2 bg-blue-500 text-white rounded"
+          className="px-3 py-2 bg-red-500 text-white rounded"
         >
           Agregar
         </button>
       </div>
 
-      {/* Tabla productos */}
-      <table className="w-full border-collapse border mb-4 text-sm">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="border p-2">Producto</th>
-            <th className="border p-2">Cantidad</th>
-            <th className="border p-2">Precio</th>
-            <th className="border p-2">Descuento</th>
-            <th className="border p-2">Subtotal</th>
-            <th className="border p-2">Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((i, idx) => (
-            <tr key={i.id}>
-              <td className="border p-2">{i.nombre}</td>
-              <td className="border p-2">
-                <input
-                  type="number"
-                  value={i.cantidad}
-                  min={1}
-                  max={i.stockDisponible}
-                  onChange={(e) => actualizarCantidad(idx, e.target.value)}
-                  className="w-16 border p-1 rounded"
-                />
-              </td>
-              <td className="border p-2">{i.precio.toFixed(2)}</td>
-              <td className="border p-2">
-                <input
-                  type="number"
-                  value={i.descuento}
-                  min={0}
-                  max={i.precio * i.cantidad}
-                  onChange={(e) => actualizarDescuento(idx, e.target.value)}
-                  className="w-20 border p-1 rounded"
-                />
-              </td>
-              <td className="border p-2">
-                {(i.precio * i.cantidad - i.descuento).toFixed(2)}
-              </td>
-              <td className="border p-2">
-                <button
-                  onClick={() => eliminarItem(idx)}
-                  className="px-2 py-1 bg-red-500 text-white rounded"
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Resumen */}
-      <div className="mb-4 space-y-1">
-        <p>Subtotal: {subtotalGeneral.toFixed(2)}</p>
-        <p>Descuento productos: {descuentoProductos.toFixed(2)}</p>
-        <div className="flex items-center space-x-2">
-          <label>Descuento global:</label>
-          <input
-            type="number"
-            value={descuentoGlobal}
-            min={0}
-            max={subtotalGeneral - descuentoProductos}
-            onChange={(e) => actualizarDescuentoGlobal(e.target.value)}
-            className="w-24 border p-1 rounded"
-          />
+      {/* Layout dos columnas */}
+      <div className="flex flex-col md:flex-row gap-4">
+        {/* Tabla de productos */}
+        <div className="md:w-2/3">
+          <table className="w-full border-collapse border mb-4 text-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border p-2">Producto</th>
+                <th className="border p-2">Cantidad</th>
+                <th className="border p-2">Precio</th>
+                <th className="border p-2">Descuento</th>
+                <th className="border p-2">Subtotal</th>
+                <th className="border p-2">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((i, idx) => (
+                <tr key={i.id}>
+                  <td className="border p-2">{i.nombre}</td>
+                  <td className="border p-2">
+                    <input
+                      type="number"
+                      value={i.cantidad}
+                      min={1}
+                      max={i.stockDisponible}
+                      onChange={(e) => actualizarCantidad(idx, e.target.value)}
+                      className="w-16 border p-1 rounded"
+                    />
+                  </td>
+                  <td className="border p-2">{i.precio.toFixed(2)}</td>
+                  <td className="border p-2">
+                    <input
+                      type="number"
+                      value={i.descuento}
+                      min={0}
+                      max={i.precio * i.cantidad}
+                      onChange={(e) => actualizarDescuento(idx, e.target.value)}
+                      className="w-20 border p-1 rounded"
+                      step="0.1"
+                    />
+                  </td>
+                  <td className="border p-2">
+                    {(i.precio * i.cantidad - i.descuento).toFixed(2)}
+                  </td>
+                  <td className="border p-2">
+                    <button
+                      onClick={() => eliminarItem(idx)}
+                      className="px-2 py-1 bg-red-500 text-white"
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <p>Total final: {totalFinal.toFixed(2)}</p>
-      </div>
 
-      {/* Checkbox comprobante y botón Crear Cliente */}
-      <div className="mb-4">
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={quiereComprobante}
-            onChange={(e) => {
-              setQuiereComprobante(e.target.checked);
-              if (e.target.checked) setCargarClientes(true); // cargar clientes solo al marcar
-            }}
-            className="w-4 h-4"
-          />
-          <span>¿Desea comprobante?</span>
-        </label>
-
-        {quiereComprobante && (
-          <div className="mt-2 border p-4 rounded bg-gray-50 space-y-2">
-            <button
-              onClick={() => setShowModalCliente(true)}
-              className="px-3 py-1 bg-green-500 text-white rounded"
-            >
-              Crear Cliente
-            </button>
-
-            {/* Buscador de clientes */}
-            <div className="mt-2 flex space-x-2">
+        {/* Resumen y botones */}
+        <div className="md:w-1/3 flex flex-col gap-4">
+          <div className="p-4 border rounded bg-gray-50 space-y-2">
+            <p>Subtotal: {subtotalGeneral.toFixed(2)}</p>
+            <p>Descuento productos: {descuentoProductos.toFixed(2)}</p>
+            <div className="flex items-center space-x-2">
+              <label>Descuento global:</label>
               <input
-                type="text"
-                value={busquedaCliente}
-                onChange={(e) => setBusquedaCliente(e.target.value)}
-                placeholder="Buscar cliente por nombre"
-                list="clientes-sugeridos"
-                className="flex-1 border p-2 rounded"
+                type="number"
+                value={descuentoGlobal}
+                min={0}
+                max={subtotalGeneral - descuentoProductos}
+                onChange={(e) => actualizarDescuentoGlobal(e.target.value)}
+                className="w-24 border p-1 rounded"
               />
-              <datalist id="clientes-sugeridos">
-                {clientesFiltrados.map((c) => (
-                  <option key={c.id} value={c.nombre} />
-                ))}
-              </datalist>
-              <button
-                onClick={() => {
-                  const cliente = clientesData.find(
-                    (c) =>
-                      c.nombre.toLowerCase() === busquedaCliente.toLowerCase()
-                  );
-                  if (!cliente) return alert("Cliente no encontrado");
-                  setClienteSeleccionado(cliente);
-                  setBusquedaCliente("");
-                }}
-                className="px-3 py-2 bg-blue-500 text-white rounded"
-              >
-                Seleccionar
-              </button>
             </div>
+            <p>Total final: {totalFinal.toFixed(2)}</p>
 
-            {clienteSeleccionado && (
-              <p className="mt-2 text-green-700 font-semibold">
-                Cliente seleccionado: {clienteSeleccionado.nombre}
-              </p>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={quiereComprobante}
+                onChange={(e) => {
+                  setQuiereComprobante(e.target.checked);
+                  if (e.target.checked) setCargarClientes(true);
+                }}
+                className="w-4 h-4"
+              />
+              <span>¿Desea comprobante?</span>
+            </label>
+
+            {quiereComprobante && (
+              <div className="mt-2 space-y-2">
+                <button
+                  onClick={() => setShowModalCliente(true)}
+                  className="px-3 py-1 bg-red-500 text-white rounded"
+                >
+                  Crear Cliente
+                </button>
+
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={busquedaCliente}
+                    onChange={(e) => setBusquedaCliente(e.target.value)}
+                    placeholder="Buscar cliente por nombre"
+                    list="clientes-sugeridos"
+                    className="flex-1 border p-2 rounded"
+                  />
+                  <datalist id="clientes-sugeridos">
+                    {clientesFiltrados.map((c) => (
+                      <option key={c.id} value={c.nombre} />
+                    ))}
+                  </datalist>
+                  <button
+                    onClick={() => {
+                      const cliente = clientesData.find(
+                        (c) =>
+                          c.nombre.toLowerCase() ===
+                          busquedaCliente.toLowerCase()
+                      );
+                      if (!cliente) return alert("Cliente no encontrado");
+                      setClienteSeleccionado(cliente);
+                      setBusquedaCliente("");
+                    }}
+                    className="px-3 py-2 bg-red-500 text-white rounded"
+                  >
+                    Seleccionar
+                  </button>
+                </div>
+
+                {clienteSeleccionado && (
+                  <p className="mt-2 text-green-700 font-semibold">
+                    Cliente seleccionado: {clienteSeleccionado.nombre}
+                  </p>
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
 
-      {/* Botón finalizar */}
-      <button
-        onClick={handleFinalizarClick}
-        disabled={!items.length || loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded"
-      >
-        {loading ? "Procesando..." : "Finalizar venta"}
-      </button>
+          {/* Botón limpiar carrito */}
+          <button
+            onClick={limpiarCarritoManual}
+            className="px-4 py-2 bg-gray-500 text-white rounded"
+          >
+            Limpiar carrito
+          </button>
+
+          {/* Botón finalizar venta */}
+          <button
+            onClick={handleFinalizarClick}
+            disabled={!items.length || loading}
+            className="px-4 py-2 bg-red-500 text-white rounded"
+          >
+            {loading ? "Procesando..." : "Finalizar venta"}
+          </button>
+        </div>
+      </div>
 
       {/* Modal Cliente */}
       {showModalCliente && (
