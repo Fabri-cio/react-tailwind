@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useInventarios } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
-import ModalBase from "../../../components/shared/ModalBase";
+import Modal from "../../../components/shared/Modal"; // tu modal plano
 
 function RealizarVenta() {
   const { data: productos = [] } = useInventarios({ all_data: true });
@@ -26,11 +26,9 @@ function RealizarVenta() {
 
   const [quiereComprobante, setQuiereComprobante] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
-  const [busquedaCliente, setBusquedaCliente] = useState("");
   const [clientes, setClientes] = useState([]);
 
   const [showModalCliente, setShowModalCliente] = useState(false);
-  const [clienteEditar, setClienteEditar] = useState(null);
   const [showModalVenta, setShowModalVenta] = useState(false);
 
   // Persistencia
@@ -168,9 +166,6 @@ function RealizarVenta() {
   // Filtrados
   const productosFiltrados = productos.filter((p) =>
     p.producto_nombre.toLowerCase().includes(busquedaNombre.toLowerCase())
-  );
-  const clientesFiltrados = clientes.filter((c) =>
-    c.nombre.toLowerCase().includes(busquedaCliente.toLowerCase())
   );
 
   // Venta
@@ -316,7 +311,7 @@ function RealizarVenta() {
         <p>Total final: {totalFinal.toFixed(2)}</p>
       </div>
 
-      {/* Checkbox comprobante y clientes */}
+      {/* Checkbox comprobante y botón Crear Cliente */}
       <div className="mb-4">
         <label className="flex items-center space-x-2">
           <input
@@ -330,34 +325,12 @@ function RealizarVenta() {
 
         {quiereComprobante && (
           <div className="mt-2 border p-4 rounded bg-gray-50 space-y-2">
-            <input
-              type="text"
-              value={busquedaCliente}
-              onChange={(e) => setBusquedaCliente(e.target.value)}
-              placeholder="Buscar cliente"
-              className="w-full border p-2 rounded"
-            />
-            <div className="flex space-x-2">
-              <button
-                onClick={() => setShowModalCliente(true)}
-                className="px-3 py-1 bg-green-500 text-white rounded"
-              >
-                Crear Cliente
-              </button>
-            </div>
-            {clientesFiltrados.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => setClienteSeleccionado(c)}
-                className={`block w-full text-left px-2 py-1 rounded ${
-                  clienteSeleccionado?.id === c.id
-                    ? "bg-blue-200"
-                    : "hover:bg-gray-200"
-                }`}
-              >
-                {c.nombre}
-              </button>
-            ))}
+            <button
+              onClick={() => setShowModalCliente(true)}
+              className="px-3 py-1 bg-green-500 text-white rounded"
+            >
+              Crear Cliente
+            </button>
           </div>
         )}
 
@@ -377,137 +350,98 @@ function RealizarVenta() {
         {loading ? "Procesando..." : "Finalizar venta"}
       </button>
 
-      {/* Modal Cliente con ModalBase */}
-      <ModalBase
-        isOpen={showModalCliente}
-        onClose={() => setShowModalCliente(false)}
-        size="md"
-      >
-        <ModalBase.Header onClose={() => setShowModalCliente(false)}>
-          Crear Cliente
-        </ModalBase.Header>
-        <ModalBase.Body>
+      {/* Modal Cliente */}
+      {showModalCliente && (
+        <Modal onClose={() => setShowModalCliente(false)}>
           <CreateCliente onSave={handleGuardarCliente} />
-        </ModalBase.Body>
-      </ModalBase>
-
-      {/* Modal Venta con ModalBase */}
-      <ModalBase
-        isOpen={showModalVenta}
-        onClose={() => setShowModalVenta(false)}
-        size="xl"
-      >
-        <ModalBase.Header onClose={() => setShowModalVenta(false)}>
-          Factura de la Venta
-        </ModalBase.Header>
-        <ModalBase.Body>
-          {clienteSeleccionado && (
-            <p className="mb-2">Cliente: {clienteSeleccionado.nombre}</p>
-          )}
-          <table className="w-full border-collapse border mb-2 text-sm">
-            {/* ...contenido de la tabla de venta existente */}
-          </table>
-        </ModalBase.Body>
-        <ModalBase.Footer>
-          <button
-            onClick={() => setShowModalVenta(false)}
-            disabled={loading}
-            className="px-4 py-2 bg-gray-300 rounded"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={confirmarVenta}
-            disabled={loading}
-            className="px-4 py-2 bg-green-500 text-white rounded"
-          >
-            {loading ? "Procesando..." : "Confirmar venta"}
-          </button>
-        </ModalBase.Footer>
-      </ModalBase>
+        </Modal>
+      )}
 
       {/* Modal Venta */}
       {showModalVenta && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded w-full max-w-2xl max-h-[80%] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Factura de la Venta</h2>
-            {clienteSeleccionado && (
-              <p className="mb-2">Cliente: {clienteSeleccionado.nombre}</p>
-            )}
-
-            <table className="w-full border-collapse border mb-2 text-sm">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border p-2">Producto</th>
-                  <th className="border p-2">Cantidad</th>
-                  <th className="border p-2">Precio</th>
-                  <th className="border p-2">Descuento</th>
-                  <th className="border p-2">Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((i) => (
-                  <tr key={i.id}>
-                    <td className="border p-2">{i.nombre}</td>
-                    <td className="border p-2">{i.cantidad}</td>
-                    <td className="border p-2">{i.precio.toFixed(2)}</td>
-                    <td className="border p-2">{i.descuento.toFixed(2)}</td>
-                    <td className="border p-2">
-                      {(i.precio * i.cantidad - i.descuento).toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan="4" className="text-right font-bold">
-                    Subtotal productos:
-                  </td>
-                  <td className="border p-2">{subtotalGeneral.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td colSpan="4" className="text-right font-bold">
-                    Descuento productos:
-                  </td>
-                  <td className="border p-2">
-                    {descuentoProductos.toFixed(2)}
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan="4" className="text-right font-bold">
-                    Descuento global:
-                  </td>
-                  <td className="border p-2">{descuentoGlobal.toFixed(2)}</td>
-                </tr>
-                <tr>
-                  <td colSpan="4" className="text-right font-bold text-lg">
-                    Total final:
-                  </td>
-                  <td className="border p-2 text-lg">
-                    {totalFinal.toFixed(2)}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-
-            <div className="flex justify-end space-x-2 mt-4">
-              <button
-                onClick={() => setShowModalVenta(false)}
-                disabled={loading}
-                className="px-4 py-2 bg-gray-300 rounded"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={confirmarVenta}
-                disabled={loading}
-                className="px-4 py-2 bg-green-500 text-white rounded"
-              >
-                {loading ? "Procesando..." : "Confirmar venta"}
-              </button>
-            </div>
+        <Modal onClose={() => setShowModalVenta(false)}>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold">Factura de la Venta</h2>
+            <button
+              onClick={() => setShowModalVenta(false)}
+              className="font-bold text-gray-700 hover:text-black"
+            >
+              X
+            </button>
           </div>
-        </div>
+
+          {clienteSeleccionado && (
+            <p className="mb-2">Cliente: {clienteSeleccionado.nombre}</p>
+          )}
+
+          <table className="w-full border-collapse border mb-2 text-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border p-2">Producto</th>
+                <th className="border p-2">Cantidad</th>
+                <th className="border p-2">Precio</th>
+                <th className="border p-2">Descuento</th>
+                <th className="border p-2">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((i) => (
+                <tr key={i.id}>
+                  <td className="border p-2">{i.nombre}</td>
+                  <td className="border p-2">{i.cantidad}</td>
+                  <td className="border p-2">{i.precio.toFixed(2)}</td>
+                  <td className="border p-2">{i.descuento.toFixed(2)}</td>
+                  <td className="border p-2">
+                    {(i.precio * i.cantidad - i.descuento).toFixed(2)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan="4" className="text-right font-bold">
+                  Subtotal productos:
+                </td>
+                <td className="border p-2">{subtotalGeneral.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td colSpan="4" className="text-right font-bold">
+                  Descuento productos:
+                </td>
+                <td className="border p-2">{descuentoProductos.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td colSpan="4" className="text-right font-bold">
+                  Descuento global:
+                </td>
+                <td className="border p-2">{descuentoGlobal.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td colSpan="4" className="text-right font-bold text-lg">
+                  Total final:
+                </td>
+                <td className="border p-2 text-lg">{totalFinal.toFixed(2)}</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div className="flex justify-end space-x-2 mt-4">
+            <button
+              onClick={() => setShowModalVenta(false)}
+              disabled={loading}
+              className="px-4 py-2 bg-gray-300 rounded"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={confirmarVenta}
+              disabled={loading}
+              className="px-4 py-2 bg-green-500 text-white rounded"
+            >
+              {loading ? "Procesando..." : "Confirmar venta"}
+            </button>
+          </div>
+        </Modal>
       )}
     </div>
   );
