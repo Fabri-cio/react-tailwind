@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useInventarios } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
+import ModalBase from "../../../components/shared/ModalBase";
 
 function RealizarVenta() {
   const { data: productos = [] } = useInventarios({ all_data: true });
@@ -376,14 +377,54 @@ function RealizarVenta() {
         {loading ? "Procesando..." : "Finalizar venta"}
       </button>
 
-      {/* Modal Cliente con CreateCliente */}
-      {showModalCliente && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-md w-full max-w-md">
-            <CreateCliente />
-          </div>
-        </div>
-      )}
+      {/* Modal Cliente con ModalBase */}
+      <ModalBase
+        isOpen={showModalCliente}
+        onClose={() => setShowModalCliente(false)}
+        size="md"
+      >
+        <ModalBase.Header onClose={() => setShowModalCliente(false)}>
+          Crear Cliente
+        </ModalBase.Header>
+        <ModalBase.Body>
+          <CreateCliente onSave={handleGuardarCliente} />
+        </ModalBase.Body>
+      </ModalBase>
+
+      {/* Modal Venta con ModalBase */}
+      <ModalBase
+        isOpen={showModalVenta}
+        onClose={() => setShowModalVenta(false)}
+        size="xl"
+      >
+        <ModalBase.Header onClose={() => setShowModalVenta(false)}>
+          Factura de la Venta
+        </ModalBase.Header>
+        <ModalBase.Body>
+          {clienteSeleccionado && (
+            <p className="mb-2">Cliente: {clienteSeleccionado.nombre}</p>
+          )}
+          <table className="w-full border-collapse border mb-2 text-sm">
+            {/* ...contenido de la tabla de venta existente */}
+          </table>
+        </ModalBase.Body>
+        <ModalBase.Footer>
+          <button
+            onClick={() => setShowModalVenta(false)}
+            disabled={loading}
+            className="px-4 py-2 bg-gray-300 rounded"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={confirmarVenta}
+            disabled={loading}
+            className="px-4 py-2 bg-green-500 text-white rounded"
+          >
+            {loading ? "Procesando..." : "Confirmar venta"}
+          </button>
+        </ModalBase.Footer>
+      </ModalBase>
 
       {/* Modal Venta */}
       {showModalVenta && (

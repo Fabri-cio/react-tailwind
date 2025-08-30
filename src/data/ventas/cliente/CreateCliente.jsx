@@ -53,7 +53,7 @@ export default function CreateCliente() {
     icon: FaPlus,
     actions: [
       {
-        to: "/realizarVenta",
+        to: -1,
         label: "Cancelar",
         estilos:
           "border-2 border-gray-700 rounded-lg bg-gray-600 text-white p-2 hover:bg-gray-100 hover:text-gray-600",
