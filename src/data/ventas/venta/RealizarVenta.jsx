@@ -120,6 +120,7 @@ function RealizarVenta() {
           precio: parseFloat(prod.precio),
           descuento: 0,
           stockDisponible: prod.cantidad,
+          imagen: prod.imagen,
         },
       ];
     });
@@ -152,6 +153,7 @@ function RealizarVenta() {
           precio: parseFloat(prod.precio),
           descuento: 0,
           stockDisponible: prod.cantidad,
+          imagen: prod.imagen,
         },
       ];
     });
@@ -270,6 +272,7 @@ function RealizarVenta() {
           <table className="w-full border-collapse border mb-4 text-sm">
             <thead className="bg-gray-100">
               <tr>
+                <th className="border p-2">Imagen</th>
                 <th className="border p-2">Producto</th>
                 <th className="border p-2">Cantidad</th>
                 <th className="border p-2">Precio</th>
@@ -281,6 +284,19 @@ function RealizarVenta() {
             <tbody>
               {items.map((i, idx) => (
                 <tr key={i.id}>
+                  <td className="border p-2">
+                    {i.imagen ? (
+                      <img
+                        src={`${i.imagen}?t=${new Date().getTime()}`}
+                        alt={i.nombre}
+                        className="w-12 h-12 rounded object-cover"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 flex items-center justify-center bg-gray-200 text-gray-500 text-xs">
+                        Sin imagen
+                      </div>
+                    )}
+                  </td>
                   <td className="border p-2">{i.nombre}</td>
                   <td className="border p-2">
                     <input
@@ -447,6 +463,7 @@ function RealizarVenta() {
           <table className="w-full border-collapse border mb-2 text-sm">
             <thead className="bg-gray-100">
               <tr>
+                <th className="border p-2">Imagen</th>
                 <th className="border p-2">Producto</th>
                 <th className="border p-2">Cantidad</th>
                 <th className="border p-2">Precio</th>
@@ -457,6 +474,19 @@ function RealizarVenta() {
             <tbody>
               {items.map((i) => (
                 <tr key={i.id}>
+                  <td className="border p-2">
+                    {i.imagen ? (
+                      <img
+                        src={`${i.imagen}?t=${new Date().getTime()}`}
+                        alt={i.nombre}
+                        className="w-12 h-12 rounded object-cover"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 flex items-center justify-center bg-gray-200 text-gray-500 text-xs">
+                        Sin imagen
+                      </div>
+                    )}
+                  </td>
                   <td className="border p-2">{i.nombre}</td>
                   <td className="border p-2">{i.cantidad}</td>
                   <td className="border p-2">{i.precio.toFixed(2)}</td>
