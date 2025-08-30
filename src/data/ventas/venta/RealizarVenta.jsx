@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { useInventarios } from "../../../hooks/useEntities";
+import { useInventarios, useClientes } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
-import Modal from "../../../components/shared/Modal"; // tu modal plano
+import Modal from "../../../components/shared/Modal";
 
 function RealizarVenta() {
   const { data: productos = [] } = useInventarios({ all_data: true });
@@ -17,7 +17,7 @@ function RealizarVenta() {
     return map;
   }, [productos]);
 
-  // Estados
+  // Estados principales
   const [codigo, setCodigo] = useState("");
   const [busquedaNombre, setBusquedaNombre] = useState("");
   const [items, setItems] = useState([]);
@@ -26,12 +26,20 @@ function RealizarVenta() {
 
   const [quiereComprobante, setQuiereComprobante] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
-  const [clientes, setClientes] = useState([]);
 
   const [showModalCliente, setShowModalCliente] = useState(false);
   const [showModalVenta, setShowModalVenta] = useState(false);
 
-  // Persistencia
+  const [busquedaCliente, setBusquedaCliente] = useState("");
+  const [cargarClientes, setCargarClientes] = useState(false);
+
+  // Cargar clientes solo cuando se marque el checkbox
+  const { data: clientesData = [] } = useClientes(
+    { all_data: true },
+    cargarClientes // enabled solo cuando se necesita
+  );
+
+  // Persistencia localStorage
   useEffect(() => {
     try {
       const savedItems = JSON.parse(localStorage.getItem("ventaItems") || "[]");
@@ -168,6 +176,10 @@ function RealizarVenta() {
     p.producto_nombre.toLowerCase().includes(busquedaNombre.toLowerCase())
   );
 
+  const clientesFiltrados = (clientesData || []).filter((c) =>
+    c.nombre.toLowerCase().includes(busquedaCliente.toLowerCase())
+  );
+
   // Venta
   const handleFinalizarClick = () => {
     if (!items.length) return alert("No hay productos para vender.");
@@ -197,13 +209,12 @@ function RealizarVenta() {
 
   // Guardar cliente desde CreateCliente
   const handleGuardarCliente = (clienteNuevo) => {
-    setClientes((prev) => [...prev, clienteNuevo]);
     setClienteSeleccionado(clienteNuevo);
     setShowModalCliente(false);
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-white">
       <h1 className="text-2xl font-bold mb-4">POS - Venta</h1>
 
       {/* Código de barras */}
@@ -213,7 +224,7 @@ function RealizarVenta() {
         onChange={(e) => setCodigo(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && agregarProductoPorCodigo()}
         placeholder="Código de barras"
-        className="w-full border p-2 rounded mb-2"
+        className="w-1/2 border p-2 rounded mb-2"
         autoFocus
       />
 
@@ -225,7 +236,7 @@ function RealizarVenta() {
           onChange={(e) => setBusquedaNombre(e.target.value)}
           placeholder="Buscar producto por nombre"
           list="productos-sugeridos"
-          className="flex-1 border p-2 rounded"
+          className="w-1/2 border p-2 rounded"
         />
         <datalist id="productos-sugeridos">
           {productosFiltrados.map((p) => (
@@ -317,7 +328,10 @@ function RealizarVenta() {
           <input
             type="checkbox"
             checked={quiereComprobante}
-            onChange={(e) => setQuiereComprobante(e.target.checked)}
+            onChange={(e) => {
+              setQuiereComprobante(e.target.checked);
+              if (e.target.checked) setCargarClientes(true); // cargar clientes solo al marcar
+            }}
             className="w-4 h-4"
           />
           <span>¿Desea comprobante?</span>
@@ -331,13 +345,44 @@ function RealizarVenta() {
             >
               Crear Cliente
             </button>
-          </div>
-        )}
 
-        {clienteSeleccionado && (
-          <p className="mt-2 text-green-700 font-semibold">
-            Cliente seleccionado: {clienteSeleccionado.nombre}
-          </p>
+            {/* Buscador de clientes */}
+            <div className="mt-2 flex space-x-2">
+              <input
+                type="text"
+                value={busquedaCliente}
+                onChange={(e) => setBusquedaCliente(e.target.value)}
+                placeholder="Buscar cliente por nombre"
+                list="clientes-sugeridos"
+                className="flex-1 border p-2 rounded"
+              />
+              <datalist id="clientes-sugeridos">
+                {clientesFiltrados.map((c) => (
+                  <option key={c.id} value={c.nombre} />
+                ))}
+              </datalist>
+              <button
+                onClick={() => {
+                  const cliente = clientesData.find(
+                    (c) =>
+                      c.nombre.toLowerCase() === busquedaCliente.toLowerCase()
+                  );
+                  if (!cliente) return alert("Cliente no encontrado");
+                  setClienteSeleccionado(cliente);
+                  setBusquedaCliente("");
+                }}
+                className="px-3 py-2 bg-blue-500 text-white rounded"
+              >
+                Seleccionar
+              </button>
+            </div>
+
+            {clienteSeleccionado && (
+              <p className="mt-2 text-green-700 font-semibold">
+                Cliente seleccionado: {clienteSeleccionado.nombre}
+              </p>
+            )}
+          </div>
         )}
       </div>
 
