@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useInventarios, useClientes } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
-import { Modal, ActionButton, InputField } from "../../../components/shared";
+import { Modal, ActionButton, InputField, Table } from "../../../components/shared";
 import { FaTrash, FaPlus, FaSync, FaTimes, FaCheck } from "react-icons/fa";
 import { useVentaMutations } from "../../../hooks/useEntities";
 import { useFormEntity } from "../../../utils/useFormEntity";
@@ -271,6 +271,80 @@ function RealizarVenta() {
     setShowModalCliente(false);
   };
 
+  // -----------------------
+  // Definición de campos para la tabla reutilizable
+  // -----------------------
+  const fields = [
+    {
+      key: "imagen",
+      label: "Imagen",
+      render: (item) =>
+        item.imagen ? (
+          <img
+            src={`${item.imagen}?t=${new Date().getTime()}`}
+            alt={item.nombre}
+            className="w-12 h-12 rounded object-cover"
+          />
+        ) : (
+          <div className="w-12 h-12 flex items-center justify-center bg-gray-200 text-gray-500 text-xs">
+            Sin imagen
+          </div>
+        ),
+    },
+    { key: "nombre", label: "Producto" },
+    {
+      key: "cantidad",
+      label: "Cantidad",
+      render: (item, index) => (
+        <InputField
+          type="number"
+          value={item.cantidad}
+          min={1}
+          max={item.stockDisponible}
+          onChange={(e) => actualizarCantidad(index, e.target.value)}
+          className="w-16"
+        />
+      ),
+    },
+    {
+      key: "precio",
+      label: "Precio",
+      render: (item) => item.precio.toFixed(2),
+    },
+    {
+      key: "descuento",
+      label: "Descuento",
+      render: (item, index) => (
+        <InputField
+          type="number"
+          value={item.descuento}
+          min={0}
+          max={item.precio * item.cantidad}
+          step="0.1"
+          onChange={(e) => actualizarDescuento(index, e.target.value)}
+          className="w-17 "
+        />
+      ),
+    },
+    {
+      key: "subtotal",
+      label: "Subtotal",
+      render: (item) =>
+        (item.precio * item.cantidad - item.descuento).toFixed(2),
+    },
+    {
+      key: "acciones",
+      label: "Acción",
+      render: (_, index) => (
+        <ActionButton
+          icon={FaTrash}
+          onClick={() => eliminarItem(index)}
+          estilos="px-2 py-1 bg-red-500 text-white rounded"
+        />
+      ),
+    },
+  ];
+
   return (
     <div className="p-4 bg-white">
       <h1 className="text-2xl font-bold mb-4 text-center text-red-500">
@@ -315,76 +389,11 @@ function RealizarVenta() {
       <div className="flex flex-col md:flex-row gap-4">
         {/* Tabla de productos */}
         <div className="md:w-2/3">
-          <table className="w-full border-collapse border mb-4 text-sm">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="border p-2">Imagen</th>
-                <th className="border p-2">Producto</th>
-                <th className="border p-2">Cantidad</th>
-                <th className="border p-2">Precio</th>
-                <th className="border p-2">Descuento</th>
-                <th className="border p-2">Subtotal</th>
-                <th className="border p-2">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((i, idx) => (
-                <tr key={i.id}>
-                  <td className="border p-2">
-                    {i.imagen ? (
-                      <img
-                        src={`${i.imagen}?t=${new Date().getTime()}`}
-                        alt={i.nombre}
-                        className="w-12 h-12 rounded object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 flex items-center justify-center bg-gray-200 text-gray-500 text-xs">
-                        Sin imagen
-                      </div>
-                    )}
-                  </td>
-                  <td className="border p-2">{i.nombre}</td>
-                  <td className="border p-2">
-                    <input
-                      type="number"
-                      value={i.cantidad}
-                      min={1}
-                      max={i.stockDisponible}
-                      onChange={(e) => actualizarCantidad(idx, e.target.value)}
-                      className="w-16 border p-1 rounded"
-                    />
-                  </td>
-                  <td className="border p-2">{i.precio.toFixed(2)}</td>
-                  <td className="border p-2">
-                    <input
-                      type="number"
-                      value={i.descuento}
-                      min={0}
-                      max={i.precio * i.cantidad}
-                      onChange={(e) => actualizarDescuento(idx, e.target.value)}
-                      className="w-20 border p-1 rounded"
-                      step="0.1"
-                    />
-                  </td>
-                  <td className="border p-2">
-                    {(i.precio * i.cantidad - i.descuento).toFixed(2)}
-                  </td>
-                  <td className="border p-2">
-                    <button
-                      onClick={() => eliminarItem(idx)}
-                      className="px-2 py-1 bg-red-500 text-white"
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Table items={items} fields={fields} />
         </div>
 
         {/* Resumen y botones */}
-        <div className="w-full md:w-1/3 flex flex-col gap-4 mx-auto">
+        <div className="md:w-1/3 flex flex-col gap-4">
           {/* Contenedor de resumen */}
           <div className="p-4 border rounded bg-gray-50 space-y-2">
             {/* Subtotales */}

@@ -1,30 +1,24 @@
+import React from "react";
 import Row from "./Row";
 
-const Table = ({
-  items,
-  fields,
-  currentPage,
-  itemsPerPage,
-  itemKey = "id",
-}) => {
-  // Memoriza las cabeceras de la tabla
+const Table = ({ items, fields, currentPage, itemsPerPage, itemKey = "id", footer }) => {
   const headers = fields.map((field) => (
     <th
       key={field.key}
-      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+      className="px-1.5 sm:px-2 py-1 text-left text-[11px] font-medium uppercase tracking-wide text-gray-500 hidden md:table-cell"
     >
       {field.label}
     </th>
   ));
 
   return (
-    <div className="overflow-hidden shadow-lg border border-gray-200">
+    <div className="overflow-hidden shadow-sm border border-gray-200">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="">
+        <table className="min-w-full divide-y divide-gray-200 text-[12px]">
+          <thead className="bg-gray-50 sticky top-0 z-10">
             <tr>{headers}</tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-100">
             {items.map((item, index) => {
               const globalIndex =
                 currentPage && itemsPerPage
@@ -41,6 +35,11 @@ const Table = ({
               );
             })}
           </tbody>
+          {footer && (
+            <tfoot className="bg-gray-50 hidden md:table-footer-group text-[12px]">
+              {footer}
+            </tfoot>
+          )}
         </table>
       </div>
     </div>
