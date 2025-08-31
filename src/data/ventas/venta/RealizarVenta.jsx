@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useInventarios, useClientes } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
-import Modal from "../../../components/shared/Modal";
-import { FaTrash } from "react-icons/fa";
+import { Modal, ActionButton, InputField } from "../../../components/shared";
+import { FaTrash, FaPlus, FaSync, FaTimes, FaCheck } from "react-icons/fa";
 import { useVentaMutations } from "../../../hooks/useEntities";
 import { useFormEntity } from "../../../utils/useFormEntity";
+import { toast } from "react-hot-toast";
 
 function RealizarVenta() {
   const { manejarEnvio } = useFormEntity();
@@ -23,23 +24,80 @@ function RealizarVenta() {
   }, [productos]);
 
   // Estados principales
-  const [codigo, setCodigo] = useState("");
-  const [busquedaNombre, setBusquedaNombre] = useState("");
-  const [items, setItems] = useState([]);
-  const [descuentoGlobal, setDescuentoGlobal] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [quiereComprobante, setQuiereComprobante] = useState(false);
-  const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
-  const [showModalCliente, setShowModalCliente] = useState(false);
-  const [showModalVenta, setShowModalVenta] = useState(false);
-  const [busquedaCliente, setBusquedaCliente] = useState("");
-  const [cargarClientes, setCargarClientes] = useState(false);
+  const [codigo, setCodigo] = useState(""); // estado para el codigo de producto
+  const [busquedaNombre, setBusquedaNombre] = useState(""); // estado para la búsqueda de nombre
+  const [items, setItems] = useState([]); // estado para los items del carrito
+  const [descuentoGlobal, setDescuentoGlobal] = useState(0); // estado para el descuento global
+  const [loading, setLoading] = useState(false); // estado para el loading
+  const [quiereComprobante, setQuiereComprobante] = useState(false); // estado para el comprobante
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(null); // estado para el cliente seleccionado
+  const [showModalCliente, setShowModalCliente] = useState(false); // estado para el modal de clientes
+  const [showModalVenta, setShowModalVenta] = useState(false); // estado para el modal de venta
+  const [busquedaCliente, setBusquedaCliente] = useState(""); // estado para la búsqueda de clientes
+  const [cargarClientes, setCargarClientes] = useState(false); // estado para cargar clientes
+  const [showModalConfirmacion, setShowModalConfirmacion] = useState(false); // estado para el modal de confirmación
 
   // Cargar clientes solo cuando se marque el checkbox
   const { data: clientesData = [] } = useClientes(
     { all_data: true },
     cargarClientes
   );
+
+  // --------------------
+  // Selección automática de productos
+  // --------------------
+  useEffect(() => {
+    if (!busquedaNombre) return;
+
+    const prod = productos.find(
+      (p) => p.producto_nombre.toLowerCase() === busquedaNombre.toLowerCase()
+    );
+    if (!prod) return;
+
+    setItems((prev) => {
+      const index = prev.findIndex((i) => i.id === prod.id);
+      if (index !== -1) {
+        const copy = [...prev];
+        if (copy[index].cantidad + 1 > copy[index].stockDisponible) {
+          alert(`No hay suficiente stock para "${copy[index].nombre}".`);
+          return prev;
+        }
+        copy[index].cantidad += 1;
+        return copy;
+      }
+      return [
+        ...prev,
+        {
+          id: prod.id,
+          nombre: prod.producto_nombre,
+          cantidad: 1,
+          precio: parseFloat(prod.precio),
+          descuento: 0,
+          stockDisponible: prod.cantidad,
+          imagen: prod.imagen,
+        },
+      ];
+    });
+
+    setBusquedaNombre(""); // limpiar input
+    toast.success(`Producto "${prod.producto_nombre}" agregado al carrito`);
+  }, [busquedaNombre, productos]);
+
+  // --------------------
+  // Selección automática de clientes
+  // --------------------
+  useEffect(() => {
+    if (!busquedaCliente) return;
+
+    const cliente = clientesData.find(
+      (c) => c.nombre.toLowerCase() === busquedaCliente.toLowerCase()
+    );
+
+    if (cliente && clienteSeleccionado?.id !== cliente.id) {
+      setClienteSeleccionado(cliente);
+      toast.success("Cliente seleccionado correctamente");
+    }
+  }, [busquedaCliente, clientesData]);
 
   // Persistencia localStorage
   useEffect(() => {
@@ -53,6 +111,7 @@ function RealizarVenta() {
     } catch {}
   }, []);
 
+  // Guardar en localStorage
   useEffect(() => {
     localStorage.setItem("ventaItems", JSON.stringify(items));
     localStorage.setItem("ventaDescuentoGlobal", descuentoGlobal);
@@ -103,7 +162,7 @@ function RealizarVenta() {
   const agregarProductoPorCodigo = () => {
     if (!codigo.trim()) return;
     const prod = productosMap[codigo.trim()];
-    if (!prod) return alert("Producto no encontrado por código");
+    if (!prod) return toast.error("Producto no encontrado por código");
     setItems((prev) => {
       const index = prev.findIndex((i) => i.id === prod.id);
       if (index !== -1) {
@@ -131,39 +190,6 @@ function RealizarVenta() {
     setCodigo("");
   };
 
-  const agregarProductoPorNombre = (nombre) => {
-    const nombreNormalized = nombre.trim().toLowerCase();
-    const prod = productos.find(
-      (p) => p.producto_nombre.toLowerCase() === nombreNormalized
-    );
-    if (!prod) return alert("Producto no encontrado por nombre");
-    setItems((prev) => {
-      const index = prev.findIndex((i) => i.id === prod.id);
-      if (index !== -1) {
-        const copy = [...prev];
-        if (copy[index].cantidad + 1 > copy[index].stockDisponible) {
-          alert(`No hay suficiente stock para "${copy[index].nombre}".`);
-          return copy;
-        }
-        copy[index].cantidad += 1;
-        return copy;
-      }
-      return [
-        ...prev,
-        {
-          id: prod.id,
-          nombre: prod.producto_nombre,
-          cantidad: 1,
-          precio: parseFloat(prod.precio),
-          descuento: 0,
-          stockDisponible: prod.cantidad,
-          imagen: prod.imagen,
-        },
-      ];
-    });
-    setBusquedaNombre("");
-  };
-
   const eliminarItem = (index) =>
     setItems((prev) => prev.filter((_, i) => i !== index));
 
@@ -175,18 +201,16 @@ function RealizarVenta() {
   const descuentoProductos = items.reduce((acc, i) => acc + i.descuento, 0);
   const totalFinal = subtotalGeneral - (descuentoProductos + descuentoGlobal);
 
-  // Filtrados
-  const productosFiltrados = productos.filter((p) =>
-    p.producto_nombre.toLowerCase().includes(busquedaNombre.toLowerCase())
-  );
-  const clientesFiltrados = (clientesData || []).filter((c) =>
-    c.nombre.toLowerCase().includes(busquedaCliente.toLowerCase())
-  );
-
-  // Funciones de limpieza
+  // funcion que abre el modal de confirmacion
   const limpiarCarritoManual = () => {
-    if (!window.confirm("¿Desea limpiar todo el carrito?")) return;
+    setShowModalConfirmacion(true);
+  };
+
+  // confirmar desde el modal
+  const confirmarLimpiarCarrito = () => {
     limpiarCarritoAutomatico();
+    setShowModalConfirmacion(false);
+    toast.success("Carrito vaciado correctamente");
   };
 
   const limpiarCarritoAutomatico = () => {
@@ -254,37 +278,37 @@ function RealizarVenta() {
       </h1>
 
       {/* Código de barras */}
-      <input
-        type="text"
+      <InputField
+        name="codigo"
         value={codigo}
         onChange={(e) => setCodigo(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && agregarProductoPorCodigo()}
         placeholder="Código de barras"
-        className="w-1/2 border p-2 rounded mb-2"
+        className="w-1/2 mb-2"
         autoFocus
       />
 
       {/* Búsqueda por nombre */}
       <div className="flex mb-4 space-x-2">
-        <input
+        <InputField
           type="text"
           value={busquedaNombre}
           onChange={(e) => setBusquedaNombre(e.target.value)}
           placeholder="Buscar producto por nombre"
           list="productos-sugeridos"
-          className="w-1/2 border p-2 rounded"
+          className="w-1/2"
         />
         <datalist id="productos-sugeridos">
-          {productosFiltrados.map((p) => (
-            <option key={p.id} value={p.producto_nombre} />
-          ))}
+          {productos
+            .filter((p) =>
+              p.producto_nombre
+                .toLowerCase()
+                .includes(busquedaNombre.toLowerCase())
+            )
+            .map((p) => (
+              <option key={p.id} value={p.producto_nombre} />
+            ))}
         </datalist>
-        <button
-          onClick={() => agregarProductoPorNombre(busquedaNombre)}
-          className="px-3 py-2 bg-red-500 text-white rounded"
-        >
-          Agregar
-        </button>
       </div>
 
       {/* Layout dos columnas */}
@@ -360,92 +384,129 @@ function RealizarVenta() {
         </div>
 
         {/* Resumen y botones */}
-        <div className="md:w-1/3 flex flex-col gap-4">
+        <div className="w-full md:w-1/3 flex flex-col gap-4 mx-auto">
+          {/* Contenedor de resumen */}
           <div className="p-4 border rounded bg-gray-50 space-y-2">
-            <p>Subtotal: {subtotalGeneral.toFixed(2)}</p>
-            <p>Descuento productos: {descuentoProductos.toFixed(2)}</p>
-            <div className="flex items-center space-x-2">
-              <label>Descuento global:</label>
-              <input
+            {/* Subtotales */}
+            <div className="flex justify-between">
+              <span>Subtotal:</span>
+              <span>{subtotalGeneral.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Descuento productos:</span>
+              <span>{descuentoProductos.toFixed(2)}</span>
+            </div>
+            {/* Descuento global */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <label className="font-medium">Descuento global:</label>
+              <InputField
                 type="number"
                 value={descuentoGlobal}
                 min={0}
                 max={subtotalGeneral - descuentoProductos}
                 onChange={(e) => actualizarDescuentoGlobal(e.target.value)}
-                className="w-24 border p-1 rounded"
+                className="w-full sm:w-24 h-10"
+                step="0.1"
               />
             </div>
-            <p>Total final: {totalFinal.toFixed(2)}</p>
-
+            {/* Total final */}
+            <div className="flex justify-between font-bold text-lg">
+              <span>Total final:</span>
+              <span>{totalFinal.toFixed(2)}</span>
+            </div>
+            {/* Checkbox comprobante */}
             <label className="flex items-center space-x-2">
-              <input
+              <InputField
                 type="checkbox"
                 checked={quiereComprobante}
                 onChange={(e) => {
-                  setQuiereComprobante(e.target.checked);
-                  if (e.target.checked) setCargarClientes(true);
+                  const checked = e.target.checked;
+                  setQuiereComprobante(checked);
+                  if (checked) setCargarClientes(true);
+                  else {
+                    setClienteSeleccionado(null);
+                    setBusquedaCliente("");
+                    setCargarClientes(false);
+                  }
                 }}
                 className="w-4 h-4"
               />
               <span>¿Desea comprobante?</span>
             </label>
 
+            {/* Inputs de cliente solo si se activa comprobante */}
             {quiereComprobante && (
-              <div className="mt-2 space-y-2">
-                <button
+              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mt-2 gap-2">
+                <InputField
+                  type="text"
+                  name="busquedaCliente"
+                  value={busquedaCliente}
+                  onChange={(e) => setBusquedaCliente(e.target.value)}
+                  placeholder="Buscar cliente por nombre"
+                  list="clientes-sugeridos"
+                  className="flex-1"
+                />
+                <ActionButton
+                  icon={FaTimes}
+                  onClick={() => {
+                    setClienteSeleccionado(null);
+                    setBusquedaCliente("");
+                    toast("Cliente eliminado", { icon: "🗑️" });
+                  }}
+                  estilos="px-2 py-1 bg-red-500 text-white rounded"
+                  title="Eliminar cliente seleccionado"
+                />
+                <ActionButton
+                  icon={FaPlus}
                   onClick={() => setShowModalCliente(true)}
-                  className="px-3 py-1 bg-red-500 text-white rounded"
-                >
-                  Crear Cliente
-                </button>
-
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    value={busquedaCliente}
-                    onChange={(e) => setBusquedaCliente(e.target.value)}
-                    placeholder="Buscar cliente por nombre"
-                    list="clientes-sugeridos"
-                    className="flex-1 border p-2 rounded"
-                  />
-                  <datalist id="clientes-sugeridos">
-                    {clientesFiltrados.map((c) => (
-                      <option key={c.id} value={c.nombre} />
-                    ))}
-                  </datalist>
-                  <button
-                    onClick={() => {
-                      const cliente = clientesData.find(
-                        (c) =>
-                          c.nombre.toLowerCase() ===
-                          busquedaCliente.toLowerCase()
-                      );
-                      if (!cliente) return alert("Cliente no encontrado");
-                      setClienteSeleccionado(cliente);
-                      setBusquedaCliente("");
-                    }}
-                    className="px-3 py-2 bg-red-500 text-white rounded"
-                  >
-                    Seleccionar
-                  </button>
-                </div>
-
-                {clienteSeleccionado && (
-                  <p className="mt-2 text-green-700 font-semibold">
-                    Cliente seleccionado: {clienteSeleccionado.nombre}
-                  </p>
-                )}
+                  estilos="px-2 py-1 bg-green-500 text-white rounded"
+                  title="Crear nuevo cliente"
+                />
+                <ActionButton
+                  icon={FaSync}
+                  onClick={() => setCargarClientes((prev) => !prev)}
+                  estilos="px-2 py-1 bg-blue-500 text-white rounded"
+                  title="Refrescar lista de clientes"
+                />
               </div>
             )}
           </div>
 
           {/* Botón limpiar carrito */}
-          <button
+          <ActionButton
+            label="Limpiar carrito"
             onClick={limpiarCarritoManual}
-            className="px-4 py-2 bg-gray-500 text-white rounded"
-          >
-            Limpiar carrito
-          </button>
+            estilos="justify-center px-4 py-2 bg-gray-500 text-white rounded"
+          />
+
+          {/* modal de comfirmacion */}
+          {/* Modal de confirmación */}
+          {showModalConfirmacion && (
+            <Modal onClose={() => setShowModalConfirmacion(false)}>
+              <div className="p-4">
+                <h2 className="text-lg font-bold mb-2">Confirmar acción</h2>
+                <p className="mb-4">
+                  ¿Está seguro que desea limpiar todo el carrito? Se perderán
+                  todos los productos agregados.
+                </p>
+
+                <div className="flex justify-end space-x-2">
+                  <ActionButton
+                    icon={FaTimes}
+                    onClick={() => setShowModalConfirmacion(false)}
+                    estilos="px-4 py-2 bg-gray-300 rounded"
+                    title="Cancelar"
+                  />
+                  <ActionButton
+                    icon={FaCheck}
+                    onClick={confirmarLimpiarCarrito}
+                    estilos="px-4 py-2 bg-red-500 text-white rounded"
+                    title="Confirmar"
+                  />
+                </div>
+              </div>
+            </Modal>
+          )}
 
           {/* Botón finalizar venta */}
           <button
@@ -470,12 +531,6 @@ function RealizarVenta() {
         <Modal onClose={() => setShowModalVenta(false)}>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Factura de la Venta</h2>
-            <button
-              onClick={() => setShowModalVenta(false)}
-              className="font-bold text-gray-700 hover:text-black"
-            >
-              X
-            </button>
           </div>
 
           {clienteSeleccionado && (
@@ -548,20 +603,19 @@ function RealizarVenta() {
           </table>
 
           <div className="flex justify-end space-x-2 mt-4">
-            <button
+            <ActionButton
               onClick={() => setShowModalVenta(false)}
               disabled={loading}
-              className="px-4 py-2 bg-gray-300 rounded"
-            >
-              Cancelar
-            </button>
-            <button
+              icon={FaTimes}
+              estilos="px-4 py-2 bg-red-500 rounded text-white"
+            />
+            <ActionButton
               onClick={confirmarVenta}
               disabled={loading}
-              className="px-4 py-2 bg-green-500 text-white rounded"
-            >
-              {loading ? "Procesando..." : "Confirmar venta"}
-            </button>
+              icon={FaCheck}
+              estilos="px-4 py-2 bg-green-500 rounded text-white"
+            />
+            {loading && "Procesando..."}
           </div>
         </Modal>
       )}

@@ -11,12 +11,17 @@ export function ActionButton({
   to,
   title,
 }) {
-  const buttonClasses = `flex items-center transition duration-200 ${estilos}`;
+  const buttonClasses = `
+    flex 
+    text-sm md:text-base 
+    rounded transition duration-200
+    ${estilos}
+  `;
 
   const content = (
     <>
-      {Icon && <Icon className={`w-5 h-5 ${styleIcon}`}  />}
-      {label}
+      {Icon && <Icon className={`w-4 h-4 md:w-5 md:h-5 ${styleIcon}`} />}
+      <span className="truncate">{label}</span>
     </>
   );
 

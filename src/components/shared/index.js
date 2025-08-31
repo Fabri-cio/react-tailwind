@@ -24,3 +24,4 @@ export { default as ImagePreview } from "./ImagePreview";
 export { default as CamposListas } from "./CamposListas";
 export { default as SelectorDual } from "./SelectorDual";
 export { CheckBox } from "./CheckBox";
+export { default as Modal } from "./Modal";
