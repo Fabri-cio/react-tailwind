@@ -1,3 +1,4 @@
+// Sidebar.jsx
 import { useState, useContext } from "react";
 import SidebarMenu from "./SidebarMenu";
 import { menus } from "../../data/SidebarData";
@@ -8,10 +9,8 @@ const Sidebar = ({ isVisible }) => {
   const { user } = useContext(AuthContext);
   const [openMenu, setOpenMenu] = useState(null);
 
-  // Filtrar menús según roles del usuario
   const filteredMenus = menus.filter((menu) => {
-    if (!menu.roleRequired) return true; // Mostrar si no hay restricción
-    // Si el usuario tiene al menos un rol requerido, mostrar menú
+    if (!menu.roleRequired) return true;
     return menu.roleRequired.some((role) => user?.rol?.includes(role));
   });
 
