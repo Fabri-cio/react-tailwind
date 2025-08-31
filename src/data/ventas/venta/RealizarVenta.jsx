@@ -3,8 +3,12 @@ import { useInventarios, useClientes } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
 import Modal from "../../../components/shared/Modal";
 import { FaTrash } from "react-icons/fa";
+import { useVentaMutations } from "../../../hooks/useEntities";
+import { useFormEntity } from "../../../utils/useFormEntity";
 
 function RealizarVenta() {
+  const { manejarEnvio } = useFormEntity();
+  const { crear: createMutation } = useVentaMutations();
   const { data: productos = [] } = useInventarios({ all_data: true });
 
   const productosMap = useMemo(() => {
@@ -202,21 +206,39 @@ function RealizarVenta() {
     setShowModalVenta(true);
   };
 
-  const confirmarVenta = async () => {
+  // Función para confirmar venta usando manejarEnvio
+  const confirmarVenta = (event) => {
     setLoading(true);
-    try {
-      alert(
-        `Venta realizada con éxito${
-          clienteSeleccionado ? ` a ${clienteSeleccionado.nombre}` : ""
-        }`
-      );
-      limpiarCarritoAutomatico(); // Limpieza automática sin preguntar
-      setShowModalVenta(false);
-    } catch {
-      alert("Error al realizar la venta");
-    } finally {
-      setLoading(false);
-    }
+
+    manejarEnvio(
+      event,
+      null, // nombre de la entidad (para navegación si aplica)
+      {
+        cliente: clienteSeleccionado?.id || null,
+        descuento: descuentoGlobal,
+        quiere_comprobante: quiereComprobante,
+        detalles: items.map((i) => ({
+          inventario: i.id,
+          cantidad: i.cantidad,
+          precio_unitario: i.precio,
+          descuento_unitario: i.descuento,
+        })),
+      },
+      createMutation, // mutación de creación
+      null, // no se usa updateMutation
+      null, // no se pasa entityId
+      {
+        // Callbacks adicionales
+        onSuccess: () => {
+          limpiarCarritoAutomatico(); // limpia carrito
+          setShowModalVenta(false); // cierra modal
+          setLoading(false); // detiene loading
+        },
+        onError: () => {
+          setLoading(false); // detiene loading en caso de error
+        },
+      }
+    );
   };
 
   // Guardar cliente desde CreateCliente

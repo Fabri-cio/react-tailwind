@@ -52,6 +52,8 @@ export const useFormEntity = () => {
     entityId,
     params = {}
   ) => {
+    const { onSuccess: callbackExterno, onError: callbackError } = params; //es de ventas
+
     const dataToSend = {
       ...formValues,
       ...params,
@@ -97,6 +99,10 @@ export const useFormEntity = () => {
       { id: entityId || undefined, data },
       {
         onSuccess: (response) => {
+          // llamar callback externo
+          if (callbackExterno) callbackExterno(response);
+
+          // lógica interna de navegar
           if (response?.link !== undefined) {
             if (response.link === -1) {
               navigate(-1);
@@ -106,6 +112,9 @@ export const useFormEntity = () => {
           } else if (entityName) {
             navigate(entityName);
           }
+        },
+        onError: (error) => {
+          if (callbackError) callbackError(error);
         },
       }
     );
