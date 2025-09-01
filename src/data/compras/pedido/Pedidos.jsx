@@ -1,5 +1,11 @@
 import { usePedidos } from "../../../hooks/useEntities";
-import { FaPlus, FaBox, FaEdit, FaShoppingCart, FaCheckCircle } from "react-icons/fa";
+import {
+  FaPlus,
+  FaBox,
+  FaEdit,
+  FaShoppingCart,
+  FaCheckCircle,
+} from "react-icons/fa";
 import { EntityList } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { Link } from "react-router-dom";
@@ -27,15 +33,22 @@ function Pedidos() {
       ),
     },
     {
+      key: "fecha_creacion",
+      label: "Fecha de Creación",
+      render: (item) => <FormattedDate date={item.fecha_creacion} />,
+    },
+    {
       key: "fecha_entrega",
       label: "Fecha de Entrega",
-      render: (item) => (
-        <FormattedDate date={item.fecha_entrega} />
-      ) 
+      render: (item) => <FormattedDate date={item.fecha_entrega} />,
     },
     {
       key: "nombre_proveedor",
       label: "Proveedor",
+    },
+    {
+      key: "nombre_almacen",
+      label: "Almacen",
     },
     {
       key: "observaciones",

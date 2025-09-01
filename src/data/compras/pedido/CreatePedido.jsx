@@ -8,8 +8,12 @@ import {
 import { FaTimes, FaCheck } from "react-icons/fa";
 import { useInventarios, useProveedores } from "../../../hooks/useEntities";
 import toast from "react-hot-toast";
+import { useFormEntity } from "../../../utils/useFormEntity";
+import { usePedidoMutations } from "../../../hooks/useEntities";
 
 export default function Pedido() {
+  const { manejarEnvio } = useFormEntity();
+  const { crear: createMutation } = usePedidoMutations();
   const { data: productosInventario = [] } = useInventarios({ all_data: true });
 
   const [fechaEntrega, setFechaEntrega] = useState("");
@@ -105,10 +109,13 @@ export default function Pedido() {
       event,
       null, // nombre de la entidad (para navegación si aplica)
       {
-        fechaEntrega,
-        proveedor: proveedorSeleccionado,
-        productos: productosSeleccionados,
-        observaciones,
+        proveedor: proveedorSeleccionado.id,
+        fecha_entrega: fechaEntrega,
+        observaciones: observaciones,
+        detalles: productosSeleccionados.map((p) => ({
+          producto: p.id,
+          cantidad_solicitada: p.cantidad,
+        })),
       },
       createMutation,
       null,
@@ -190,6 +197,27 @@ export default function Pedido() {
         />
       ),
     },
+  ];
+
+  const fieldsModalConfirmacion = [
+    {
+      key: "imagen",
+      label: "Imagen",
+      render: (item) =>
+        item.imagen ? (
+          <img
+            src={`${item.imagen}?t=${new Date().getTime()}`}
+            alt={item.producto_nombre}
+            className="w-12 h-12 rounded object-cover"
+          />
+        ) : (
+          <div className="w-12 h-12 flex items-center justify-center bg-gray-200 text-gray-500 text-xs">
+            Sin imagen
+          </div>
+        ),
+    },
+    { key: "producto_nombre", label: "Producto" },
+    { key: "cantidad", label: "Cantidad" },
   ];
 
   // -------- TECLADO PRODUCTO --------
@@ -384,33 +412,33 @@ export default function Pedido() {
       {/* Modal de confirmación con mini-resumen */}
       {showModalConfirmacion && (
         <Modal onClose={() => setShowModalConfirmacion(false)}>
-          <div className="p-4">
-            <h2 className="text-lg font-bold mb-2">Confirmar pedido</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold">Confirmar Pedido</h2>
+          </div>
+
+          {proveedorSeleccionado && (
             <p className="mb-2">Proveedor: {proveedorSeleccionado?.marca}</p>
-            <p className="mb-2">Fecha de entrega: {fechaEntrega}</p>
-            <p className="mb-2 font-medium">Productos:</p>
-            <ul className="mb-4 max-h-48 overflow-y-auto border rounded p-2">
-              {productosSeleccionados.map((p) => (
-                <li key={p.id} className="flex justify-between">
-                  <span>{p.producto_nombre}</span>
-                  <span>Cantidad: {p.cantidad}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="flex justify-end gap-2">
-              <ActionButton
-                icon={FaTimes}
-                onClick={() => setShowModalConfirmacion(false)}
-                estilos="px-4 py-2 bg-gray-300 rounded"
-                title="Cancelar"
-              />
-              <ActionButton
-                icon={FaCheck}
-                onClick={confirmarPedido}
-                estilos="px-4 py-2 bg-green-500 text-white rounded"
-                title="Confirmar"
-              />
-            </div>
+          )}
+
+          {/* tabla reutilizable */}
+          <Table
+            items={productosSeleccionados}
+            fields={fieldsModalConfirmacion}
+          />
+
+          <div className="flex justify-end gap-2">
+            <ActionButton
+              icon={FaTimes}
+              onClick={() => setShowModalConfirmacion(false)}
+              estilos="px-4 py-2 bg-gray-300 rounded"
+              title="Cancelar"
+            />
+            <ActionButton
+              icon={FaCheck}
+              onClick={confirmarPedido}
+              estilos="px-4 py-2 bg-green-500 text-white rounded"
+              title="Confirmar"
+            />
           </div>
         </Modal>
       )}
