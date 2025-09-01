@@ -16,6 +16,7 @@ export default function Pedido() {
   const [proveedorSeleccionado, setProveedorSeleccionado] = useState(null);
   const [proveedorBusqueda, setProveedorBusqueda] = useState("");
   const [highlightProveedor, setHighlightProveedor] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const [productosSeleccionados, setProductosSeleccionados] = useState([]);
   const [productoBusqueda, setProductoBusqueda] = useState("");
@@ -97,17 +98,33 @@ export default function Pedido() {
     });
   };
 
-  const confirmarPedido = () => {
-    const pedido = {
-      fechaEntrega,
-      proveedor: proveedorSeleccionado,
-      productos: productosSeleccionados,
-      observaciones,
-    };
-    console.log("Pedido guardado:", pedido);
-    toast.success("Pedido guardado correctamente");
-    limpiarPedido();
-    setShowModalConfirmacion(false);
+  const confirmarPedido = (event) => {
+    setLoading(true);
+
+    manejarEnvio(
+      event,
+      null, // nombre de la entidad (para navegación si aplica)
+      {
+        fechaEntrega,
+        proveedor: proveedorSeleccionado,
+        productos: productosSeleccionados,
+        observaciones,
+      },
+      createMutation,
+      null,
+      null,
+      {
+        onSuccess: () => {
+          toast.success("Pedido guardado correctamente");
+          limpiarPedido();
+          setShowModalConfirmacion(false);
+          setLoading(false);
+        },
+        onError: (error) => {
+          setLoading(false);
+        },
+      }
+    );
   };
 
   const abrirModalConfirmacion = () => {
@@ -354,14 +371,17 @@ export default function Pedido() {
             label="Limpiar pedido"
             estilos="justify-center px-4 py-2 bg-gray-500 text-white rounded"
           />
-          <ActionButton
+          <button
             onClick={abrirModalConfirmacion}
-            label="Confirmar pedido"
-            estilos="justify-center px-4 py-2 bg-blue-500 text-white rounded"
-          />
+            disabled={!productosSeleccionados.length || loading}
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            {loading ? "Procesando..." : "Finalizar pedido"}
+          </button>
         </div>
       </div>
 
+      {/* Modal de confirmación con mini-resumen */}
       {showModalConfirmacion && (
         <Modal onClose={() => setShowModalConfirmacion(false)}>
           <div className="p-4">
