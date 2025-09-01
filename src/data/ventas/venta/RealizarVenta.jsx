@@ -1,7 +1,12 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useInventarios, useClientes } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
-import { Modal, ActionButton, InputField, Table } from "../../../components/shared";
+import {
+  Modal,
+  ActionButton,
+  InputField,
+  Table,
+} from "../../../components/shared";
 import { FaTrash, FaPlus, FaSync, FaTimes, FaCheck } from "react-icons/fa";
 import { useVentaMutations } from "../../../hooks/useEntities";
 import { useFormEntity } from "../../../utils/useFormEntity";
@@ -345,6 +350,63 @@ function RealizarVenta() {
     },
   ];
 
+  const fieldsModalVenta = [
+    {
+      key: "imagen",
+      label: "Imagen",
+      render: (item) =>
+        item.imagen ? (
+          <img
+            src={`${item.imagen}?t=${new Date().getTime()}`}
+            alt={item.nombre}
+            className="w-12 h-12 rounded object-cover"
+          />
+        ) : (
+          <div className="w-12 h-12 flex items-center justify-center bg-gray-200 text-gray-500 text-xs">
+            Sin imagen
+          </div>
+        ),
+    },
+    { key: "nombre", label: "Producto" },
+    { key: "cantidad", label: "Cantidad" },
+    {
+      key: "precio",
+      label: "Precio",
+      render: (item) => item.precio.toFixed(2),
+    },
+    {
+      key: "descuento",
+      label: "Descuento",
+      render: (item) => item.descuento.toFixed(2),
+    },
+    {
+      key: "subtotal",
+      label: "Subtotal",
+      render: (item) =>
+        (item.precio * item.cantidad - item.descuento).toFixed(2),
+    },
+  ];
+
+  // Creamos footerData para los totales
+  const footerData = [
+    {
+      key: "subtotalProductos",
+      label: "Subtotal productos:",
+      value: subtotalGeneral,
+    },
+    {
+      key: "descuentoProductos",
+      label: "Descuento productos:",
+      value: descuentoProductos,
+    },
+    {
+      key: "descuentoGlobal",
+      label: "Descuento global:",
+      value: descuentoGlobal,
+    },
+    { key: "totalFinal", label: "Total final:", value: totalFinal },
+  ];
+
   return (
     <div className="p-4 bg-white">
       <h1 className="text-2xl font-bold mb-4 text-center text-red-500">
@@ -455,8 +517,21 @@ function RealizarVenta() {
                   list="clientes-sugeridos"
                   className="flex-1"
                 />
+
+                <datalist id="clientes-sugeridos">
+                  {clientesData
+                    .filter((c) =>
+                      c.nombre
+                        .toLowerCase()
+                        .includes(busquedaCliente.toLowerCase())
+                    )
+                    .map((c) => (
+                      <option key={c.id} value={c.nombre} />
+                    ))}
+                </datalist>
+
                 <ActionButton
-                  icon={FaTimes}
+                  icon={FaTrash}
                   onClick={() => {
                     setClienteSeleccionado(null);
                     setBusquedaCliente("");
@@ -546,70 +621,26 @@ function RealizarVenta() {
             <p className="mb-2">Cliente: {clienteSeleccionado.nombre}</p>
           )}
 
-          <table className="w-full border-collapse border mb-2 text-sm">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="border p-2">Imagen</th>
-                <th className="border p-2">Producto</th>
-                <th className="border p-2">Cantidad</th>
-                <th className="border p-2">Precio</th>
-                <th className="border p-2">Descuento</th>
-                <th className="border p-2">Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((i) => (
-                <tr key={i.id}>
-                  <td className="border p-2">
-                    {i.imagen ? (
-                      <img
-                        src={`${i.imagen}?t=${new Date().getTime()}`}
-                        alt={i.nombre}
-                        className="w-12 h-12 rounded object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 flex items-center justify-center bg-gray-200 text-gray-500 text-xs">
-                        Sin imagen
-                      </div>
-                    )}
-                  </td>
-                  <td className="border p-2">{i.nombre}</td>
-                  <td className="border p-2">{i.cantidad}</td>
-                  <td className="border p-2">{i.precio.toFixed(2)}</td>
-                  <td className="border p-2">{i.descuento.toFixed(2)}</td>
-                  <td className="border p-2">
-                    {(i.precio * i.cantidad - i.descuento).toFixed(2)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan="4" className="text-right font-bold">
-                  Subtotal productos:
+          {/* tabla reutilizable */}
+          <Table
+            items={items}
+            fields={fieldsModalVenta}
+            footer={footerData.map((f) => (
+              <tr key={f.key}>
+                {/* Etiqueta en la celda anterior, alineada a la derecha */}
+                <td
+                  colSpan={fieldsModalVenta.length - 1}
+                  className="text-right font-bold pr-2"
+                >
+                  {f.label}
                 </td>
-                <td className="border p-2">{subtotalGeneral.toFixed(2)}</td>
-              </tr>
-              <tr>
-                <td colSpan="4" className="text-right font-bold">
-                  Descuento productos:
+                {/* Valor en la última celda */}
+                <td className="">
+                  {f.value.toFixed(2)}
                 </td>
-                <td className="border p-2">{descuentoProductos.toFixed(2)}</td>
               </tr>
-              <tr>
-                <td colSpan="4" className="text-right font-bold">
-                  Descuento global:
-                </td>
-                <td className="border p-2">{descuentoGlobal.toFixed(2)}</td>
-              </tr>
-              <tr>
-                <td colSpan="4" className="text-right font-bold text-lg">
-                  Total final:
-                </td>
-                <td className="border p-2 text-lg">{totalFinal.toFixed(2)}</td>
-              </tr>
-            </tfoot>
-          </table>
+            ))}
+          />
 
           <div className="flex justify-end space-x-2 mt-4">
             <ActionButton
