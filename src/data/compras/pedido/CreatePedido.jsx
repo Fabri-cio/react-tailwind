@@ -5,11 +5,11 @@ import {
   ActionButton,
   Modal,
 } from "../../../components/shared";
-import { FaTimes, FaEraser, FaCheck } from "react-icons/fa";
+import { FaTimes, FaCheck } from "react-icons/fa";
 import { useInventarios, useProveedores } from "../../../hooks/useEntities";
+import toast from "react-hot-toast";
 
 export default function Pedido() {
-  const { data: proveedores = [] } = useProveedores({ all_data: true });
   const { data: productosInventario = [] } = useInventarios({ all_data: true });
 
   const [fechaEntrega, setFechaEntrega] = useState("");
@@ -22,26 +22,49 @@ export default function Pedido() {
   const [highlightProducto, setHighlightProducto] = useState(0);
 
   const [observaciones, setObservaciones] = useState("");
-
   const [showModalConfirmacion, setShowModalConfirmacion] = useState(false);
+  const [pedidoProveedor, setPedidoProveedor] = useState(false);
+  const [cargarProveedores, setCargarProveedores] = useState(false);
 
   const proveedorRefs = useRef([]);
   const productoRefs = useRef([]);
 
-  // FILTRADO
+  const { data: proveedores = [] } = useProveedores({
+    all_data: true,
+    enabled: cargarProveedores,
+  });
+
+  // -------- Debounce --------
+  const [productoDebounce, setProductoDebounce] = useState("");
+  const [proveedorDebounce, setProveedorDebounce] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setProductoDebounce(productoBusqueda), 300);
+    return () => clearTimeout(timer);
+  }, [productoBusqueda]);
+
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setProveedorDebounce(proveedorBusqueda),
+      300
+    );
+    return () => clearTimeout(timer);
+  }, [proveedorBusqueda]);
+
+  // -------- FILTRADO CON DEBOUNCE --------
   const proveedoresFiltrados = useMemo(() => {
     return proveedores.filter((p) =>
-      p.marca.toLowerCase().includes(proveedorBusqueda.toLowerCase())
+      p.marca.toLowerCase().includes(proveedorDebounce.toLowerCase())
     );
-  }, [proveedorBusqueda, proveedores]);
+  }, [proveedorDebounce, proveedores]);
 
   const productosFiltrados = useMemo(() => {
     return productosInventario.filter((p) =>
-      p.producto_nombre.toLowerCase().includes(productoBusqueda.toLowerCase())
+      p.producto_nombre.toLowerCase().includes(productoDebounce.toLowerCase())
     );
-  }, [productoBusqueda, productosInventario]);
+  }, [productoDebounce, productosInventario]);
 
-  // SELECCIONAR
+  // -------- SELECCIÓN Y AGREGAR --------
   const seleccionarProveedor = (p) => {
     setProveedorSeleccionado(p);
     setProveedorBusqueda(p.marca);
@@ -61,12 +84,10 @@ export default function Pedido() {
     setProductoBusqueda("");
   };
 
-  // ELIMINAR
   const eliminarProducto = (index) => {
     setProductosSeleccionados((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // ACTUALIZAR CANTIDAD
   const actualizarCantidad = (index, val) => {
     const cantidad = Math.max(1, parseInt(val) || 1);
     setProductosSeleccionados((prev) => {
@@ -76,7 +97,6 @@ export default function Pedido() {
     });
   };
 
-  // GUARDAR PEDIDO (interna, solo se llama desde modal)
   const confirmarPedido = () => {
     const pedido = {
       fechaEntrega,
@@ -85,7 +105,7 @@ export default function Pedido() {
       observaciones,
     };
     console.log("Pedido guardado:", pedido);
-    alert("Pedido guardado correctamente");
+    toast.success("Pedido guardado correctamente");
     limpiarPedido();
     setShowModalConfirmacion(false);
   };
@@ -96,7 +116,7 @@ export default function Pedido() {
       !proveedorSeleccionado ||
       productosSeleccionados.length === 0
     ) {
-      return alert("Completa todos los campos y agrega productos.");
+      return toast.error("Completa todos los campos y agrega productos.");
     }
     setShowModalConfirmacion(true);
   };
@@ -110,9 +130,11 @@ export default function Pedido() {
     setObservaciones("");
     setHighlightProducto(0);
     setHighlightProveedor(0);
+    setPedidoProveedor(false);
+    toast.success("Pedido limpiado correctamente");
   };
 
-  // TABLA
+  // -------- TABLA --------
   const fields = [
     {
       key: "imagen",
@@ -153,51 +175,49 @@ export default function Pedido() {
     },
   ];
 
-  // TECLADO PRODUCTO
+  // -------- TECLADO PRODUCTO --------
   const handleProductoKey = (e) => {
     if (!productosFiltrados.length) return;
-    if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown")
       setHighlightProducto((prev) => (prev + 1) % productosFiltrados.length);
-    } else if (e.key === "ArrowUp") {
+    else if (e.key === "ArrowUp")
       setHighlightProducto((prev) =>
         prev === 0 ? productosFiltrados.length - 1 : prev - 1
       );
-    } else if (e.key === "Enter") {
+    else if (e.key === "Enter" && highlightProducto >= 0)
       agregarProducto(productosFiltrados[highlightProducto]);
-    }
   };
 
-  // TECLADO PROVEEDOR
+  // -------- TECLADO PROVEEDOR --------
   const handleProveedorKey = (e) => {
     if (!proveedoresFiltrados.length) return;
-    if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown")
       setHighlightProveedor((prev) => (prev + 1) % proveedoresFiltrados.length);
-    } else if (e.key === "ArrowUp") {
+    else if (e.key === "ArrowUp")
       setHighlightProveedor((prev) =>
         prev === 0 ? proveedoresFiltrados.length - 1 : prev - 1
       );
-    } else if (e.key === "Enter") {
+    else if (e.key === "Enter" && highlightProveedor >= 0)
       seleccionarProveedor(proveedoresFiltrados[highlightProveedor]);
-    }
   };
 
-  // SCROLL AUTOMÁTICO
+  // -------- SCROLL AUTOMÁTICO --------
   useEffect(() => {
-    if (productoRefs.current[highlightProducto]) {
-      productoRefs.current[highlightProducto].scrollIntoView({
+    if (productoRefs.current[highlightProducto])
+      productoRefs.current[highlightProducto]?.scrollIntoView({
         block: "nearest",
+        inline: "nearest",
       });
-    }
   }, [highlightProducto]);
 
   useEffect(() => {
-    if (proveedorRefs.current[highlightProveedor]) {
+    if (proveedorRefs.current[highlightProveedor])
       proveedorRefs.current[highlightProveedor].scrollIntoView({
         block: "nearest",
       });
-    }
   }, [highlightProveedor]);
 
+  // -------- JSX --------
   return (
     <div className="p-4 bg-white">
       <h1 className="text-2xl font-bold mb-4 text-center text-blue-500">
@@ -242,53 +262,70 @@ export default function Pedido() {
 
       {/* Layout dos columnas */}
       <div className="flex flex-col md:flex-row gap-4">
-        {/* Tabla de productos */}
         <div className="md:w-2/3">
           <Table items={productosSeleccionados} fields={fields} />
         </div>
 
-        {/* Resumen y botones */}
         <div className="md:w-1/3 flex flex-col gap-4">
-          {/* Contenedor de resumen */}
           <div className="p-4 border rounded bg-gray-50 space-y-2">
-            {/* Autocomplete Proveedor */}
-            <div className="flex justify-between">
+            <label className="flex items-center space-x-2">
               <InputField
-                label="Proveedor"
-                type="text"
-                placeholder="Buscar proveedor"
-                value={proveedorBusqueda}
-                onChange={(e) => setProveedorBusqueda(e.target.value)}
-                onKeyDown={handleProveedorKey}
-                className="w-full"
-                labelPosition="left"
+                type="checkbox"
+                checked={pedidoProveedor}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  setPedidoProveedor(checked);
+                  if (checked) setCargarProveedores(true);
+                  else {
+                    setProveedorSeleccionado(null);
+                    setProveedorBusqueda("");
+                    setCargarProveedores(false);
+                  }
+                }}
+                className="w-4 h-4"
               />
-              {proveedorBusqueda && proveedoresFiltrados.length > 0 && (
-                <ul className="absolute z-50 bg-white border rounded w-40 max-h-60 overflow-y-auto mt-1 shadow-lg">
-                  {proveedoresFiltrados.map((p, i) => (
-                    <li
-                      key={p.id}
-                      ref={(el) => (proveedorRefs.current[i] = el)}
-                      onClick={() => seleccionarProveedor(p)}
-                      className={`flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100 ${
-                        i === highlightProveedor ? "bg-gray-200" : ""
-                      }`}
-                    >
-                      <img
-                        src={p.imagen}
-                        alt={p.marca}
-                        className="w-8 h-8 rounded"
-                      />
-                      <div>
-                        <p className="text-sm font-medium">{p.marca}</p>
-                        <p className="text-xs text-gray-500">{p.contacto}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            {/* Fecha de entrega */}
+              <span>¿necesita un proveedor?</span>
+            </label>
+
+            {pedidoProveedor && (
+              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mt-2 gap-2">
+                <InputField
+                  label="Proveedor"
+                  type="text"
+                  placeholder="Buscar proveedor"
+                  value={proveedorBusqueda}
+                  onChange={(e) => setProveedorBusqueda(e.target.value)}
+                  onKeyDown={handleProveedorKey}
+                  className="w-full"
+                  labelPosition="left"
+                />
+                {proveedorBusqueda && proveedoresFiltrados.length > 0 && (
+                  <ul className="absolute z-50 bg-white border rounded w-40 max-h-60 overflow-y-auto mt-1 shadow-lg">
+                    {proveedoresFiltrados.map((p, i) => (
+                      <li
+                        key={p.id}
+                        ref={(el) => (proveedorRefs.current[i] = el)}
+                        onClick={() => seleccionarProveedor(p)}
+                        className={`flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100 ${
+                          i === highlightProveedor ? "bg-gray-200" : ""
+                        }`}
+                      >
+                        <img
+                          src={p.imagen}
+                          alt={p.marca}
+                          className="w-8 h-8 rounded"
+                        />
+                        <div>
+                          <p className="text-sm font-medium">{p.marca}</p>
+                          <p className="text-xs text-gray-500">{p.contacto}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+
             <div className="flex justify-between">
               <InputField
                 label="Fecha de entrega"
@@ -299,7 +336,7 @@ export default function Pedido() {
                 labelPosition="left"
               />
             </div>
-            {/* Observaciones */}
+
             <div className="mt-4">
               <label className="block mb-1 font-medium">Observaciones</label>
               <textarea
@@ -311,7 +348,7 @@ export default function Pedido() {
               />
             </div>
           </div>
-          {/* Botones */}
+
           <ActionButton
             onClick={limpiarPedido}
             label="Limpiar pedido"
@@ -325,7 +362,6 @@ export default function Pedido() {
         </div>
       </div>
 
-      {/* Modal de confirmación con mini-resumen */}
       {showModalConfirmacion && (
         <Modal onClose={() => setShowModalConfirmacion(false)}>
           <div className="p-4">
