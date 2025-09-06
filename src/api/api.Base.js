@@ -31,7 +31,7 @@ const createApiInstance = (baseURL = ApiBaseURL) => {
   // Interceptor de respuesta: maneja errores globales
   apiInstance.interceptors.response.use(
     (response) => {
-      console.log("Respuesta exitosa:", response);
+      console.log("Respuesta exitosa completa:", response);
       return response.data; // Devuelve sólo los datos
     },
     (error) => {
@@ -58,9 +58,10 @@ const createApiInstance = (baseURL = ApiBaseURL) => {
 const request = async (apiInstance, method, url, data = null) => {
   try {
     const response = await apiInstance.request({ method, url, data });
-    console.log("Petición exitosa:", response);
+    console.log("Datos finales:", response);
     return response; // 👈 ya es el .data gracias al interceptor
   } catch (error) {
+    console.error("Error al realizar la petición:", error);
     throw error; // 🔥 Mantenemos el error completo
   }
 };

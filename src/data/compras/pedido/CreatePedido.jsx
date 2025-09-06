@@ -5,13 +5,21 @@ import {
   ActionButton,
   Modal,
 } from "../../../components/shared";
-import { FaTimes, FaCheck } from "react-icons/fa";
-import { useInventarios, useProveedores } from "../../../hooks/useEntities";
+import { FaTimes, FaCheck, FaPlus, FaSync, FaTrash } from "react-icons/fa";
+import {
+  useInventarios,
+  usePedido,
+  useProveedores,
+} from "../../../hooks/useEntities";
 import toast from "react-hot-toast";
 import { useFormEntity } from "../../../utils/useFormEntity";
 import { usePedidoMutations } from "../../../hooks/useEntities";
+import { useParams } from "react-router-dom";
 
 export default function Pedido() {
+  const { id } = useParams();
+  const { data: pedido = {} } = usePedido(id);
+
   const { manejarEnvio } = useFormEntity();
   const { crear: createMutation } = usePedidoMutations();
   const { data: productosInventario = [] } = useInventarios({ all_data: true });
@@ -34,10 +42,10 @@ export default function Pedido() {
   const proveedorRefs = useRef([]);
   const productoRefs = useRef([]);
 
-  const { data: proveedores = [] } = useProveedores({
-    all_data: true,
-    enabled: cargarProveedores,
-  });
+  const { data: proveedores = [] } = useProveedores(
+    { all_data: true },
+    cargarProveedores
+  );
 
   // -------- Debounce --------
   const [productoDebounce, setProductoDebounce] = useState("");
@@ -155,6 +163,7 @@ export default function Pedido() {
     setHighlightProducto(0);
     setHighlightProveedor(0);
     setPedidoProveedor(false);
+    setCargarProveedores(false);
     toast.success("Pedido limpiado correctamente");
   };
 
@@ -266,7 +275,7 @@ export default function Pedido() {
   return (
     <div className="p-4 bg-white">
       <h1 className="text-2xl font-bold mb-4 text-center text-blue-500">
-        Nuevo Pedido
+        {pedido.id ? "Recepcionar Pedido" : "Nuevo Pedido"}
       </h1>
 
       {/* Autocomplete Producto */}
@@ -313,6 +322,7 @@ export default function Pedido() {
 
         <div className="md:w-1/3 flex flex-col gap-4">
           <div className="p-4 border rounded bg-gray-50 space-y-2">
+            {/* checkbox pedido proveedor */}
             <label className="flex items-center space-x-2">
               <InputField
                 type="checkbox"
@@ -368,6 +378,29 @@ export default function Pedido() {
                     ))}
                   </ul>
                 )}
+                {/* botones de proveedor */}
+                <ActionButton
+                  icon={FaTrash}
+                  onClick={() => {
+                    setProveedorSeleccionado(null);
+                    setProveedorBusqueda("");
+                    toast("Proveedor eliminado", { icon: "🗑️" });
+                  }}
+                  estilos="px-2 py-1 bg-red-500 text-white rounded"
+                  title="Eliminar proveedor seleccionado"
+                />
+                <ActionButton
+                  icon={FaPlus}
+                  onClick={() => setShowModalProveedor(true)}
+                  estilos="px-2 py-1 bg-green-500 text-white rounded"
+                  title="Crear nuevo proveedor"
+                />
+                <ActionButton
+                  icon={FaSync}
+                  onClick={() => setCargarProveedores((prev) => !prev)}
+                  estilos="px-2 py-1 bg-blue-500 text-white rounded"
+                  title="Refrescar lista de proveedores"
+                />
               </div>
             )}
 

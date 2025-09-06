@@ -4,7 +4,7 @@ const CreatePedido = lazy(() => import("../data/compras/pedido/CreatePedido"));
 const Pedidos = lazy(() => import("../data/compras/pedido/Pedidos"));
 const EditPedido = lazy(() => import("../data/compras/pedido/EditPedido"));
 const Compras = lazy(() => import("../data/compras/compra/Compras"));
-const CreateCompra = lazy(() => import("../data/compras/compra/CreateCompra"));
+const CreateCompra = lazy(() => import("../data/compras/pedido/CreatePedido"));
 const EditCompra = lazy(() => import("../data/compras/compra/EditCompra"));
 
 export const comprasRoutes = [
@@ -27,7 +27,7 @@ export const comprasRoutes = [
     element: <Compras />,
   },
   {
-    path: "/createCompra/:id",
+    path: "/createPedido/:id",
     element: <CreateCompra />,
   },
   {

@@ -25,7 +25,7 @@ function Pedidos() {
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
           <ActionButton
-            to={`/createCompra/${item.id}`}
+            to={`/createPedido/${item.id}`}
             icon={FaCheckCircle}
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
