@@ -145,11 +145,19 @@ export default function Pedido() {
   };
 
   //actualizar cantidad
-  const actualizarCantidad = (index, val) => {
+  const actualizarCantidad = (index, key, val) => {
     const cantidad = Math.max(1, parseInt(val) || 1);
     setProductosSeleccionados((prev) => {
       const copy = [...prev];
       copy[index].cantidad = cantidad;
+      return copy;
+    });
+  };
+
+  const actualizarCampo = (index, key, val) => {
+    setProductosSeleccionados((prev) => {
+      const copy = [...prev];
+      copy[index][key] = val;
       return copy;
     });
   };
@@ -231,11 +239,69 @@ export default function Pedido() {
           value={item.cantidad}
           min={1}
           onChange={(e) => actualizarCantidad(index, e.target.value)}
-          className="w-16"
+          className="w-14"
         />
       ),
     },
-    
+    ...(pedido.id
+      ? [
+          {
+            key: "cantidad_recibida",
+            label: "Cantidad Recibida",
+            render: (item, index) => (
+              <InputField
+                type="number"
+                value={item.cantidad_recibida || 0}
+                min={0}
+                onChange={(e) => actualizarCampo(index, "cantidad_recibida", e.target.value)}
+                className="w-14"
+                step="0.1"
+              />
+            ),
+          },
+          {
+            key: "precio_unitario",
+            label: "Precio Unitario",
+            render: (item, index) => (
+              <InputField
+                type="number"
+                value={item.precio_unitario || 0}
+                min={0}
+                onChange={(e) => actualizarCampo(index, "precio_unitario", e.target.value)}
+                className="w-14"
+                step="0.1"
+              />
+            ),
+          },
+          {
+            key: "descuento_unitario",
+            label: "Descuento Unitario",
+            render: (item, index) => (
+              <InputField
+                type="number"
+                value={item.descuento_unitario || 0}
+                min={0.0}
+                onChange={(e) => actualizarCampo(index, "descuento_unitario", e.target.value)}
+                className="w-14"
+                step="0.1"
+              />
+            ),
+          },
+          {
+            key: "subtotal",
+            label: "Subtotal",
+            render: (item, index) => (
+              <InputField
+                type="number"
+                value={item.subtotal || 0}
+                min={0}
+                onChange={(e) => actualizarCampo(index, "subtotal", e.target.value)}
+                className="w-14"
+              />
+            ),
+          },
+        ]
+      : []),
     {
       key: "acciones",
       label: "Acción",
@@ -243,7 +309,7 @@ export default function Pedido() {
         <ActionButton
           icon={FaTimes}
           onClick={() => eliminarProducto(index)}
-          estilos="px-2 py-1 bg-red-500 text-white rounded"
+          estilos="bg-red-500 text-white rounded"
           title="Eliminar producto de la lista"
         />
       ),
