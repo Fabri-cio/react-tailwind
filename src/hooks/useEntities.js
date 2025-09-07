@@ -34,6 +34,7 @@ import {
   DetallesPedidoAPI,
   ComprasAPI,
   DetallesCompraAPI,
+  PedidosRecepcionAPI,
 } from "../api/compra.api";
 import { useMutationWithToast } from "./useMutationWithToast";
 
@@ -340,11 +341,23 @@ export const useClientes = (
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
     { ...defaultParams, ...params };
-  return useData(ClientesAPI, "clientes", null, mergedParams, staleTime, enabled);
+  return useData(
+    ClientesAPI,
+    "clientes",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
 };
 export const useCliente = (id) =>
   useData(ClientesAPI, "cliente", id, {}, 1000 * 60 * 5, !!id);
-export const useClienteMutations = () => useEntityMutations(ClientesAPI, "Cliente");
+export const useClienteMutations = () =>
+  useEntityMutations(ClientesAPI, "Cliente");
+
+//recepcion
+export const usePedidoRecepcion = (id) =>
+  useData(PedidosRecepcionAPI, "pedido-recepcion", id, {}, 1000 * 60 * 5, !!id);
 
 //pedidos
 export const usePedidos = (
@@ -536,7 +549,6 @@ export const usePasswordResetRequest = () => {
   );
 };
 
-
 //inventarios ventas
 export const useInventariosVentas = (
   params = {},
@@ -558,5 +570,11 @@ export const useInventariosVentas = (
   );
 };
 export const useInventarioVenta = (id) =>
-  useData(InventariosVentasAPI, "inventario-venta", id, {}, 1000 * 60 * 5, !!id);
-
+  useData(
+    InventariosVentasAPI,
+    "inventario-venta",
+    id,
+    {},
+    1000 * 60 * 5,
+    !!id
+  );

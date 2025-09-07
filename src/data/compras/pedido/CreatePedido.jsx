@@ -8,7 +8,7 @@ import {
 import { FaTimes, FaCheck, FaPlus, FaSync, FaTrash } from "react-icons/fa";
 import {
   useInventarios,
-  usePedido,
+  usePedidoRecepcion,
   useProveedores,
 } from "../../../hooks/useEntities";
 import toast from "react-hot-toast";
@@ -18,7 +18,7 @@ import { useParams } from "react-router-dom";
 
 export default function Pedido() {
   const { id } = useParams();
-  const { data: pedido = {} } = usePedido(id);
+  const { data: pedido = {} } = usePedidoRecepcion(id);
 
   const { manejarEnvio } = useFormEntity();
   const { crear: createMutation } = usePedidoMutations();
@@ -51,11 +51,51 @@ export default function Pedido() {
   const [productoDebounce, setProductoDebounce] = useState("");
   const [proveedorDebounce, setProveedorDebounce] = useState("");
 
+  //si viene un pedido existente se llena el formulario
+  useEffect(() => {
+    if (pedido && pedido.id) {
+      //activar checkbox de proveedor
+      if (pedido.proveedor) {
+        setPedidoProveedor(true);
+        setCargarProveedores(true);
+      }
+
+      //fecha de entrega
+      setFechaEntrega(pedido.fecha_entrega || "");
+
+      //observaciones
+      setObservaciones(pedido.observaciones || "");
+
+      //proveedor
+      if (pedido.proveedor && pedido.nombre_proveedor) {
+        setProveedorSeleccionado({
+          id: pedido.proveedor,
+          marca: pedido.nombre_proveedor,
+          imagen: pedido.imagen_proveedor,
+        });
+        setProveedorBusqueda(pedido.nombre_proveedor);
+      }
+
+      //productos
+      if (pedido.detalles && pedido.detalles.length > 0) {
+        const productoPrefill = pedido.detalles.map((d) => ({
+          id: d.producto,
+          producto_nombre: d.producto_nombre,
+          imagen: d.producto_imagen,
+          cantidad: parseFloat(d.cantidad_solicitada),
+        }));
+        setProductosSeleccionados(productoPrefill);
+      }
+    }
+  }, [pedido]);
+
+  // -------- DEBOUNCE --------
   useEffect(() => {
     const timer = setTimeout(() => setProductoDebounce(productoBusqueda), 300);
     return () => clearTimeout(timer);
   }, [productoBusqueda]);
 
+  //proveedor
   useEffect(() => {
     const timer = setTimeout(
       () => setProveedorDebounce(proveedorBusqueda),
@@ -71,6 +111,7 @@ export default function Pedido() {
     );
   }, [proveedorDebounce, proveedores]);
 
+  //productos
   const productosFiltrados = useMemo(() => {
     return productosInventario.filter((p) =>
       p.producto_nombre.toLowerCase().includes(productoDebounce.toLowerCase())
@@ -83,6 +124,7 @@ export default function Pedido() {
     setProveedorBusqueda(p.marca);
   };
 
+  //agregar producto
   const agregarProducto = (prod) => {
     const existe = productosSeleccionados.find((p) => p.id === prod.id);
     if (existe) {
@@ -97,10 +139,12 @@ export default function Pedido() {
     setProductoBusqueda("");
   };
 
+  //eliminar producto
   const eliminarProducto = (index) => {
     setProductosSeleccionados((prev) => prev.filter((_, i) => i !== index));
   };
 
+  //actualizar cantidad
   const actualizarCantidad = (index, val) => {
     const cantidad = Math.max(1, parseInt(val) || 1);
     setProductosSeleccionados((prev) => {
@@ -117,9 +161,9 @@ export default function Pedido() {
       event,
       null, // nombre de la entidad (para navegación si aplica)
       {
-        proveedor: proveedorSeleccionado.id,
-        fecha_entrega: fechaEntrega,
-        observaciones: observaciones,
+        proveedor: proveedorSeleccionado ? proveedorSeleccionado.id : null,
+        fecha_entrega: fechaEntrega || null,
+        observaciones: observaciones || "",
         detalles: productosSeleccionados.map((p) => ({
           producto: p.id,
           cantidad_solicitada: p.cantidad,
@@ -142,12 +186,9 @@ export default function Pedido() {
     );
   };
 
+  //abrir modal confirmacion
   const abrirModalConfirmacion = () => {
-    if (
-      !fechaEntrega ||
-      !proveedorSeleccionado ||
-      productosSeleccionados.length === 0
-    ) {
+    if (!fechaEntrega || productosSeleccionados.length === 0) {
       return toast.error("Completa todos los campos y agrega productos.");
     }
     setShowModalConfirmacion(true);
@@ -194,6 +235,7 @@ export default function Pedido() {
         />
       ),
     },
+    
     {
       key: "acciones",
       label: "Acción",
@@ -208,6 +250,7 @@ export default function Pedido() {
     },
   ];
 
+  // -------- TABLA MODAL CONFIRMACION --------
   const fieldsModalConfirmacion = [
     {
       key: "imagen",
@@ -264,6 +307,7 @@ export default function Pedido() {
       });
   }, [highlightProducto]);
 
+  //proveedor
   useEffect(() => {
     if (proveedorRefs.current[highlightProveedor])
       proveedorRefs.current[highlightProveedor].scrollIntoView({
@@ -343,52 +387,67 @@ export default function Pedido() {
             </label>
 
             {pedidoProveedor && (
-              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mt-2 gap-2">
-                <InputField
-                  label="Proveedor"
-                  type="text"
-                  placeholder="Buscar proveedor"
-                  value={proveedorBusqueda}
-                  onChange={(e) => setProveedorBusqueda(e.target.value)}
-                  onKeyDown={handleProveedorKey}
-                  className="w-full"
-                  labelPosition="left"
-                />
-                {proveedorBusqueda && proveedoresFiltrados.length > 0 && (
-                  <ul className="absolute z-50 bg-white border rounded w-40 max-h-60 overflow-y-auto mt-1 shadow-lg">
-                    {proveedoresFiltrados.map((p, i) => (
-                      <li
-                        key={p.id}
-                        ref={(el) => (proveedorRefs.current[i] = el)}
-                        onClick={() => seleccionarProveedor(p)}
-                        className={`flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100 ${
-                          i === highlightProveedor ? "bg-gray-200" : ""
-                        }`}
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 mt-2">
+                {/* Mostrar proveedor seleccionado como chip */}
+                {proveedorSeleccionado ? (
+                  <div className="flex items-center gap-2 border rounded px-2 h-10 bg-gray-100 flex-1 min-w-[120px]">
+                    <img
+                      src={proveedorSeleccionado.imagen}
+                      alt={proveedorSeleccionado.marca}
+                      className="w-6 h-6 rounded"
+                    />
+                    <span className="text-sm truncate">
+                      {proveedorSeleccionado.marca}
+                    </span>
+                    {!pedido.proveedor && (
+                      <button
+                        onClick={() => {
+                          setProveedorSeleccionado(null);
+                          setProveedorBusqueda("");
+                        }}
+                        className="text-red-500 font-bold px-1"
                       >
-                        <img
-                          src={p.imagen}
-                          alt={p.marca}
-                          className="w-8 h-8 rounded"
-                        />
-                        <div>
-                          <p className="text-sm font-medium">{p.marca}</p>
-                          <p className="text-xs text-gray-500">{p.contacto}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="relative flex-1 min-w-[120px] h-10">
+                    <InputField
+                      type="text"
+                      placeholder="Buscar proveedor"
+                      value={proveedorBusqueda}
+                      onChange={(e) => setProveedorBusqueda(e.target.value)}
+                      onKeyDown={handleProveedorKey}
+                      className="w-full h-full"
+                    />
+                    {proveedorBusqueda && proveedoresFiltrados.length > 0 && (
+                      <ul className="absolute z-50 bg-white border rounded w-full max-h-60 overflow-y-auto mt-1 shadow-lg">
+                        {proveedoresFiltrados.map((p, i) => (
+                          <li
+                            key={p.id}
+                            ref={(el) => (proveedorRefs.current[i] = el)}
+                            onClick={() => seleccionarProveedor(p)}
+                            className={`flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-100 ${
+                              i === highlightProveedor ? "bg-gray-200" : ""
+                            }`}
+                          >
+                            <img
+                              src={p.imagen}
+                              alt={p.marca}
+                              className="w-8 h-8 rounded"
+                            />
+                            <div>
+                              <p className="text-sm font-medium">{p.marca}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 )}
+
                 {/* botones de proveedor */}
-                <ActionButton
-                  icon={FaTrash}
-                  onClick={() => {
-                    setProveedorSeleccionado(null);
-                    setProveedorBusqueda("");
-                    toast("Proveedor eliminado", { icon: "🗑️" });
-                  }}
-                  estilos="px-2 py-1 bg-red-500 text-white rounded"
-                  title="Eliminar proveedor seleccionado"
-                />
                 <ActionButton
                   icon={FaPlus}
                   onClick={() => setShowModalProveedor(true)}
