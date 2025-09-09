@@ -4,24 +4,29 @@ import {
   InputField,
   ActionButton,
   Modal,
+  Navigation,
 } from "../../../components/shared";
-import { FaTimes, FaCheck, FaPlus, FaSync, FaTrash } from "react-icons/fa";
+import { FaTimes, FaCheck, FaPlus, FaSync } from "react-icons/fa";
 import {
   useInventarios,
   usePedidoRecepcion,
   useProveedores,
+  useCompraMutations,
 } from "../../../hooks/useEntities";
 import toast from "react-hot-toast";
 import { useFormEntity } from "../../../utils/useFormEntity";
 import { usePedidoMutations } from "../../../hooks/useEntities";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Pedido() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { data: pedido = {} } = usePedidoRecepcion(id);
 
   const { manejarEnvio } = useFormEntity();
-  const { crear: createMutation } = usePedidoMutations();
+  const { crear: createMutationPedido } = usePedidoMutations();
+  const { crear: createMutationCompra } = useCompraMutations();
   const { data: productosInventario = [] } = useInventarios({ all_data: true });
 
   const [fechaEntrega, setFechaEntrega] = useState("");
@@ -35,6 +40,10 @@ export default function Pedido() {
   const [highlightProducto, setHighlightProducto] = useState(0);
 
   const [observaciones, setObservaciones] = useState("");
+  const [nro_factura, setNroFactura] = useState("");
+  const [razon_social, setRazonSocial] = useState("");
+  const [descuentoGlobal, setDescuentoGlobal] = useState("");
+  const [observacionesRecepcion, setObservacionesRecepcion] = useState("");
   const [showModalConfirmacion, setShowModalConfirmacion] = useState(false);
   const [pedidoProveedor, setPedidoProveedor] = useState(false);
   const [cargarProveedores, setCargarProveedores] = useState(false);
@@ -158,8 +167,29 @@ export default function Pedido() {
     setProductosSeleccionados((prev) => {
       const copy = [...prev];
       copy[index][key] = val;
+
+      //recalcular subtotal si corresponde
+      if (
+        ["precio_unitario", "cantidad_recibida", "descuento_unitario"].includes(
+          key
+        )
+      ) {
+        copy[index].subtotal = calcularSubtotal(
+          copy[index].precio_unitario,
+          copy[index].cantidad_recibida,
+          copy[index].descuento_unitario
+        );
+      }
+
       return copy;
     });
+  };
+
+  const calcularSubtotal = (precio, cantidad, descuento) => {
+    const p = parseFloat(precio ?? 0);
+    const c = parseFloat(cantidad ?? 0);
+    const d = parseFloat(descuento ?? 0);
+    return (p * c - d).toFixed(2);
   };
 
   const confirmarPedido = (event) => {
@@ -168,16 +198,30 @@ export default function Pedido() {
     manejarEnvio(
       event,
       null, // nombre de la entidad (para navegación si aplica)
-      {
-        proveedor: proveedorSeleccionado ? proveedorSeleccionado.id : null,
-        fecha_entrega: fechaEntrega || null,
-        observaciones: observaciones || "",
-        detalles: productosSeleccionados.map((p) => ({
-          producto: p.id,
-          cantidad_solicitada: p.cantidad,
-        })),
-      },
-      createMutation,
+      pedido.id
+        ? {
+            pedido: pedido.id,
+            nro_factura: nro_factura,
+            razon_social: razon_social,
+            observaciones: observacionesRecepcion || "",
+            descuento: descuentoGlobal,
+            detalles: productosSeleccionados.map((p) => ({
+              inventario: p.id,
+              cantidad: p.cantidad_recibida,
+              precio_unitario: p.precio_unitario,
+              descuento_unitario: p.descuento_unitario,
+            })),
+          }
+        : {
+            proveedor: proveedorSeleccionado ? proveedorSeleccionado.id : null,
+            fecha_entrega: fechaEntrega || null,
+            observaciones: observaciones || "",
+            detalles: productosSeleccionados.map((p) => ({
+              producto: p.id,
+              cantidad_solicitada: p.cantidad,
+            })),
+          },
+      pedido.id ? createMutationCompra : createMutationPedido,
       null,
       null,
       {
@@ -209,6 +253,9 @@ export default function Pedido() {
     setProductosSeleccionados([]);
     setProductoBusqueda("");
     setObservaciones("");
+    setNroFactura("");
+    setRazonSocial("");
+    setDescuentoGlobal("");
     setHighlightProducto(0);
     setHighlightProveedor(0);
     setPedidoProveedor(false);
@@ -232,7 +279,7 @@ export default function Pedido() {
     { key: "producto_nombre", label: "Producto" },
     {
       key: "cantidad",
-      label: "Cantidad",
+      label: pedido.id ? "Cantidad Pedida" : "Cantidad",
       render: (item, index) => (
         <InputField
           type="number"
@@ -253,7 +300,9 @@ export default function Pedido() {
                 type="number"
                 value={item.cantidad_recibida || 0}
                 min={0}
-                onChange={(e) => actualizarCampo(index, "cantidad_recibida", e.target.value)}
+                onChange={(e) =>
+                  actualizarCampo(index, "cantidad_recibida", e.target.value)
+                }
                 className="w-14"
                 step="0.1"
               />
@@ -267,7 +316,9 @@ export default function Pedido() {
                 type="number"
                 value={item.precio_unitario || 0}
                 min={0}
-                onChange={(e) => actualizarCampo(index, "precio_unitario", e.target.value)}
+                onChange={(e) =>
+                  actualizarCampo(index, "precio_unitario", e.target.value)
+                }
                 className="w-14"
                 step="0.1"
               />
@@ -281,7 +332,9 @@ export default function Pedido() {
                 type="number"
                 value={item.descuento_unitario || 0}
                 min={0.0}
-                onChange={(e) => actualizarCampo(index, "descuento_unitario", e.target.value)}
+                onChange={(e) =>
+                  actualizarCampo(index, "descuento_unitario", e.target.value)
+                }
                 className="w-14"
                 step="0.1"
               />
@@ -290,15 +343,7 @@ export default function Pedido() {
           {
             key: "subtotal",
             label: "Subtotal",
-            render: (item, index) => (
-              <InputField
-                type="number"
-                value={item.subtotal || 0}
-                min={0}
-                onChange={(e) => actualizarCampo(index, "subtotal", e.target.value)}
-                className="w-14"
-              />
-            ),
+            render: (item) => item.subtotal ?? "0.00",
           },
         ]
       : []),
@@ -336,6 +381,63 @@ export default function Pedido() {
     },
     { key: "producto_nombre", label: "Producto" },
     { key: "cantidad", label: "Cantidad" },
+    ...(pedido.id
+      ? [
+          {
+            key: "cantidad_recibida",
+            label: "Cantidad Recibida",
+            render: (item, index) => (
+              <InputField
+                type="number"
+                value={item.cantidad_recibida || 0}
+                min={0}
+                onChange={(e) =>
+                  actualizarCampo(index, "cantidad_recibida", e.target.value)
+                }
+                className="w-14"
+                step="0.1"
+              />
+            ),
+          },
+          {
+            key: "precio_unitario",
+            label: "Precio Unitario",
+            render: (item, index) => (
+              <InputField
+                type="number"
+                value={item.precio_unitario || 0}
+                min={0}
+                onChange={(e) =>
+                  actualizarCampo(index, "precio_unitario", e.target.value)
+                }
+                className="w-14"
+                step="0.1"
+              />
+            ),
+          },
+          {
+            key: "descuento_unitario",
+            label: "Descuento Unitario",
+            render: (item, index) => (
+              <InputField
+                type="number"
+                value={item.descuento_unitario || 0}
+                min={0.0}
+                onChange={(e) =>
+                  actualizarCampo(index, "descuento_unitario", e.target.value)
+                }
+                className="w-14"
+                step="0.1"
+              />
+            ),
+          },
+          {
+            key: "subtotal",
+            label: "Subtotal",
+            render: (item) => item.subtotal ?? "0.00",
+          },
+        ]
+      : []),
   ];
 
   // -------- TECLADO PRODUCTO --------
@@ -383,10 +485,21 @@ export default function Pedido() {
 
   // -------- JSX --------
   return (
-    <div className="p-4 bg-white">
-      <h1 className="text-2xl font-bold mb-4 text-center text-blue-500">
-        {pedido.id ? "Recepcionar Pedido" : "Nuevo Pedido"}
-      </h1>
+    <div className="p-2 bg-white">
+      <Navigation
+        title={
+          pedido.id
+            ? `RECEPCIONAR PEDIDO # ${pedido.id} - FECHA DE ENTREGA: ${pedido.fecha_entrega}`
+            : "Nuevo Pedido"
+        }
+        actions={[
+          {
+            to: -1,
+            icon: FaTimes,
+            estilos: "bg-red-500 text-white rounded",
+          },
+        ]}
+      />
 
       {/* Autocomplete Producto */}
       <div className="relative w-1/2 mb-4">
@@ -396,8 +509,53 @@ export default function Pedido() {
           value={productoBusqueda}
           onChange={(e) => setProductoBusqueda(e.target.value)}
           onKeyDown={handleProductoKey}
-          className="w-full"
+          className="w-full py-2"
         />
+        {pedido.id && (
+          <div className="md:w-2/3 flex flex-col gap-4">
+            <div className="p-4 border rounded bg-gray-50 space-y-2">
+              <InputField
+                label="N° de Factura"
+                type="text"
+                placeholder="Registrar N° de Factura"
+                value={nro_factura}
+                onChange={(e) => setNroFactura(e.target.value)}
+                className="w-full"
+                labelPosition="left"
+              />
+              <InputField
+                label="Razon Social"
+                type="text"
+                placeholder="Registrar Razon Social"
+                value={razon_social}
+                onChange={(e) => setRazonSocial(e.target.value)}
+                className="w-full"
+                labelPosition="left"
+              />
+              <InputField
+                label="Descuento Global"
+                type="number"
+                placeholder="Registrar Descuento Global"
+                value={descuentoGlobal}
+                onChange={(e) => setDescuentoGlobal(e.target.value)}
+                className="w-full"
+                labelPosition="left"
+                min={0}
+                step="0.1"
+              />
+              <label className="block mb-1 font-medium">
+                Observaciones de la Recepción
+              </label>
+              <textarea
+                value={observacionesRecepcion}
+                onChange={(e) => setObservacionesRecepcion(e.target.value)}
+                className="w-full border rounded px-2 py-1"
+                rows={3}
+                placeholder="Notas adicionales..."
+              />
+            </div>
+          </div>
+        )}
         {productoBusqueda && productosFiltrados.length > 0 && (
           <ul className="absolute z-50 bg-white border rounded w-full max-h-60 overflow-y-auto mt-1 shadow-lg">
             {productosFiltrados.map((p, i) => (
@@ -553,17 +711,23 @@ export default function Pedido() {
           </div>
 
           <ActionButton
-            onClick={limpiarPedido}
-            label="Limpiar pedido"
+            onClick={pedido.id ? () => window.location.reload() : limpiarPedido}
+            label={pedido.id ? "Mostrar pedido original" : "Limpiar pedido"}
             estilos="justify-center px-4 py-2 bg-gray-500 text-white rounded"
           />
-          <button
+          <ActionButton
             onClick={abrirModalConfirmacion}
             disabled={!productosSeleccionados.length || loading}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            {loading ? "Procesando..." : "Finalizar pedido"}
-          </button>
+            estilos="justify-center px-4 py-2 bg-blue-500 text-white rounded"
+            label={
+              loading
+                ? "Procesando..."
+                : pedido.id
+                ? "Finalizar Recepcion"
+                : "Finalizar pedido"
+            }
+            title={pedido.id ? "Finalizar Recepcion" : "Finalizar pedido"}
+          />
         </div>
       </div>
 
@@ -571,11 +735,23 @@ export default function Pedido() {
       {showModalConfirmacion && (
         <Modal onClose={() => setShowModalConfirmacion(false)}>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Confirmar Pedido</h2>
+            <h2 className="text-xl font-bold">
+              {pedido.id
+                ? "Confirmar recepción del Pedido"
+                : "Confirmar Pedido"}
+            </h2>
           </div>
 
           {proveedorSeleccionado && (
             <p className="mb-2">Proveedor: {proveedorSeleccionado?.marca}</p>
+          )}
+
+          {pedido.id && (
+            <>
+              <p className="mb-2">N° de Factura: {nro_factura}</p>
+              <p className="mb-2">Razon Social: {razon_social}</p>
+              <p className="mb-2">Descuento Global: {descuentoGlobal}</p>
+            </>
           )}
 
           {/* tabla reutilizable */}
