@@ -5,6 +5,9 @@ import {
   FaEdit,
   FaShoppingCart,
   FaCheckCircle,
+  FaAccusoft,
+  FaHourglass,
+  FaHourglassHalf,
 } from "react-icons/fa";
 import { EntityList } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
@@ -22,12 +25,22 @@ function Pedidos() {
           <ActionButton
             to={`/editPedido/${item.id}`}
             icon={FaEdit}
-            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center p-1"
+            title="Editar Pedido"
           />
           <ActionButton
             to={`/createPedido/${item.id}`}
-            icon={FaCheckCircle}
-            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+            icon={item.estado === "Pendiente" ? FaHourglassHalf : FaCheckCircle}
+            estilos={
+              item.estado === "Pendiente"
+                ? "hover:bg-gray-600 hover:text-gray-100 text-gray-300 rounded-md flex items-center p-1"
+                : "hover:bg-gray-600 hover:text-green-100 text-green-500 rounded-md flex items-center transition p-1"
+            }
+            title={
+              item.estado === "Pendiente"
+                ? "Recepsionar Pedido"
+                : "Pedido Recepcionado"
+            }
           />
         </div>
       ),

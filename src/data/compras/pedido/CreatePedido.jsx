@@ -256,6 +256,7 @@ export default function Pedido() {
     setNroFactura("");
     setRazonSocial("");
     setDescuentoGlobal("");
+    setObservacionesRecepcion("");
     setHighlightProducto(0);
     setHighlightProveedor(0);
     setPedidoProveedor(false);
@@ -285,8 +286,9 @@ export default function Pedido() {
           type="number"
           value={item.cantidad}
           min={1}
-          onChange={(e) => actualizarCantidad(index, e.target.value)}
+          onChange={(e) => actualizarCampo(index, "cantidad", e.target.value)}
           className="w-14"
+          step="0.01"
         />
       ),
     },
@@ -511,51 +513,7 @@ export default function Pedido() {
           onKeyDown={handleProductoKey}
           className="w-full py-2"
         />
-        {pedido.id && (
-          <div className="md:w-2/3 flex flex-col gap-4">
-            <div className="p-4 border rounded bg-gray-50 space-y-2">
-              <InputField
-                label="N° de Factura"
-                type="text"
-                placeholder="Registrar N° de Factura"
-                value={nro_factura}
-                onChange={(e) => setNroFactura(e.target.value)}
-                className="w-full"
-                labelPosition="left"
-              />
-              <InputField
-                label="Razon Social"
-                type="text"
-                placeholder="Registrar Razon Social"
-                value={razon_social}
-                onChange={(e) => setRazonSocial(e.target.value)}
-                className="w-full"
-                labelPosition="left"
-              />
-              <InputField
-                label="Descuento Global"
-                type="number"
-                placeholder="Registrar Descuento Global"
-                value={descuentoGlobal}
-                onChange={(e) => setDescuentoGlobal(e.target.value)}
-                className="w-full"
-                labelPosition="left"
-                min={0}
-                step="0.1"
-              />
-              <label className="block mb-1 font-medium">
-                Observaciones de la Recepción
-              </label>
-              <textarea
-                value={observacionesRecepcion}
-                onChange={(e) => setObservacionesRecepcion(e.target.value)}
-                className="w-full border rounded px-2 py-1"
-                rows={3}
-                placeholder="Notas adicionales..."
-              />
-            </div>
-          </div>
-        )}
+
         {productoBusqueda && productosFiltrados.length > 0 && (
           <ul className="absolute z-50 bg-white border rounded w-full max-h-60 overflow-y-auto mt-1 shadow-lg">
             {productosFiltrados.map((p, i) => (
@@ -591,26 +549,37 @@ export default function Pedido() {
         <div className="md:w-1/3 flex flex-col gap-4">
           <div className="p-4 border rounded bg-gray-50 space-y-2">
             {/* checkbox pedido proveedor */}
-            <label className="flex items-center space-x-2">
+            {!pedido.id ? (
+              <label className="flex items-center space-x-2">
+                <InputField
+                  type="checkbox"
+                  checked={pedidoProveedor}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setPedidoProveedor(checked);
+                    if (checked) setCargarProveedores(true);
+                    else {
+                      setProveedorSeleccionado(null);
+                      setProveedorBusqueda("");
+                      setCargarProveedores(false);
+                    }
+                  }}
+                  className="w-4 h-4"
+                />
+                <span>¿necesita un proveedor?</span>
+              </label>
+            ) : (
               <InputField
-                type="checkbox"
-                checked={pedidoProveedor}
-                onChange={(e) => {
-                  const checked = e.target.checked;
-                  setPedidoProveedor(checked);
-                  if (checked) setCargarProveedores(true);
-                  else {
-                    setProveedorSeleccionado(null);
-                    setProveedorBusqueda("");
-                    setCargarProveedores(false);
-                  }
-                }}
-                className="w-4 h-4"
+                label="N° de Factura"
+                type="text"
+                placeholder="Registrar N° de Factura"
+                value={nro_factura}
+                onChange={(e) => setNroFactura(e.target.value)}
+                className="w-full"
+                labelPosition="left"
               />
-              <span>¿necesita un proveedor?</span>
-            </label>
-
-            {pedidoProveedor && (
+            )}
+            {!pedido.id && pedidoProveedor && (
               <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 mt-2">
                 {/* Mostrar proveedor seleccionado como chip */}
                 {proveedorSeleccionado ? (
@@ -687,27 +656,71 @@ export default function Pedido() {
               </div>
             )}
 
-            <div className="flex justify-between">
+            {!pedido.id ? (
+              <div className="flex justify-between">
+                <InputField
+                  label="Fecha de entrega"
+                  type="date"
+                  value={fechaEntrega}
+                  onChange={(e) => setFechaEntrega(e.target.value)}
+                  className="w-full"
+                  labelPosition="left"
+                />
+              </div>
+            ) : (
               <InputField
-                label="Fecha de entrega"
-                type="date"
-                value={fechaEntrega}
-                onChange={(e) => setFechaEntrega(e.target.value)}
+                label="Razon Social"
+                type="text"
+                placeholder="Registrar Razon Social"
+                value={razon_social}
+                onChange={(e) => setRazonSocial(e.target.value)}
                 className="w-full"
                 labelPosition="left"
               />
-            </div>
+            )}
+
+            {/* descuento global  para la recepcion*/}
+            {pedido.id && (
+              <InputField
+                label="Descuento Global"
+                type="number"
+                placeholder="Registrar Descuento Global"
+                value={descuentoGlobal}
+                onChange={(e) => setDescuentoGlobal(e.target.value)}
+                className="w-full"
+                labelPosition="left"
+                min={0}
+                step="0.1"
+              />
+            )}
 
             <div className="mt-4">
-              <label className="block mb-1 font-medium">Observaciones</label>
+              <label className="block mb-1 font-medium">
+                Observaciones Pedido
+              </label>
               <textarea
                 value={observaciones}
                 onChange={(e) => setObservaciones(e.target.value)}
                 className="w-full border rounded px-2 py-1"
-                rows={3}
+                rows={1}
                 placeholder="Notas adicionales..."
               />
             </div>
+
+            {pedido.id && (
+              <div className="mt-4">
+                <label className="block mb-1 font-medium">
+                  Observaciones de la Recepción
+                </label>
+                <textarea
+                  value={observacionesRecepcion}
+                  onChange={(e) => setObservacionesRecepcion(e.target.value)}
+                  className="w-full border rounded px-2 py-1"
+                  rows={1}
+                  placeholder="Notas adicionales..."
+                />
+              </div>
+            )}
           </div>
 
           <ActionButton
