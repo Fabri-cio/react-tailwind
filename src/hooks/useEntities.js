@@ -37,6 +37,7 @@ import {
   PedidosRecepcionAPI,
 } from "../api/compra.api";
 import { useMutationWithToast } from "./useMutationWithToast";
+import { DashboardAPI } from "../api/reporte.api";
 
 const DEFAULT_STALE_TIME = 1000 * 60 * 5;
 const DEFAULT_PARAMS = {
@@ -47,6 +48,9 @@ const DEFAULT_PARAMS = {
   ordering: "",
   search: "",
 };
+
+//reportes
+export const useDashboard = () => useData(DashboardAPI, "dashboard", null, {});
 
 //productos
 export const useProducts = (

@@ -1,77 +1,98 @@
-import React from 'react';
+import React from "react";
+import { useDashboard } from "../hooks/useEntities";
 
 const Home = () => {
+  const { data, isLoading, error } = useDashboard();
+
+  if (isLoading) return <p className="p-4">Cargando dashboard...</p>;
+  if (error)
+    return <p className="p-4 text-red-500">Error al cargar dashboard</p>;
+
   return (
-    <main className="container mx-auto p-4">
-      <section className="hero-section bg-blue-500 text-white p-4">
-        <h1 className="text-3xl font-bold">Bienvenido al sistema de inventarios</h1>
-        <p className="text-lg">Resumen de indicadores clave y noticias importantes</p>
-      </section>
-      <section className="dashboard-section mt-4">
-        <h2 className="text-2xl font-bold">Resumen de indicadores clave</h2>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="card bg-white shadow-md p-4">
-            <h3 className="text-lg font-bold">Total de ventas del día</h3>
-            <p className="text-lg">$1000</p>
+    <main className="container mx-auto p-6 space-y-6">
+      {/* KPIs */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Indicadores</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="bg-white shadow-md rounded-xl p-4 text-center">
+            <h3 className="text-lg font-semibold">Total de ventas</h3>
+            <p className="text-2xl font-bold text-green-600">
+              ${data?.total_ventas?.toFixed(2)}
+            </p>
           </div>
-          <div className="card bg-white shadow-md p-4">
-            <h3 className="text-lg font-bold">Total de inventario disponible</h3>
-            <p className="text-lg">1000 unidades</p>
+          <div className="bg-white shadow-md rounded-xl p-4 text-center">
+            <h3 className="text-lg font-semibold">Total de compras</h3>
+            <p className="text-2xl font-bold text-blue-600">
+              ${data?.total_compras?.toFixed(2)}
+            </p>
           </div>
-          <div className="card bg-white shadow-md p-4">
-            <h3 className="text-lg font-bold">Número de pedidos pendientes</h3>
-            <p className="text-lg">5 pedidos</p>
+          <div className="bg-white shadow-md rounded-xl p-4 text-center">
+            <h3 className="text-lg font-semibold">Inventario total</h3>
+            <p className="text-2xl font-bold text-purple-600">
+              {data?.total_stock}
+            </p>
           </div>
         </div>
       </section>
-      <section className="news-section mt-4">
-        <h2 className="text-2xl font-bold">Noticias y alertas</h2>
-        <ul className="list-none p-0">
-          <li className="py-2">
-            <i className="fas fa-bell mr-2"></i>
-            Nuevo producto agregado: "Producto X"
-          </li>
-          <li className="py-2">
-            <i className="fas fa-tag mr-2"></i>
-            Oferta especial: 10% de descuento en todos los productos
-          </li>
-          <li className="py-2">
-            <i className="fas fa-exclamation-triangle mr-2"></i>
-            Problema de stock: "Producto Y" no disponible
-          </li>
-        </ul>
-      </section>
-      <section className="quick-access-section mt-4">
-        <h2 className="text-2xl font-bold">Accesos directos</h2>
-        <ul className="list-none p-0">
-          <li className="py-2">
-            <a href="#" className="text-blue-500 hover:text-blue-700">
-              Inventario
-            </a>
-          </li>
-          <li className="py-2">
-            <a href="#" className="text-blue-500 hover:text-blue-700">
-              Ventas
-            </a>
-          </li>
-          <li className="py-2">
-            <a href="#" className="text-blue-500 hover:text-blue-700">
-              Compras
-            </a>
-          </li>
-          <li className="py-2">
-            <a href="#" className="text-blue-500 hover:text-blue-700">
-              Reportes
-            </a>
-          </li>
-        </ul>
-      </section>
-      <section className="charts-section mt-4">
-        <h2 className="text-2xl font-bold">Gráficos y estadísticas</h2>
-        <div className="chart-container">
-          <h3 className="text-lg font-bold">Ventas por mes</h3>
-          <div className="chart"></div>
+
+      {/* Ventas recientes */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Últimas ventas</h2>
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <table className="min-w-full border-collapse">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="p-3 text-left">Tienda</th>
+                <th className="p-3 text-left">Monto</th>
+                <th className="p-3 text-left">Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data?.ventas_recientes?.map((venta) => (
+                <tr key={venta.id} className="border-t">
+                  <td className="p-3">{venta.tienda__nombre}</td>
+                  <td className="p-3">${venta.total_venta}</td>
+                  <td className="p-3">
+                    {new Date(venta.fecha_creacion).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+      </section>
+
+      {/* Compras recientes */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Últimas compras</h2>
+        <ul className="bg-white shadow-md rounded-xl divide-y">
+          {data?.compras_recientes?.map((compra) => (
+            <li key={compra.id} className="p-3 flex justify-between">
+              <span>{compra.almacen__nombre}</span>
+              <span className="font-bold">${compra.total_compra}</span>
+              <span className="text-gray-500">
+                {new Date(compra.fecha_creacion).toLocaleDateString()}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Alertas de stock */}
+      <section>
+        <h2 className="text-2xl font-bold mb-4">Alertas de stock</h2>
+        {data?.alertas_stock?.length === 0 ? (
+          <p className="text-gray-500">✅ Todo el stock está en orden</p>
+        ) : (
+          <ul className="bg-white shadow-md rounded-xl divide-y">
+            {data?.alertas_stock?.map((alerta, idx) => (
+              <li key={idx} className="p-3 flex justify-between text-red-600">
+                <span>{alerta.producto}</span>
+                <span>{alerta.stock} unidades</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </main>
   );
