@@ -5,6 +5,7 @@ import {
   FaChartLine,
   FaUser,
   FaShoppingCart,
+  FaRegFilePowerpoint,
 } from "react-icons/fa";
 
 export const menus = [
@@ -55,6 +56,13 @@ export const menus = [
       { label: "Productos", path: "/productos" },
       { label: "Categorias", path: "/categorias" },
       { label: "Proveedores", path: "/proveedores" },
+    ],
+  },
+  {
+    title: "Reportes",
+    icon: FaRegFilePowerpoint,
+    items: [
+      { label: "Reportes", path: "/reportes" },
     ],
   },
   {

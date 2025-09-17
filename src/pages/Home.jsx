@@ -1,101 +1,173 @@
 import React from "react";
-import { useDashboard } from "../hooks/useEntities";
+import { Pie, Line } from "react-chartjs-2";
+import { Chart as ChartJS, registerables } from "chart.js";
 
-const Home = () => {
-  const { data, isLoading, error } = useDashboard();
+ChartJS.register(...registerables);
 
-  if (isLoading) return <p className="p-4">Cargando dashboard...</p>;
-  if (error)
-    return <p className="p-4 text-red-500">Error al cargar dashboard</p>;
+const HomeMinimalista = () => {
+  // 🔹 Datos ficticios
+  const kpis = [
+    { title: "Total Ventas", value: 12500, color: "green" },
+    { title: "Total Compras", value: 8500, color: "blue" },
+    { title: "Inventario Total", value: 3200, color: "purple" },
+  ];
+
+  const ventasPorTienda = [
+    { tienda: "Tienda 1", total: 4000 },
+    { tienda: "Tienda 2", total: 3000 },
+    { tienda: "Tienda 3", total: 2500 },
+    { tienda: "Tienda 4", total: 3000 },
+  ];
+
+  const ventasPorDia = [
+    { fecha: "2025-09-01", cantidad: 200 },
+    { fecha: "2025-09-02", cantidad: 350 },
+    { fecha: "2025-09-03", cantidad: 400 },
+    { fecha: "2025-09-04", cantidad: 280 },
+    { fecha: "2025-09-05", cantidad: 500 },
+    { fecha: "2025-09-06", cantidad: 320 },
+    { fecha: "2025-09-07", cantidad: 450 },
+  ];
+
+  const alertasStock = [
+    { producto: "Producto A", almacen: "Almacén 1", stock: 3, limite: 5 },
+    { producto: "Producto B", almacen: "Almacén 3", stock: 12, limite: 10 },
+    { producto: "Producto C", almacen: "Almacén 2", stock: 0, limite: 5 },
+    { producto: "Producto D", almacen: "Almacén 5", stock: 7, limite: 10 },
+  ];
+
+  // 🔹 Configuración de gráficos
+  const pieData = {
+    labels: ventasPorTienda.map((v) => v.tienda),
+    datasets: [
+      {
+        label: "Ventas por tienda",
+        data: ventasPorTienda.map((v) => v.total),
+        backgroundColor: ["#4ade80", "#60a5fa", "#a78bfa", "#fcd34d"],
+        borderWidth: 1,
+        borderColor: "#e5e7eb",
+      },
+    ],
+  };
+
+  const lineData = {
+    labels: ventasPorDia.map((v) => v.fecha),
+    datasets: [
+      {
+        label: "Ventas por Día",
+        data: ventasPorDia.map((v) => v.cantidad),
+        borderColor: "#4ade80",
+        backgroundColor: "rgba(74, 222, 128, 0.2)",
+        tension: 0.3,
+        fill: true,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+      },
+    ],
+  };
+
+  const lineOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: true, position: "top" },
+      tooltip: { mode: "index", intersect: false },
+    },
+    interaction: { mode: "nearest", axis: "x", intersect: false },
+    scales: {
+      x: { ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 7 } },
+      y: { beginAtZero: true },
+    },
+  };
 
   return (
-    <main className="container mx-auto p-6 space-y-6">
+    <main className="container mx-auto space-y-6">
       {/* KPIs */}
-      <section>
-        <h2 className="text-2xl font-bold mb-4">Indicadores</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="bg-white shadow-md rounded-xl p-4 text-center">
-            <h3 className="text-lg font-semibold">Total de ventas</h3>
-            <p className="text-2xl font-bold text-green-600">
-              ${data?.total_ventas?.toFixed(2)}
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {kpis.map((kpi, idx) => (
+          <div
+            key={idx}
+            className={`bg-white shadow rounded-lg border-t-4 border-${kpi.color}-500 flex flex-col items-center justify-center p-4`}
+          >
+            <h3 className="text-sm font-semibold">{kpi.title}</h3>
+            <p className={`text-xl font-bold text-${kpi.color}-600`}>
+              {kpi.value.toLocaleString()}
             </p>
           </div>
-          <div className="bg-white shadow-md rounded-xl p-4 text-center">
-            <h3 className="text-lg font-semibold">Total de compras</h3>
-            <p className="text-2xl font-bold text-blue-600">
-              ${data?.total_compras?.toFixed(2)}
-            </p>
+        ))}
+      </section>
+
+      {/* Gráficos en una línea */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Pie */}
+        <div className="bg-white rounded-lg shadow flex flex-col items-center justify-center p-3">
+          <h3 className="text-sm font-semibold mb-2 text-center">
+            Ventas por Tienda
+          </h3>
+          <div className="w-full h-64 flex items-center justify-center">
+            <Pie
+              data={pieData}
+              options={{
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                    labels: { boxWidth: 12, padding: 10 },
+                  },
+                  tooltip: { enabled: true },
+                },
+              }}
+            />
           </div>
-          <div className="bg-white shadow-md rounded-xl p-4 text-center">
-            <h3 className="text-lg font-semibold">Inventario total</h3>
-            <p className="text-2xl font-bold text-purple-600">
-              {data?.total_stock}
-            </p>
+        </div>
+
+        {/* Line */}
+        <div className="bg-white rounded-lg shadow p-3">
+          <h3 className="text-sm font-semibold mb-2 text-center">
+            Ventas por Día
+          </h3>
+          <div className="w-full h-64">
+            <Line
+              data={lineData}
+              options={{ ...lineOptions, maintainAspectRatio: false }}
+            />
           </div>
         </div>
       </section>
 
-      {/* Ventas recientes */}
+      {/* Alertas de Stock */}
       <section>
-        <h2 className="text-2xl font-bold mb-4">Últimas ventas</h2>
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <h2 className="text-xl font-bold mb-2">Alertas de Stock</h2>
+        <div className="bg-white shadow rounded-lg overflow-hidden">
           <table className="min-w-full border-collapse">
             <thead className="bg-gray-100">
               <tr>
-                <th className="p-3 text-left">Tienda</th>
-                <th className="p-3 text-left">Monto</th>
-                <th className="p-3 text-left">Fecha</th>
+                <th className="p-2 text-left text-gray-600">Producto</th>
+                <th className="p-2 text-left text-gray-600">Almacén</th>
+                <th className="p-2 text-left text-gray-600">Stock Actual</th>
+                <th className="p-2 text-left text-gray-600">Estado</th>
               </tr>
             </thead>
             <tbody>
-              {data?.ventas_recientes?.map((venta) => (
-                <tr key={venta.id} className="border-t">
-                  <td className="p-3">{venta.tienda__nombre}</td>
-                  <td className="p-3">${venta.total_venta}</td>
-                  <td className="p-3">
-                    {new Date(venta.fecha_creacion).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
+              {alertasStock.map((alerta, idx) => {
+                const estado = alerta.stock <= alerta.limite ? "Bajo" : "OK";
+                const color =
+                  estado === "Bajo" ? "text-red-600" : "text-green-600";
+
+                return (
+                  <tr key={idx} className="border-t">
+                    <td className="p-2">{alerta.producto}</td>
+                    <td className="p-2">{alerta.almacen}</td>
+                    <td className="p-2 font-bold">{alerta.stock}</td>
+                    <td className={`p-2 font-semibold ${color}`}>{estado}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
-      </section>
-
-      {/* Compras recientes */}
-      <section>
-        <h2 className="text-2xl font-bold mb-4">Últimas compras</h2>
-        <ul className="bg-white shadow-md rounded-xl divide-y">
-          {data?.compras_recientes?.map((compra) => (
-            <li key={compra.id} className="p-3 flex justify-between">
-              <span>{compra.almacen__nombre}</span>
-              <span className="font-bold">${compra.total_compra}</span>
-              <span className="text-gray-500">
-                {new Date(compra.fecha_creacion).toLocaleDateString()}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Alertas de stock */}
-      <section>
-        <h2 className="text-2xl font-bold mb-4">Alertas de stock</h2>
-        {data?.alertas_stock?.length === 0 ? (
-          <p className="text-gray-500">✅ Todo el stock está en orden</p>
-        ) : (
-          <ul className="bg-white shadow-md rounded-xl divide-y">
-            {data?.alertas_stock?.map((alerta, idx) => (
-              <li key={idx} className="p-3 flex justify-between text-red-600">
-                <span>{alerta.producto}</span>
-                <span>{alerta.stock} unidades</span>
-              </li>
-            ))}
-          </ul>
-        )}
       </section>
     </main>
   );
 };
 
-export default Home;
+export default HomeMinimalista;

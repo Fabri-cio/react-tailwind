@@ -26,7 +26,7 @@ function Proveedores() {
       render: (item) => <Image src={item.imagen} alt={item.nombre} />,
     },
     { key: "marca", label: "Marca" },
-    { key: "nombre_contacto", label: "Nombre de Contacto" },
+    { key: "contacto", label: "Nombre de Contacto" },
     {
       key: "telefono",
       label: "Telefono",

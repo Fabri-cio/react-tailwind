@@ -27,7 +27,7 @@ function ConfiguracionesModelos() {
       render: (item) => <StatusBadge isActive={item.estado} />,
     },
     {
-      key: "nombre_config",
+      key: "nombre",
       label: "Nombre",
     },
     {
@@ -35,7 +35,7 @@ function ConfiguracionesModelos() {
       label: "Descripción",
     },
     {
-      key: "intervalo_confianza",
+      key: "int_confianza",
       label: "Intervalo de confianza",
     },
   ];

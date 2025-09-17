@@ -14,7 +14,7 @@ const Navbar = ({ toggleSidebar }) => {
         estilos="p-1 transition-colors duration-200 hover:bg-gray-600 rounded"
       />
       <ActionButton
-        label={"Navbar"}
+        // label={"Navbar"}
         to={"/home"}
         estilos="transition-colors duration-200 hover:text-gray-200"
       />

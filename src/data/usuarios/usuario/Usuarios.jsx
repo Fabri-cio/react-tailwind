@@ -18,13 +18,13 @@ function UserList() {
           <ActionButton
             to={`/editUsuario/${item.id}`}
             icon={FaEdit}
-            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
+            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center p-1"
           />
-          <ActionButton
+          {/* <ActionButton
             to={`/historialUsuario/${item.id}`}
             icon={FaHistory}
-            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
-          />
+            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center p-1"
+          /> */}
         </div>
       ),
     },
