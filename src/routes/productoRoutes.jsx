@@ -1,4 +1,5 @@
 import { lazy } from "react";
+import Modal from "../components/shared/Modal";
 
 const Productos = lazy(() => import("../data/productos/producto/Productos"));
 const EditProduct = lazy(() =>
@@ -34,7 +35,7 @@ export const productoRoutes = [
   },
   {
     path: "/editProduct/:id",
-    element: <EditProduct />,
+    element: <Modal onClose={false}><EditProduct /></Modal>,
   },
   {
     path: "/createProduct",
