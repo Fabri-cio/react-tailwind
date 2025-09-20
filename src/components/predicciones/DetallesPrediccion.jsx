@@ -4,11 +4,13 @@ import { format } from "date-fns";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 import {
-  // useInventarioVenta, // 🔹 Descomentar cuando uses datos reales
+  useInventarioVenta, // 🔹 Descomentar cuando uses datos reales
   useConfiguracionesModelos,
 } from "../../hooks/useEntities";
 import { Navigation, SelectField, Table } from "../shared";
 import ventasEjemplo from "./ventasEjemplo.json";
+import Loading from "../shared/Loading";
+import ErrorMessage from "../shared/ErrorMessaje";
 
 ChartJS.register(...registerables);
 
@@ -16,6 +18,8 @@ function DetallesProducto() {
   const [modeloSeleccionado, setModeloSeleccionado] = useState(null);
 
   const { id } = useParams();
+  console.log(id);
+  const { data: inventario = {}, isLoading, isError } = useInventarioVenta(id);
   const navigate = useNavigate();
 
   // 🔹 Datos de prueba
@@ -131,10 +135,17 @@ function DetallesProducto() {
     }
   };
 
+  if (isLoading)
+    return <Loading message="Cargando detalles del inventario..." />;
+  if (isError)
+    return <ErrorMessage message="Error al cargar detalles del inventario." />;
+  if (!inventario)
+    return <ErrorMessage message="No se encontraron datos del inventario." />;
+
   return (
     <div className="space-y-4">
       <Navigation
-        title={`Gráficos de Ventas - ${producto}`}
+        title={`Gráficos de Ventas - ${inventario.producto_nombre}`}
         subTitle="Detalles de las ventas"
         actions={[]}
       />

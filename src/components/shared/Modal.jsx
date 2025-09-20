@@ -56,7 +56,7 @@ export default function Modal({ children, onClose }) {
     >
       <div
         ref={modalRef}
-        className="bg-white p-4 rounded-lg w-full max-w-[60vw] max-h-[100vh] overflow-y-auto relative"
+        className="bg-white p-4 rounded-lg w-full max-w-[60vw] max-h-[90vh] overflow-y-auto relative"
       >
         {onClose && (
           <button
