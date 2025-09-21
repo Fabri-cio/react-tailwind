@@ -33,6 +33,11 @@ export default function CamposListas({
     return date.toISOString().split("T")[0];
   };
 
+  // Convierte strings en objetos { ds: "..." } para la UI
+  const valueConObjetos = value.map((v) =>
+    typeof v === "string" && campos[0] === "ds" ? { ds: v } : v
+  );
+
   // Añade un _internalId si no existe
   const agregarIdsInternos = (lista) =>
     lista.map((item) =>
@@ -47,7 +52,10 @@ export default function CamposListas({
       else nuevoElemento[campo] = "";
     });
     onChange({
-      target: { name, value: [...agregarIdsInternos(value), nuevoElemento] },
+      target: {
+        name,
+        value: [...agregarIdsInternos(valueConObjetos), nuevoElemento],
+      },
     });
   };
 
@@ -55,22 +63,40 @@ export default function CamposListas({
     const nuevoValor = camposNumericos.includes(campo)
       ? Number(campoValor)
       : campoValor;
-    const nuevaLista = agregarIdsInternos(value).map((item, i) =>
+    const nuevaLista = agregarIdsInternos(valueConObjetos).map((item, i) =>
       i === index ? { ...item, [campo]: nuevoValor } : item
     );
-    onChange({ target: { name, value: nuevaLista } });
+
+    // Si originalmente era array de strings, devolver solo strings
+    if (campos[0] === "ds" && value.every((v) => typeof v === "string")) {
+      onChange({
+        target: { name, value: nuevaLista.map((item) => item.ds) },
+      });
+    } else {
+      onChange({ target: { name, value: nuevaLista } });
+    }
   };
 
   const handleRemove = (index) => {
-    const nuevaLista = agregarIdsInternos(value).filter((_, i) => i !== index);
-    onChange({ target: { name, value: nuevaLista } });
+    const nuevaLista = agregarIdsInternos(valueConObjetos).filter(
+      (_, i) => i !== index
+    );
+
+    // Mantener formato original
+    if (campos[0] === "ds" && value.every((v) => typeof v === "string")) {
+      onChange({
+        target: { name, value: nuevaLista.map((item) => item.ds) },
+      });
+    } else {
+      onChange({ target: { name, value: nuevaLista } });
+    }
   };
 
   return (
     <div className="mb-4">
       <label className="font-semibold mb-2 block">{label}</label>
 
-      {agregarIdsInternos(value).map((item, index) => (
+      {agregarIdsInternos(valueConObjetos).map((item, index) => (
         <div
           key={item._internalId}
           className="border p-2 mb-2 rounded flex gap-2 items-end"
