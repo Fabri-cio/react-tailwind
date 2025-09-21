@@ -1,4 +1,3 @@
-// Componente SeleccionarPorPagina.jsx
 export const SeleccionarPorPagina = ({
   perPage,
   setQueryParams,

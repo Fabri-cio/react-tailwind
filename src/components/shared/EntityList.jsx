@@ -23,7 +23,6 @@ function EntityList({ entityData }) {
     ordenes,
   } = entityData;
 
-  // Aquí extraemos los parámetros de URL y la función para actualizarlos
   const {
     page,
     per_page,
@@ -46,7 +45,6 @@ function EntityList({ entityData }) {
   });
 
   const {
-    currentPage,
     isLoading,
     isError,
     items,
@@ -58,13 +56,25 @@ function EntityList({ entityData }) {
     total_pages,
   } = paginacion;
 
-  // Funciones para manejar cambios en la paginación y filtros
-  const handlePageChange = (newPage) => {
-    setQueryParams({ page: newPage });
+  // Cambiar página
+  const manejarCambioPagina = (nuevaPagina) => {
+    setQueryParams({ page: nuevaPagina });
   };
 
-  const manejarFiltro = (nuevosValores) => {
-    setQueryParams(nuevosValores);
+  // Cambiar filtros/búsqueda
+  const manejarCambioFiltros = (nuevosValores) => {
+    setQueryParams({ ...nuevosValores, page: 1 });
+  };
+
+  // Reiniciar búsqueda y filtros
+  const reiniciarFiltros = () => {
+    setQueryParams({
+      search: "",
+      filters: {},
+      ordering: "",
+      page: 1,
+      all_data: false,
+    });
   };
 
   if (isLoading) return <Loading message={loadingMessage} />;
@@ -72,27 +82,21 @@ function EntityList({ entityData }) {
 
   return (
     <div className="bg-white">
-      <Navigation
-        title={title}
-        subTitle={`${subTitle}`}
-        actions={actions}
-        icon={icon}
-      />
+      <Navigation title={title} subTitle={subTitle} actions={actions} icon={icon} />
 
-      <div className="flex justify-between mx-2">
+      <div className="flex justify-between mx-2 my-2">
         <FiltroBusquedaOrden
-          onChange={manejarFiltro}
+          onChange={manejarCambioFiltros}
           filtros={filtros}
           ordenes={ordenes}
           placeholderSearch="Buscar..."
         />
 
-        <div className="flex justify-end items-center gap-4">
+        <div className="flex items-center gap-4">
           <SeleccionarPorPagina
             perPage={per_page}
-            setQueryParams={setQueryParams}  // <--- Aquí pasamos setQueryParams
+            setQueryParams={setQueryParams}
             allData={all_data}
-            page={page}
             search={search}
             ordering={ordering}
             filters={filters}
@@ -103,7 +107,7 @@ function EntityList({ entityData }) {
               current_page={page}
               nextPage={next}
               prevPage={previous}
-              onPageChange={handlePageChange}
+              onPageChange={manejarCambioPagina}
               total={totalItems}
               total_pages={total_pages}
               perPage={perPageResponse || per_page}
@@ -112,13 +116,27 @@ function EntityList({ entityData }) {
         </div>
       </div>
 
-      <Table
-        items={items}
-        fields={entityFields()}
-        currentPage={page}
-        itemsPerPage={perPageResponse || per_page}
-        itemKey={itemKey || "id"}
-      />
+      {items.length > 0 ? (
+        <Table
+          items={items}
+          fields={entityFields()}
+          currentPage={page}
+          itemsPerPage={perPageResponse || per_page}
+          itemKey={itemKey || "id"}
+        />
+      ) : (
+        <div className="text-center p-6">
+          <p className="text-gray-600 mb-2">
+            No se encontraron resultados para tu búsqueda o filtros.
+          </p>
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            onClick={reiniciarFiltros}
+          >
+            Mostrar todos los datos
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,11 +1,6 @@
 import { useState } from "react";
 
-function FiltroBusquedaOrden({
-  onChange,
-  filtros = [],
-  ordenes = [],
-  placeholderSearch,
-}) {
+function FiltroBusquedaOrden({ onChange, filtros = [], ordenes = [], placeholderSearch }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [ordering, setOrdering] = useState("");
   const [filterValues, setFilterValues] = useState({});
@@ -17,37 +12,20 @@ function FiltroBusquedaOrden({
 
   const manejarEnterFiltro = (e, name) => {
     if (e.key === "Enter") {
-      onChange({
-        search: searchTerm,
-        ordering,
-        ...filterValues,
-        [name]: e.target.value,
-      });
+      onChange({ search: searchTerm, ordering, ...filterValues, [name]: e.target.value });
     }
   };
 
-  const manejarCambioBusqueda = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  const manejarCambioBusqueda = (e) => setSearchTerm(e.target.value);
 
   const manejarEnterBusqueda = (e) => {
-    if (e.key === "Enter") {
-      onChange({
-        search: searchTerm,
-        ordering,
-        ...filterValues,
-      });
-    }
+    if (e.key === "Enter") onChange({ search: searchTerm, ordering, ...filterValues });
   };
 
   const manejarCambioOrden = (e) => {
     const value = e.target.value;
     setOrdering(value);
-    onChange({
-      search: searchTerm,
-      ordering: value,
-      ...filterValues,
-    });
+    onChange({ search: searchTerm, ordering: value, ...filterValues });
   };
 
   return (
@@ -73,12 +51,10 @@ function FiltroBusquedaOrden({
         />
       ))}
 
-      <select
-        value={ordering}
-        onChange={manejarCambioOrden}
-        className="border px-2 py-1 rounded"
-      >
-        <option value="" disabled>Ordenar por</option>
+      <select value={ordering} onChange={manejarCambioOrden} className="border px-2 py-1 rounded">
+        <option value="" disabled>
+          Ordenar por
+        </option>
         {ordenes.map((orden) => (
           <option key={orden.name} value={orden.name}>
             {orden.label}

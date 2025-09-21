@@ -41,7 +41,7 @@ export default function CreateConfiguracionModelo() {
     crecimiento: "linear",
     cap_max: "",
     cap_min: "",
-    inter_confianza: "0.80",
+    int_confianza: "0.80",
     est_anual: true,
     fourier_anual: 10,
     est_semanal: true,
@@ -60,6 +60,7 @@ export default function CreateConfiguracionModelo() {
     regresores: [],
     inc_tendencia: true,
     inc_estacionalidad: true,
+    incertidumbre_muestras: 1000,
     frecuencia: "D",
     descripcion: "",
     estado: true,
@@ -124,16 +125,61 @@ export default function CreateConfiguracionModelo() {
 
     inc_tendencia: formValues.inc_tendencia,
     inc_estacionalidad: formValues.inc_estacionalidad,
+    incertidumbre_muestras: formValues.incertidumbre_muestras,
 
     frecuencia: formValues.frecuencia,
     descripcion: formValues.descripcion || null,
     estado: formValues.estado !== undefined ? formValues.estado : true,
   });
 
-  const paraEnvio = (formValues) => ({
-    link: -1,
-    params: camposExtras(formValues),
-  });
+  // 2️⃣ Función de validación antes de enviar el formulario
+  const validarFormulario = (formValues) => {
+    const errores = {};
+
+    // Intervalo de confianza
+    const intConf = parseFloat(formValues.int_confianza);
+    if (intConf <= 0 || intConf > 1)
+      errores.int_confianza = "Debe estar entre 0 y 1";
+
+    // Crecimiento logístico
+    if (formValues.crecimiento === "logistic") {
+      if (!formValues.cap_max)
+        errores.cap_max = "Requerido para crecimiento logístico";
+      if (formValues.cap_min >= formValues.cap_max)
+        errores.cap_min = "cap_min debe ser menor que cap_max";
+    }
+
+    // Fourier
+    if (formValues.est_anual && formValues.fourier_anual <= 0)
+      errores.fourier_anual = "Debe ser positivo";
+    if (formValues.est_semanal && formValues.fourier_semanal <= 0)
+      errores.fourier_semanal = "Debe ser positivo";
+    if (
+      formValues.est_diaria &&
+      (!formValues.fourier_diaria || formValues.fourier_diaria <= 0)
+    )
+      errores.fourier_diaria = "Debe ser positivo";
+
+    // Escalas y puntos de cambio
+    if (formValues.scale_est <= 0) errores.scale_est = "Debe ser positivo";
+    if (formValues.scale_cambio <= 0)
+      errores.scale_cambio = "Debe ser positivo";
+    if (formValues.n_cambios <= 0) errores.n_cambios = "Debe ser positivo";
+
+    return errores;
+  };
+
+  const paraEnvio = (formValues) => {
+    const errores = validarFormulario(formValues);
+    if (Object.keys(errores).length > 0) {
+      return { errores };
+    } else {
+      return {
+        link: -1,
+        params: camposExtras(formValues),
+      };
+    }
+  };
 
   const construirCampos = (formValues, manejarEntradas) => [
     {
@@ -333,6 +379,15 @@ export default function CreateConfiguracionModelo() {
       name: "inc_estacionalidad",
       checked: formValues.inc_estacionalidad,
       onChange: manejarEntradas.handleToggleChange("inc_estacionalidad"),
+    },
+    {
+      component: InputField,
+      label: "Número de muestras de incertidumbre",
+      name: "incertidumbre_muestras",
+      type: "number",
+      placeholder: "Ingrese el número de muestras",
+      value: formValues.incertidumbre_muestras,
+      onChange: manejarEntradas.handleInputChange,
     },
     {
       component: SelectField,
