@@ -108,7 +108,7 @@ export default function CreateConfiguracionModelo() {
     n_cambios:
       formValues.n_cambios !== "" ? parseInt(formValues.n_cambios) : 25,
 
-    cambios: formValues.cambios.map(({ ds }) => ds),
+    cambios: formValues.cambios.map(({ ds }) => ds).filter((ds) => ds !== ""),
 
     usar_feriados: formValues.usar_feriados,
     eventos: formValues.usar_feriados
@@ -232,6 +232,9 @@ export default function CreateConfiguracionModelo() {
       placeholder: "Ingrese el intervalo de confianza",
       value: formValues.int_confianza,
       onChange: manejarEntradas.handleInputChange,
+      min: 0,
+      max: 1,
+      step: 0.01,
     },
     {
       component: ToggleSwitch,
@@ -249,6 +252,8 @@ export default function CreateConfiguracionModelo() {
       value: formValues.fourier_anual,
       onChange: manejarEntradas.handleInputChange,
       visible: formValues.est_anual,
+      min: 1,
+      step: 1,
     },
     {
       component: ToggleSwitch,
@@ -266,6 +271,8 @@ export default function CreateConfiguracionModelo() {
       value: formValues.fourier_semanal,
       onChange: manejarEntradas.handleInputChange,
       visible: formValues.est_semanal,
+      min: 1,
+      step: 1,
     },
     {
       component: ToggleSwitch,
@@ -283,6 +290,8 @@ export default function CreateConfiguracionModelo() {
       value: formValues.fourier_diaria,
       onChange: manejarEntradas.handleInputChange,
       visible: formValues.est_diaria,
+      min: 1,
+      step: 1,
     },
     {
       component: SelectField,
@@ -300,6 +309,8 @@ export default function CreateConfiguracionModelo() {
       placeholder: "Ingrese la escala de prioridad de estacionalidad",
       value: formValues.scale_est,
       onChange: manejarEntradas.handleInputChange,
+      min: 0.0001,
+      step: 0.01,
     },
     {
       component: InputField,
@@ -309,6 +320,8 @@ export default function CreateConfiguracionModelo() {
       placeholder: "Ingrese la escala de prioridad de días festivos",
       value: formValues.scale_feriados,
       onChange: manejarEntradas.handleInputChange,
+      min: 0.0001,
+      step: 0.01,
     },
     {
       component: InputField,
@@ -318,6 +331,8 @@ export default function CreateConfiguracionModelo() {
       placeholder: "Ingrese la escala de prioridad de puntos de cambio",
       value: formValues.scale_cambio,
       onChange: manejarEntradas.handleInputChange,
+      min: 0.0001,
+      step: 0.01,
     },
     {
       component: InputField,
@@ -327,6 +342,8 @@ export default function CreateConfiguracionModelo() {
       placeholder: "Ingrese el número de puntos de cambio",
       value: formValues.n_cambios,
       onChange: manejarEntradas.handleInputChange,
+      min: 1,
+      step: 1,
     },
     {
       component: CamposListas,
@@ -388,6 +405,8 @@ export default function CreateConfiguracionModelo() {
       placeholder: "Ingrese el número de muestras",
       value: formValues.incertidumbre_muestras,
       onChange: manejarEntradas.handleInputChange,
+      min: 1,
+      step: 1,
     },
     {
       component: SelectField,

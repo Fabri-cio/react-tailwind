@@ -196,6 +196,9 @@ export default function EditConfiguracionModelo() {
       type: "float",
       placeholder: "Ingrese el intervalo de confianza",
       onChange: manejarEntradas.handleInputChange,
+      min: 0,
+      max: 1,
+      step: 0.01,
     },
     // =========================
     // Sección: Estacionalidades
@@ -216,6 +219,8 @@ export default function EditConfiguracionModelo() {
       value: formValues.fourier_anual,
       onChange: manejarEntradas.handleInputChange,
       visible: formValues.est_anual,
+      min: 1,
+      step: 1,
     },
     {
       component: ToggleSwitch,
@@ -233,6 +238,8 @@ export default function EditConfiguracionModelo() {
       value: formValues.fourier_semanal,
       onChange: manejarEntradas.handleInputChange,
       visible: formValues.est_semanal,
+      min: 1,
+      step: 1,
     },
     {
       component: ToggleSwitch,
@@ -250,6 +257,8 @@ export default function EditConfiguracionModelo() {
       value: formValues.fourier_diaria,
       onChange: manejarEntradas.handleInputChange,
       visible: formValues.est_diaria,
+      min: 1,
+      step: 1,
     },
     {
       component: SelectField,
@@ -269,6 +278,8 @@ export default function EditConfiguracionModelo() {
       type: "float",
       placeholder: "Ingrese la escala de prioridad de estacionalidad",
       onChange: manejarEntradas.handleInputChange,
+      min: 0.0001,
+      step: 0.01,
     },
     {
       component: InputField,
@@ -277,6 +288,8 @@ export default function EditConfiguracionModelo() {
       type: "float",
       placeholder: "Ingrese la escala de prioridad de días festivos",
       onChange: manejarEntradas.handleInputChange,
+      min: 0.0001,
+      step: 0.01,
     },
     {
       component: InputField,
@@ -285,6 +298,8 @@ export default function EditConfiguracionModelo() {
       type: "float",
       placeholder: "Ingrese la escala de prioridad de puntos de cambio",
       onChange: manejarEntradas.handleInputChange,
+      min: 0.0001,
+      step: 0.01,
     },
     // =========================
     // Sección: Puntos de cambio
@@ -296,6 +311,8 @@ export default function EditConfiguracionModelo() {
       type: "number",
       placeholder: "Ingrese el número de puntos de cambio",
       onChange: manejarEntradas.handleInputChange,
+      min: 1,
+      step: 1,
     },
 
     //json cambiar
@@ -366,6 +383,8 @@ export default function EditConfiguracionModelo() {
       placeholder: "Ingrese el número de muestras",
       value: formValues.incertidumbre_muestras,
       onChange: manejarEntradas.handleInputChange,
+      min: 1,
+      step: 1,
     },
     // ======================================
     // Sección: Frecuencia de datos

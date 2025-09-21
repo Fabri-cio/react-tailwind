@@ -22,6 +22,24 @@ export default function CamposListas({
     "prior_scale",
   ];
 
+  const camposConSelect = ["mode"]; // campos que deben usarse como <select>
+
+  const opcionesPorCampo = {
+    mode: [
+      { value: "additive", label: "Aditiva" },
+      { value: "multiplicative", label: "Multiplicativa" },
+    ],
+  };
+
+  // Configuración de min, max y step para campos numéricos
+  const configNumericos = {
+    lower_window: { step: 1 },
+    upper_window: { step: 1 },
+    period: { min: 0.0001, step: 0.01 },
+    fourier_order: { min: 1, step: 1 },
+    prior_scale: { min: 0.0001, step: 0.01 },
+  };
+
   const campos = camposPorTipo[name] || ["value"];
 
   if (!visible) return null;
@@ -92,6 +110,11 @@ export default function CamposListas({
     }
   };
 
+  const isInvalidDate = (val) => {
+    if (!val) return false;
+    return isNaN(new Date(val).getTime());
+  };
+
   return (
     <div className="mb-4">
       <label className="font-semibold mb-2 block">{label}</label>
@@ -102,6 +125,30 @@ export default function CamposListas({
           className="border p-2 mb-2 rounded flex gap-2 items-end"
         >
           {campos.map((campo) => {
+            // Select para "mode"
+            if (camposConSelect.includes(campo)) {
+              return (
+                <select
+                  key={`${item._internalId}-${campo}`}
+                  value={item[campo] ?? ""}
+                  onChange={(e) =>
+                    handleFieldChange(index, campo, e.target.value)
+                  }
+                  className="border p-1 rounded flex-1"
+                >
+                  <option value="" disabled>
+                    Seleccione {campo}
+                  </option>
+                  {opcionesPorCampo[campo].map((op) => (
+                    <option key={op.value} value={op.value}>
+                      {op.label}
+                    </option>
+                  ))}
+                </select>
+              );
+            }
+
+            // Inputs normales
             const inputType =
               campo === "ds"
                 ? "date"
@@ -120,7 +167,14 @@ export default function CamposListas({
                 onChange={(e) =>
                   handleFieldChange(index, campo, e.target.value)
                 }
-                className="border p-1 rounded flex-1"
+                className={`border p-1 rounded flex-1 ${
+                  campo === "ds" && isInvalidDate(item[campo])
+                    ? "border-red-500"
+                    : ""
+                }`}
+                {...(camposNumericos.includes(campo)
+                  ? configNumericos[campo]
+                  : {})}
               />
             );
           })}
