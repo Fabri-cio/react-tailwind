@@ -12,7 +12,7 @@ import {
 } from "../../../hooks/useEntities";
 import { FaPlus } from "react-icons/fa";
 
-export default function CreateConfiguracionModelo() {
+export default function EditConfiguracionModelo() {
   const modoCrecimientoOptions = [
     { id: "linear", nombre: "Linear" },
     { id: "logistic", nombre: "Logistic" },
@@ -38,58 +38,50 @@ export default function CreateConfiguracionModelo() {
   ];
 
   // Estado inicial del formulario
-  const configuracionFormulario = (entidad) => {
-    const formValues = {
-      //nombre
-      nombre: entidad?.data?.nombre || "",
-      //tipo dataset
-      dataset: entidad?.data?.dataset || "normal",
-      //crecimiento y saturación
-      crecimiento: entidad?.data?.crecimiento || "linear",
-      cap_max: entidad?.data?.cap_max || "",
-      cap_min: entidad?.data?.cap_min || "",
-      //intervalos
-      int_confianza: entidad?.data?.int_confianza || "0.80",
-      //estacionalidades estandar
-      est_anual: entidad?.data?.est_anual ?? true,
-      fourier_anual: entidad?.data?.fourier_anual || 10,
-      est_semanal: entidad?.data?.est_semanal ?? true,
-      fourier_semanal: entidad?.data?.fourier_semanal || 3,
-      est_diaria: entidad?.data?.est_diaria ?? false,
-      fourier_diaria: entidad?.data?.fourier_diaria || null,
-      //modo estacionalidad
-      modo_est: entidad?.data?.modo_est || "additive",
-      //prior scales
-      scale_est: entidad?.data?.scale_est || 10.0,
-      scale_feriados: entidad?.data?.scale_feriados || 10.0,
-      scale_cambio: entidad?.data?.scale_cambio || 0.05,
-      //puntos de cambio
-      n_cambios: entidad?.data?.n_cambios || 25,
-      cambios: entidad?.data?.cambios || [],
-      //feriados y eventos especiales
-      usar_feriados: entidad?.data?.usar_feriados ?? false,
-      eventos: entidad?.data?.eventos || [],
-      estacionalidades_extra:
-        entidad?.data?.estacionalidades_extra || [],
-      //regresores adicionales
-      regresores: entidad?.data?.regresores || [],
-      //incertidumbre
-      inc_tendencia:
-        entidad?.data?.inc_tendencia ?? true,
-      inc_estacionalidad:
-        entidad?.data?.inc_estacionalidad ?? true,
-      //frecuencia de datos
-      frecuencia: entidad?.data?.frecuencia || "D",
-      //descripcion
-      descripcion: entidad?.data?.descripcion || "",
-      //estado
-      estado: entidad?.data?.estado ?? true,
-    };
-
-    console.log("FormValues:", formValues); // <--- aquí
-
-    return formValues;
-  };
+  const configuracionFormulario = (entidad) => ({
+    //nombre
+    nombre: entidad?.data?.nombre || "",
+    //tipo dataset
+    dataset: entidad?.data?.dataset || "normal",
+    //crecimiento y saturación
+    crecimiento: entidad?.data?.crecimiento || "linear",
+    cap_max: entidad?.data?.cap_max || "",
+    cap_min: entidad?.data?.cap_min || "",
+    //intervalos
+    int_confianza: entidad?.data?.int_confianza || "0.80",
+    //estacionalidades estandar
+    est_anual: entidad?.data?.est_anual ?? true,
+    fourier_anual: entidad?.data?.fourier_anual || 10,
+    est_semanal: entidad?.data?.est_semanal ?? true,
+    fourier_semanal: entidad?.data?.fourier_semanal || 3,
+    est_diaria: entidad?.data?.est_diaria ?? false,
+    fourier_diaria: entidad?.data?.fourier_diaria || null,
+    //modo estacionalidad
+    modo_est: entidad?.data?.modo_est || "additive",
+    //prior scales
+    scale_est: entidad?.data?.scale_est || 10.0,
+    scale_feriados: entidad?.data?.scale_feriados || 10.0,
+    scale_cambio: entidad?.data?.scale_cambio || 0.05,
+    //puntos de cambio
+    n_cambios: entidad?.data?.n_cambios || 25,
+    cambios: entidad?.data?.cambios || [],
+    //feriados y eventos especiales
+    usar_feriados: entidad?.data?.usar_feriados ?? false,
+    eventos: entidad?.data?.eventos || [],
+    estacionalidades_extra: entidad?.data?.estacionalidades_extra || [],
+    //regresores adicionales
+    regresores: entidad?.data?.regresores || [],
+    //incertidumbre
+    inc_tendencia: entidad?.data?.inc_tendencia ?? true,
+    inc_estacionalidad: entidad?.data?.inc_estacionalidad ?? true,
+    incertidumbre_muestras: entidad?.data?.incertidumbre_muestras || 1000,
+    //frecuencia de datos
+    frecuencia: entidad?.data?.frecuencia || "D",
+    //descripcion
+    descripcion: entidad?.data?.descripcion || "",
+    //estado
+    estado: entidad?.data?.estado ?? true,
+  });
 
   const camposExtras = (formValues) => {
     const extras = {
@@ -112,20 +104,14 @@ export default function CreateConfiguracionModelo() {
       n_cambios: formValues.n_cambios,
       usar_feriados: formValues.usar_feriados,
       cambios: formValues.cambios,
-      eventos: formValues.eventos.map(
+      eventos: formValues.eventos.map(({ _internalId, ...rest }) => rest),
+      estacionalidades_extra: formValues.estacionalidades_extra.map(
         ({ _internalId, ...rest }) => rest
       ),
-      estacionalidades_extra:
-        formValues.estacionalidades_extra.map(
-          ({ _internalId, ...rest }) => rest
-        ),
-      regresores: formValues.regresores.map(
-        ({ _internalId, ...rest }) => rest
-      ),
-      inc_tendencia:
-        formValues.inc_tendencia,
-      inc_estacionalidad:
-        formValues.inc_estacionalidad,
+      regresores: formValues.regresores.map(({ _internalId, ...rest }) => rest),
+      inc_tendencia: formValues.inc_tendencia,
+      inc_estacionalidad: formValues.inc_estacionalidad,
+      incertidumbre_muestras: formValues.incertidumbre_muestras,
       frecuencia: formValues.frecuencia,
       //descripcion
       descripcion: formValues.descripcion,
@@ -190,7 +176,6 @@ export default function CreateConfiguracionModelo() {
       name: "cap_max",
       type: "float",
       placeholder: "Ingrese la capacidad máxima",
-      required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -208,7 +193,6 @@ export default function CreateConfiguracionModelo() {
       name: "int_confianza",
       type: "float",
       placeholder: "Ingrese el intervalo de confianza",
-      required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     // =========================
@@ -219,7 +203,6 @@ export default function CreateConfiguracionModelo() {
       label: "Usar Estacionalidad Anual",
       name: "est_anual",
       checked: formValues.est_anual,
-      required: false,
       onChange: manejarEntradas.handleToggleChange("est_anual"),
     },
     {
@@ -228,7 +211,6 @@ export default function CreateConfiguracionModelo() {
       name: "fourier_anual",
       type: "number",
       placeholder: "Ingrese el fourier anual",
-      required: true,
       value: formValues.fourier_anual,
       onChange: manejarEntradas.handleInputChange,
       visible: formValues.est_anual,
@@ -238,7 +220,6 @@ export default function CreateConfiguracionModelo() {
       label: "Usar Estacionalidad Semanal",
       name: "est_semanal",
       checked: formValues.est_semanal,
-      required: false,
       onChange: manejarEntradas.handleToggleChange("est_semanal"),
     },
     {
@@ -247,7 +228,6 @@ export default function CreateConfiguracionModelo() {
       name: "fourier_semanal",
       type: "number",
       placeholder: "Ingrese el fourier semanal",
-      required: true,
       value: formValues.fourier_semanal,
       onChange: manejarEntradas.handleInputChange,
       visible: formValues.est_semanal,
@@ -257,7 +237,6 @@ export default function CreateConfiguracionModelo() {
       label: "Usar estacionalidad Diaria",
       name: "est_diaria",
       checked: formValues.est_diaria,
-      required: false,
       onChange: manejarEntradas.handleToggleChange("est_diaria"),
     },
     {
@@ -266,7 +245,6 @@ export default function CreateConfiguracionModelo() {
       name: "fourier_diaria",
       type: "number",
       placeholder: "Ingrese el fourier diaria",
-      required: true,
       value: formValues.fourier_diaria,
       onChange: manejarEntradas.handleInputChange,
       visible: formValues.est_diaria,
@@ -288,7 +266,6 @@ export default function CreateConfiguracionModelo() {
       name: "scale_est",
       type: "float",
       placeholder: "Ingrese la escala de prioridad de estacionalidad",
-      required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -297,7 +274,6 @@ export default function CreateConfiguracionModelo() {
       name: "scale_feriados",
       type: "float",
       placeholder: "Ingrese la escala de prioridad de días festivos",
-      required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     {
@@ -306,7 +282,6 @@ export default function CreateConfiguracionModelo() {
       name: "scale_cambio",
       type: "float",
       placeholder: "Ingrese la escala de prioridad de puntos de cambio",
-      required: true,
       onChange: manejarEntradas.handleInputChange,
     },
     // =========================
@@ -318,7 +293,6 @@ export default function CreateConfiguracionModelo() {
       name: "n_cambios",
       type: "number",
       placeholder: "Ingrese el número de puntos de cambio",
-      required: true,
       onChange: manejarEntradas.handleInputChange,
     },
 
@@ -339,7 +313,6 @@ export default function CreateConfiguracionModelo() {
       label: "Usar Feriados",
       name: "usar_feriados",
       checked: formValues.usar_feriados,
-      required: false,
       onChange: manejarEntradas.handleToggleChange("usar_feriados"),
     },
     {
@@ -374,20 +347,23 @@ export default function CreateConfiguracionModelo() {
       label: "Incluir incertidumbre tendencia",
       name: "inc_tendencia",
       checked: formValues.inc_tendencia,
-      required: false,
-      onChange: manejarEntradas.handleToggleChange(
-        "inc_tendencia"
-      ),
+      onChange: manejarEntradas.handleToggleChange("inc_tendencia"),
     },
     {
       component: ToggleSwitch,
       label: "Incluir incertidumbre estacionalidad",
       name: "inc_estacionalidad",
       checked: formValues.inc_estacionalidad,
-      required: false,
-      onChange: manejarEntradas.handleToggleChange(
-        "inc_estacionalidad"
-      ),
+      onChange: manejarEntradas.handleToggleChange("inc_estacionalidad"),
+    },
+    {
+      component: InputField,
+      label: "Número de muestras de incertidumbre",
+      name: "incertidumbre_muestras",
+      type: "number",
+      placeholder: "Ingrese el número de muestras",
+      value: formValues.incertidumbre_muestras,
+      onChange: manejarEntradas.handleInputChange,
     },
     // ======================================
     // Sección: Frecuencia de datos
