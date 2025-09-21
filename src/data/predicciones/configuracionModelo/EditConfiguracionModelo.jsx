@@ -103,7 +103,9 @@ export default function EditConfiguracionModelo() {
       scale_cambio: formValues.scale_cambio,
       n_cambios: formValues.n_cambios,
       usar_feriados: formValues.usar_feriados,
-      cambios: formValues.cambios,
+      cambios: formValues.cambios.map((item) =>
+        typeof item === "string" ? item : item.ds
+      ),
       eventos: formValues.eventos.map(({ _internalId, ...rest }) => rest),
       estacionalidades_extra: formValues.estacionalidades_extra.map(
         ({ _internalId, ...rest }) => rest
