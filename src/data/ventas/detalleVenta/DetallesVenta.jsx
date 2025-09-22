@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useVenta } from "../../../hooks/useEntities";
 import Loading from "../../../components/shared/Loading";
 import ErrorMessage from "../../../components/shared/ErrorMessaje";
+import { Navigation } from "../../../components/shared";
 
 function DetallesVenta() {
   const { id } = useParams();
@@ -16,11 +17,20 @@ function DetallesVenta() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-4 space-y-4">
+      <Navigation
+        title={`Detalles de la Venta N° ${venta.id}`}
+        subTitle="Información de la venta"
+        actions={[
+          {
+            label: "Volver",
+            to: -1,
+            estilos:
+              "bg-gray-500 text-white px-4 py-1 rounded-md hover:bg-gray-600",
+          },
+        ]}
+      />
       {/* Información de la venta */}
       <div className="bg-white rounded-lg shadow p-4">
-        <h1 className="text-xl font-semibold text-gray-900 mb-2">
-          Venta #{venta.id}
-        </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-gray-700 text-sm">
           <p>Fecha: {new Date(venta.fecha_creacion).toLocaleString()}</p>
           <p>Usuario: {venta.usuario_creacion}</p>

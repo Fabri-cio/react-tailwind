@@ -3,17 +3,31 @@ import { useVentas } from "../../../hooks/useEntities";
 import EntityList from "../../../components/shared/EntityList";
 import FormattedDate from "../../../components/shared/FormattedDate";
 import { Link } from "react-router-dom";
+import { ActionButton } from "../../../components/shared/ActionButton";
+import { FaEye } from "react-icons/fa";
 
 function Ventas() {
   const ventasFields = () => [
     { key: "index", label: "N°" },
     {
+      key: "actions",
+      label: "Acciones",
+      render: (item) => (
+        <div className="flex gap-2">
+          <ActionButton
+            to={`/ventas/detallesVenta/${item.id}`}
+            icon={FaEye}
+            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center p-1"
+            title="Ver Detalles"
+          />
+        </div>
+      ),
+    },
+    {
       key: "fecha_venta",
       label: "Fecha",
       render: (item) => (
-        <Link to={`/ventas/detallesVenta/${item.id}`}>
-          <FormattedDate date={item.fecha_creacion} />
-        </Link>
+        <FormattedDate date={item.fecha_creacion} showWeekday />
       ),
     },
     { key: "usuario_creacion", label: "Cajero" },

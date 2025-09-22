@@ -48,12 +48,12 @@ function Pedidos() {
     {
       key: "fecha_creacion",
       label: "Fecha de Creación",
-      render: (item) => <FormattedDate date={item.fecha_creacion} />,
+      render: (item) => <FormattedDate date={item.fecha_creacion} showWeekday />,
     },
     {
       key: "fecha_entrega",
       label: "Fecha de Entrega",
-      render: (item) => <FormattedDate date={item.fecha_entrega} />,
+      render: (item) => <FormattedDate date={item.fecha_entrega} showWeekday />,
     },
     {
       key: "nombre_proveedor",
