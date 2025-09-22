@@ -4,37 +4,48 @@ import { format } from "date-fns";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 import {
-  useInventarioVenta, // 🔹 Descomentar cuando uses datos reales
+  useInventarioVenta,
   useConfiguracionesModelos,
 } from "../../hooks/useEntities";
-import { Navigation, SelectField, Table } from "../shared";
+import {
+  ActionButton,
+  InputField,
+  Navigation,
+  SelectField,
+  Table,
+} from "../shared";
 import ventasEjemplo from "./ventasEjemplo.json";
 import Loading from "../shared/Loading";
 import ErrorMessage from "../shared/ErrorMessaje";
+import { useFormEntity } from "../../utils/useFormEntity";
 
 ChartJS.register(...registerables);
 
 function DetallesProducto() {
+  const { paraSelectsdestructuringYMap } = useFormEntity();
+
   const [modeloSeleccionado, setModeloSeleccionado] = useState(null);
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
+  const [horizon, setHorizon] = useState(7); // Predicción por defecto 7 días
 
   const { id } = useParams();
-  console.log(id);
   const { data: inventario = {}, isLoading, isError } = useInventarioVenta(id);
+
   const navigate = useNavigate();
 
-  // 🔹 Datos de prueba
+  // Datos de prueba
   const producto = "Producto de Ejemplo";
   const ventas = ventasEjemplo;
 
-  const { data: modelosData = {} } = useConfiguracionesModelos({
-    all_data: true,
-  });
+  // Transformación de los datos (seguro, no es hook)
+  const modelosOptions = paraSelectsdestructuringYMap(
+    useConfiguracionesModelos,
+    "id",
+    "nombre"
+  );
 
-  const modelosOptions = Array.isArray(modelosData)
-    ? modelosData
-    : modelosData.results || [];
-
-  // 🔹 Agrupar ventas por fecha
+  // Agrupar ventas por fecha
   const ventasAgrupadas = ventas.reduce((acc, venta) => {
     const fecha = format(new Date(venta.fecha), "yyyy-MM-dd");
     const cantidad = venta.cantidad;
@@ -50,7 +61,7 @@ function DetallesProducto() {
     })
   );
 
-  // 🔹 Configuración del gráfico mejorada
+  // Configuración del gráfico
   const dataLine = {
     labels: ventasParaTabla.map((v) => v.fecha),
     datasets: [
@@ -70,27 +81,17 @@ function DetallesProducto() {
   const optionsLine = {
     responsive: true,
     plugins: {
-      legend: {
-        display: true,
-        position: "top",
-      },
-      tooltip: {
-        mode: "index",
-        intersect: false,
-      },
+      legend: { display: true, position: "top" },
+      tooltip: { mode: "index", intersect: false },
     },
-    interaction: {
-      mode: "nearest",
-      axis: "x",
-      intersect: false,
-    },
+    interaction: { mode: "nearest", axis: "x", intersect: false },
     scales: {
       x: {
         ticks: {
-          maxRotation: 45, // o 60 grados
+          maxRotation: 45,
           minRotation: 45,
           autoSkip: true,
-          maxTicksLimit: 20, // limita la cantidad de etiquetas mostradas
+          maxTicksLimit: 20,
         },
       },
       y: { beginAtZero: true },
@@ -103,24 +104,37 @@ function DetallesProducto() {
       return;
     }
 
+    // Filtrar ventas según fechas seleccionadas
+    const ventasFiltradas = ventasParaTabla.filter((v) => {
+      const fecha = new Date(v.fecha);
+      const inicio = fechaInicio ? new Date(fechaInicio) : null;
+      const fin = fechaFin ? new Date(fechaFin) : null;
+      return (!inicio || fecha >= inicio) && (!fin || fecha <= fin);
+    });
+
     const formData = new FormData();
     const csvRows = ['"ds","y"'];
-    ventasParaTabla.forEach((venta) => {
+    ventasFiltradas.forEach((venta) => {
       csvRows.push(`"${venta.fecha}",${venta.cantidad}`);
     });
 
     const csvString = csvRows.join("\n");
     const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
     formData.append("file", blob, `${producto}_ventas_diarias.csv`);
-    formData.append("config", JSON.stringify(modeloSeleccionado));
+
+    // Incluir la configuración del modelo con horizon y toggles
+    formData.append(
+      "config",
+      JSON.stringify({
+        modelo_id: modeloSeleccionado.id,
+        periodos_prediccion: horizon,
+      })
+    );
 
     try {
       const response = await fetch(
         "http://localhost:8000/api/v1/predicciones/prediccion/csv/",
-        {
-          method: "POST",
-          body: formData,
-        }
+        { method: "POST", body: formData }
       );
       const data = await response.json();
       if (response.ok) {
@@ -143,41 +157,46 @@ function DetallesProducto() {
     return <ErrorMessage message="No se encontraron datos del inventario." />;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-1">
       <Navigation
         title={`Gráficos de Ventas - ${inventario.producto_nombre}`}
         subTitle="Detalles de las ventas"
         actions={[]}
       />
 
-      {/* Rango de fechas + Modelo + Botón en una sola línea */}
+      {/* Rango de fechas + Modelo + Horizon + Toggles + Botón */}
       <div className="flex flex-wrap items-end gap-4 w-full md:w-full">
-        {/* Fecha inicio */}
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600 w-16 text-right">
-            Inicio:
-          </label>
-          <input
+          <InputField
             type="date"
-            className="border border-gray-300 rounded-md px-2 py-1 w-36"
+            value={fechaInicio}
+            onChange={(e) => setFechaInicio(e.target.value)}
+            label="Inicio"
+            labelPosition="left"
           />
         </div>
-
-        {/* Fecha fin */}
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600 w-16 text-right">Fin:</label>
-          <input
+          <InputField
             type="date"
-            className="border border-gray-300 rounded-md px-2 py-1 w-36"
+            value={fechaFin}
+            onChange={(e) => setFechaFin(e.target.value)}
+            label="Fin"
+            labelPosition="left"
           />
         </div>
-
-        {/* Selector modelo */}
+        <div className="flex items-center gap-2">
+          <InputField
+            type="number"
+            min={1}
+            value={horizon}
+            onChange={(e) => setHorizon(Number(e.target.value))}
+            label="Horizonte"
+            labelPosition="left"
+          />
+        </div>
         <div className="flex items-center gap-2 flex-1">
-          <label className="text-sm text-gray-600 w-16 text-right">
-            Modelo:
-          </label>
           <SelectField
+            label="Modelo"
             name="modelo"
             value={modeloSeleccionado?.id || ""}
             onChange={(e) => {
@@ -186,21 +205,14 @@ function DetallesProducto() {
               );
               setModeloSeleccionado(modelo);
             }}
-            options={modelosOptions.map((m) => ({
-              id: m.id,
-              nombre: m.nombre,
-            }))}
-            className="w-full"
+            options={modelosOptions}
           />
         </div>
-
-        {/* Botón Predecir */}
-        <button
+        <ActionButton
           onClick={enviarCSVyObtenerPrediccion}
-          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-        >
-          Predecir
-        </button>
+          label="Predecir"
+          estilos="bg-green-500 text-white px-4 py-1 rounded-md hover:bg-green-600"
+        />
       </div>
 
       {/* Gráfico y Tabla */}

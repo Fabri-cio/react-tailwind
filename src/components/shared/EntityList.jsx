@@ -84,7 +84,7 @@ function EntityList({ entityData }) {
     <div className="bg-white">
       <Navigation title={title} subTitle={subTitle} actions={actions} icon={icon} />
 
-      <div className="flex justify-between mx-2 my-2">
+      <div className="flex justify-between mx-2">
         <FiltroBusquedaOrden
           onChange={manejarCambioFiltros}
           filtros={filtros}
