@@ -26,6 +26,7 @@ import {
 import {
   ClientesAPI,
   VentasAPI,
+  VentasReporteAPI,
   DetallesVentaAPI,
   ComprobantesVentaAPI,
 } from "../api/venta.api";
@@ -308,6 +309,27 @@ export const useVentas = (
 export const useVenta = (id) =>
   useData(VentasAPI, "venta", id, {}, 1000 * 60 * 5, !!id);
 export const useVentaMutations = () => useEntityMutations(VentasAPI, "Venta");
+
+//reporte de ventas
+export const useVentasReporte = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    VentasReporteAPI,
+    "ventas-reporte",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 
 //detalles de venta
 export const useDetallesVentas = (

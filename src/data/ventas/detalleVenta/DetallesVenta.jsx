@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useVenta } from "../../../hooks/useEntities";
 import Loading from "../../../components/shared/Loading";
 import ErrorMessage from "../../../components/shared/ErrorMessaje";
-import { Navigation } from "../../../components/shared";
+import { FormattedDate, Navigation } from "../../../components/shared";
 
 function DetallesVenta() {
   const { id } = useParams();
@@ -32,13 +32,27 @@ function DetallesVenta() {
       {/* Información de la venta */}
       <div className="bg-white rounded-lg shadow p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-gray-700 text-sm">
-          <p>Fecha: {new Date(venta.fecha_creacion).toLocaleString()}</p>
-          <p>Usuario: {venta.usuario_creacion}</p>
-          <p>Tienda: {venta.nombre_tienda}</p>
-          <p>Método de pago: {venta.metodo_pago}</p>
-          <p>Descuento: Bs. {venta.descuento}</p>
-          <p className="font-medium text-gray-900">
-            Total: Bs. {venta.total_venta}
+          <p>
+            <span className="font-medium">Fecha: </span>
+            <FormattedDate date={venta.fecha_creacion} showWeekday />
+          </p>
+          <p>
+            <span className="font-medium">Usuario: </span>
+            {venta.usuario_creacion}
+          </p>
+          <p>
+            <span className="font-medium">Tienda: </span> {venta.nombre_tienda}
+          </p>
+          <p>
+            <span className="font-medium">Método de pago: </span>{" "}
+            {venta.metodo_pago}
+          </p>
+          <p>
+            <span className="font-medium">Descuento: </span> Bs.{" "}
+            {venta.descuento}
+          </p>
+          <p>
+            <span className="font-medium">Total: </span> Bs. {venta.total_venta}
           </p>
         </div>
       </div>

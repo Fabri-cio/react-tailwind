@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Line, Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Navigation } from "./Navigation";
@@ -8,81 +8,68 @@ import {
   FaRegFilePowerpoint,
   FaFileExcel,
 } from "react-icons/fa";
+import { useFormEntity } from "../../utils/useFormEntity";
+import { useAlmacenes, useVentasReporte } from "../../hooks/useEntities";
 
 ChartJS.register(...registerables);
 
-// Datos de ejemplo (simulados)
-const tiendas = ["Tienda 1", "Tienda 2", "Tienda 3", "Tienda 4"];
-const almacenes = [
-  "Almacén 1",
-  "Almacén 2",
-  "Almacén 3",
-  "Almacén 4",
-  "Almacén 5",
-];
-
-const generarVentasEjemplo = () => {
-  const ventas = [];
-  const hoy = new Date("2025-09-01");
-
-  for (let i = 0; i < 30; i++) {
-    const fecha = new Date(hoy);
-    fecha.setDate(hoy.getDate() + i);
-    const fechaStr = fecha.toISOString().slice(0, 10);
-
-    tiendas.forEach((tienda) => {
-      const almacen = almacenes[Math.floor(Math.random() * almacenes.length)];
-      const cantidad = Math.floor(Math.random() * 400) + 100;
-      ventas.push({ fecha: fechaStr, tienda, almacen, cantidad });
-    });
-  }
-
-  return ventas;
-};
-
-const ventasEjemplo = generarVentasEjemplo();
-
 const ReporteVentas = () => {
+  const { paraSelectsdestructuringYMap, todosDatosOpaginacion } =
+    useFormEntity();
+
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
-  const [tienda, setTienda] = useState("");
   const [almacen, setAlmacen] = useState("");
   const [vista, setVista] = useState("dia");
-  const [tipoGrafico, setTipoGrafico] = useState("line"); // 👈 nuevo estado
+  const [tipoGrafico, setTipoGrafico] = useState("line");
 
-  // Filtrado
-  const ventasFiltradas = ventasEjemplo.filter((v) => {
+  // Preparar filtros para la API
+  const filtros = {};
+  if (fechaInicio) filtros.fechaInicio = fechaInicio;
+  if (fechaFin) filtros.fechaFin = fechaFin;
+  if (almacen) filtros.almacen = almacen;
+
+  // Traer ventas con filtros
+  const ventas = todosDatosOpaginacion(useVentasReporte, {
+    filters: filtros,
+  }) || { items: [], isLoading: true };
+
+  // Traer almacenes
+  const almacenes =
+    paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre") || [];
+
+  // Transformar datos
+  const ventasReales = Array.isArray(ventas.items)
+    ? ventas.items.map((v) => ({
+        fecha: v.fecha?.slice(0, 10) || "Sin fecha",
+        almacen: v.almacen || "Sin dato",
+        cantidad: parseFloat(v.total_venta || 0),
+      }))
+    : [];
+
+  // Filtrado adicional en cliente (opcional)
+  const ventasFiltradas = ventasReales.filter((v) => {
     const fechaValida =
       (!fechaInicio || v.fecha >= fechaInicio) &&
       (!fechaFin || v.fecha <= fechaFin);
-    const tiendaValida = !tienda || v.tienda === tienda;
     const almacenValido = !almacen || v.almacen === almacen;
-    return fechaValida && tiendaValida && almacenValido;
+    return fechaValida && almacenValido;
   });
 
-  // Agrupación
+  // Agrupar por día, semana o mes
   const agruparPor = (datos, tipo) => {
-    if (tipo === "dia") {
-      return datos.reduce((acc, v) => {
-        acc[v.fecha] = (acc[v.fecha] || 0) + v.cantidad;
-        return acc;
-      }, {});
-    }
-    if (tipo === "semana") {
-      return datos.reduce((acc, v) => {
-        const semana = `Semana-${new Date(v.fecha).getWeek()}`;
-        acc[semana] = (acc[semana] || 0) + v.cantidad;
-        return acc;
-      }, {});
-    }
-    if (tipo === "mes") {
-      return datos.reduce((acc, v) => {
-        const mes = v.fecha.slice(0, 7);
-        acc[mes] = (acc[mes] || 0) + v.cantidad;
-        return acc;
-      }, {});
-    }
-    return {};
+    return datos.reduce((acc, v) => {
+      let key = "Desconocido";
+      if (tipo === "dia") key = v.fecha;
+      if (tipo === "semana")
+        key = v.fecha
+          ? `Semana-${new Date(v.fecha).getWeek()}`
+          : "Semana-Desconocida";
+      if (tipo === "mes")
+        key = v.fecha ? v.fecha.slice(0, 7) : "Mes-Desconocido";
+      acc[key] = (acc[key] || 0) + v.cantidad;
+      return acc;
+    }, {});
   };
 
   const agrupadas = agruparPor(ventasFiltradas, vista);
@@ -111,10 +98,9 @@ const ReporteVentas = () => {
   };
 
   return (
-    <main className="max-w-6xl mx-auto space-y-4 p-4 bg-white">
-      {/* Navigation */}
+    <main className="max-w-6xl mx-auto bg-white">
       <Navigation
-        title={"Reporte de Ventas"}
+        title="Reporte de Ventas"
         subTitle="Visualiza y filtra las ventas de tu negocio"
         icon={FaChartLine}
         actions={[
@@ -140,7 +126,7 @@ const ReporteVentas = () => {
       />
 
       {/* Filtros */}
-      <div className="flex flex-wrap gap-4 bg-gray-50 p-3 rounded-md border">
+      <div className="flex gap-4 bg-gray-50 px-2 rounded-md border my-2">
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-gray-700">Inicio</label>
           <input
@@ -150,7 +136,6 @@ const ReporteVentas = () => {
             onChange={(e) => setFechaInicio(e.target.value)}
           />
         </div>
-
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-gray-700">Fin</label>
           <input
@@ -160,39 +145,23 @@ const ReporteVentas = () => {
             onChange={(e) => setFechaFin(e.target.value)}
           />
         </div>
-
         <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-700">Tienda</label>
-          <select
-            className="border rounded px-2 py-1 text-sm bg-white"
-            value={tienda}
-            onChange={(e) => setTienda(e.target.value)}
-          >
-            <option value="">Todas</option>
-            {tiendas.map((t, i) => (
-              <option key={i} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-700">Almacén</label>
+          <label className="text-sm font-medium text-gray-700">
+            Almacén/Tienda
+          </label>
           <select
             className="border rounded px-2 py-1 text-sm bg-white"
             value={almacen}
             onChange={(e) => setAlmacen(e.target.value)}
           >
             <option value="">Todos</option>
-            {almacenes.map((a, i) => (
-              <option key={i} value={a}>
-                {a}
+            {almacenes?.map((a) => (
+              <option key={a.id} value={a.nombre}>
+                {a.nombre}
               </option>
             ))}
           </select>
         </div>
-
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-gray-700">Vista</label>
           <select
@@ -207,11 +176,9 @@ const ReporteVentas = () => {
         </div>
       </div>
 
-      {/* Layout: gráfica izquierda - tabla derecha */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Gráfico */}
+      {/* Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2">
         <div className="border rounded p-2">
-          {/* Selector tipo de gráfico 👇 */}
           <div className="flex justify-end mb-2">
             <select
               className="border rounded px-2 py-1 text-sm bg-white"
@@ -223,32 +190,50 @@ const ReporteVentas = () => {
               <option value="pie">Torta</option>
             </select>
           </div>
-
-          {tipoGrafico === "line" && <Line data={chartData} />}
-          {tipoGrafico === "bar" && <Bar data={chartData} />}
-          {tipoGrafico === "pie" && <Pie data={chartData} />}
+          {ventas.isLoading ? (
+            <p className="p-4 text-center">Cargando ventas...</p>
+          ) : ventasReales.length === 0 ? (
+            <p className="p-4 text-center">No hay ventas para mostrar</p>
+          ) : (
+            <>
+              {tipoGrafico === "line" && <Line data={chartData} />}
+              {tipoGrafico === "bar" && <Bar data={chartData} />}
+              {tipoGrafico === "pie" && <Pie data={chartData} />}
+            </>
+          )}
         </div>
 
-        {/* Tabla */}
-        <div className="border rounded max-h-80 overflow-y-auto">
+        <div className="border rounded h-[calc(100vh-250px)] overflow-y-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-100 border-b">
               <tr>
                 <th className="p-2 text-left">Fecha</th>
-                <th className="p-2 text-left">Tienda</th>
-                <th className="p-2 text-left">Almacén</th>
+                <th className="p-2 text-left">Almacén/Tienda</th>
                 <th className="p-2 text-left">Ventas</th>
               </tr>
             </thead>
             <tbody>
-              {ventasFiltradas.map((v, i) => (
-                <tr key={i} className="border-b hover:bg-gray-50">
-                  <td className="p-2">{v.fecha}</td>
-                  <td className="p-2">{v.tienda}</td>
-                  <td className="p-2">{v.almacen}</td>
-                  <td className="p-2 font-semibold">{v.cantidad}</td>
+              {ventas.isLoading ? (
+                <tr>
+                  <td colSpan={3} className="p-4 text-center">
+                    Cargando...
+                  </td>
                 </tr>
-              ))}
+              ) : ventasFiltradas.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="p-4 text-center">
+                    No hay ventas
+                  </td>
+                </tr>
+              ) : (
+                ventasFiltradas.map((v, i) => (
+                  <tr key={i} className="border-b hover:bg-gray-50">
+                    <td className="p-2">{v.fecha}</td>
+                    <td className="p-2">{v.almacen}</td>
+                    <td className="p-2 font-semibold">{v.cantidad}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
