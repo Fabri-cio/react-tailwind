@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Line, Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Navigation } from "./Navigation";
@@ -29,9 +29,15 @@ const ReporteVentas = () => {
   if (fechaFin) filtros.fechaFin = fechaFin;
   if (almacen) filtros.almacen = almacen;
 
+  // Saber si hay filtros aplicados
+  const hayFiltros = fechaInicio || fechaFin || almacen;
+
   // Traer ventas con filtros
   const ventas = todosDatosOpaginacion(useVentasReporte, {
     filters: filtros,
+    all_data: hayFiltros ? true : false, // 👈 clave
+    page: 1,
+    per_page: 10,
   }) || { items: [], isLoading: true };
 
   // Traer almacenes
