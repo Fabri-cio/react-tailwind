@@ -26,6 +26,7 @@ export const menus = [
     items: [
       { label: "Realizar Predicción", path: "/seleccionarProducto" },
       { label: "Configuraciones de Modelos", path: "/configuracionesModelos" },
+      { label: "Predicciones", path: "/predicciones" , roleRequired: ["admin"]},
     ],
     roleRequired: ["admin"],
   },

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Line,
@@ -14,13 +14,25 @@ import {
   ResponsiveContainer,
   ComposedChart,
 } from "recharts";
-import {Navigation} from "../shared";
-import { FormattedDate, Table } from "../shared";
+import { Navigation } from "../shared";
+import { FormattedDate, Table, Modal, ActionButton } from "../shared";
+import { FaTimes, FaCheck } from "react-icons/fa";
+import { usePrediccionesMutations } from "../../hooks/useEntities";
+import { toast } from "react-hot-toast";
+import { useFormEntity } from "../../utils/useFormEntity";
 
 function PrediccionResultados() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { forecast } = location.state || {};
+
+  const { forecast, inventario, configuracion, fecha_inicio, fecha_fin } =
+    location.state || {};
+
+  const { manejarEnvio } = useFormEntity();
+  const { crear: createMutation } = usePrediccionesMutations();
+
+  const [showModalPrediccion, setShowModalPrediccion] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (!forecast) {
     return <p>No hay resultados de predicción disponibles.</p>;
@@ -44,6 +56,41 @@ function PrediccionResultados() {
     return { day, avg: parseFloat(avg.toFixed(1)) };
   });
 
+  // Guardar predicción
+  const guardarPrediccion = (event) => {
+    setLoading(true);
+
+    manejarEnvio(
+      event,
+      null,
+      {
+        inventario,
+        configuracion,
+        fecha_inicio,
+        fecha_fin,
+        detalles: forecast.map((f) => ({
+          fecha: f.ds.split("T")[0],
+          cantidad: Math.round(f.yhat),
+        })),
+      },
+      createMutation,
+      null,
+      null,
+      {
+        onSuccess: () => {
+          toast.success("Predicción guardada correctamente");
+          setLoading(false);
+          setShowModalPrediccion(false); // ✅ fix aquí
+          navigate(-1);
+        },
+        onError: () => {
+          toast.error("Error al guardar la predicción");
+          setLoading(false);
+        },
+      }
+    );
+  };
+
   return (
     <div className="p-2 space-y-6">
       <Navigation
@@ -53,7 +100,8 @@ function PrediccionResultados() {
           {
             label: "Volver",
             to: -1,
-            estilos: "bg-gray-500 text-white px-4 py-1 rounded-md hover:bg-gray-600",
+            estilos:
+              "bg-gray-500 text-white px-4 py-1 rounded-md hover:bg-gray-600",
           },
         ]}
       />
@@ -124,7 +172,7 @@ function PrediccionResultados() {
                 <stop offset="95%" stopColor="#4A90E2" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <XAxis dataKey="ds"/>
+            <XAxis dataKey="ds" />
             <YAxis />
             <CartesianGrid stroke="#ccc" />
             <Tooltip />
@@ -166,6 +214,40 @@ function PrediccionResultados() {
           },
         ]}
       />
+
+      <button
+        onClick={() => setShowModalPrediccion(true)}
+        className="px-4 py-2 bg-green-500 text-white rounded"
+      >
+        Guardar Predicción
+      </button>
+
+      {/* Modal de confirmación */}
+      {showModalPrediccion && (
+        <Modal onClose={() => setShowModalPrediccion(false)}>
+          <div className="p-4">
+            <h2 className="text-xl font-bold mb-4">
+              Confirmar guardado de predicción
+            </h2>
+            <p>¿Deseas guardar esta predicción?</p>
+
+            <div className="flex justify-end mt-4 space-x-2">
+              <ActionButton
+                icon={FaTimes}
+                onClick={() => setShowModalPrediccion(false)}
+                estilos="px-4 py-2 bg-red-500 text-white rounded"
+              />
+              <ActionButton
+                icon={FaCheck}
+                onClick={guardarPrediccion}
+                estilos="px-4 py-2 bg-green-500 text-white rounded"
+                disabled={loading}
+              />
+              {loading && <span className="ml-2">Guardando...</span>}
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

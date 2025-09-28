@@ -18,6 +18,9 @@ const CreateConfiguracionModelo = lazy(() =>
 const EditConfiguracionModelo = lazy(() =>
   import("../data/predicciones/configuracionModelo/EditConfiguracionModelo")
 );
+const Predicciones = lazy(() =>
+  import("../data/predicciones/predicciones/Predicciones")
+);
 export const prediccionesRoutes = [
   //predicciones
   {
@@ -44,5 +47,9 @@ export const prediccionesRoutes = [
   {
     path: "/editConfiguracionModelo/:id",
     element: <EditConfiguracionModelo />,
+  },
+  {
+    path: "/predicciones",
+    element: <Predicciones />,
   },
 ];

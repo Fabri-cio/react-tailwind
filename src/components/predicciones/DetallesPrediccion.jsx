@@ -61,13 +61,21 @@ function DetallesProducto() {
     })
   );
 
+  // Filtrar ventas según fechas seleccionadas
+  const ventasFiltradas = ventasParaTabla.filter((v) => {
+    const fecha = new Date(v.fecha);
+    const inicio = fechaInicio ? new Date(fechaInicio) : null;
+    const fin = fechaFin ? new Date(fechaFin) : null;
+    return (!inicio || fecha >= inicio) && (!fin || fecha <= fin);
+  });
+
   // Configuración del gráfico
   const dataLine = {
-    labels: ventasParaTabla.map((v) => v.fecha),
+    labels: ventasFiltradas.map((v) => v.fecha),
     datasets: [
       {
         label: "Ventas por Día",
-        data: ventasParaTabla.map((v) => v.cantidad),
+        data: ventasFiltradas.map((v) => v.cantidad),
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         tension: 0.3,
@@ -139,7 +147,14 @@ function DetallesProducto() {
       const data = await response.json();
       if (response.ok) {
         navigate("/prediccion-resultados", {
-          state: { forecast: data.forecast },
+          state: {
+            forecast: data.forecast,
+            inventario: inventario.id,
+            configuracion: modeloSeleccionado.id,
+            fecha_inicio: fechaInicio,
+            fecha_fin: fechaFin,
+            horizon: horizon,
+          },
         });
       } else {
         alert("Error al realizar la predicción: " + data.error);
@@ -223,7 +238,7 @@ function DetallesProducto() {
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <div className="max-h-72 overflow-y-auto">
             <Table
-              items={ventasParaTabla}
+              items={ventasFiltradas}
               fields={[
                 { label: "N°", key: "index" },
                 { label: "Fecha", key: "fecha" },
