@@ -4,7 +4,7 @@ export { default as Dropdown } from "./Dropdown";
 export { default as EditEntity } from "./EditEntity";
 export { default as EntityForm } from "./EntityForm";
 export { default as EntityList } from "./EntityList";
-export { default as ErrorMessaje } from "./ErrorMessaje";
+export { default as Error } from "./Error";
 export { default as FormattedDate } from "./FormattedDate";
 export { default as Image } from "./Image";
 export { default as Loading } from "./Loading";

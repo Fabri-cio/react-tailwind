@@ -1,6 +1,6 @@
 import Table from "../../components/shared/Table";
 import Loading from "../../components/shared/Loading";
-import ErrorMessage from "../../components/shared/ErrorMessaje";
+import ErrorMessage from "./Error";
 import Pagination from "../../components/shared/Pagination";
 import { Navigation } from "../../components/shared/Navigation";
 import { useFormEntity } from "../../utils/useFormEntity";
