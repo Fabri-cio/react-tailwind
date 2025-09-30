@@ -27,6 +27,12 @@ const CreateProveedor = lazy(() =>
 const EditProveedor = lazy(() =>
   import("../data/productos/proveedor/EditProveedor")
 );
+const ProductosPorCategoria = lazy(() =>
+  import("../data/productos/categoria/ProductosPorCategoria")
+);
+const ProductosPorProveedor = lazy(() =>
+  import("../data/productos/proveedor/ProductosPorProveedor")
+);
 export const productoRoutes = [
   // productos
   {
@@ -35,7 +41,11 @@ export const productoRoutes = [
   },
   {
     path: "/editProduct/:id",
-    element: <Modal onClose={false}><EditProduct /></Modal>,
+    element: (
+      <Modal onClose={false}>
+        <EditProduct />
+      </Modal>
+    ),
   },
   {
     path: "/createProduct",
@@ -58,6 +68,10 @@ export const productoRoutes = [
     path: "/createCategoria",
     element: <CreateCategoria />,
   },
+  {
+    path: "/productos_por_categoria/:id",
+    element: <ProductosPorCategoria />,
+  },
   // proveedores
   {
     path: "/proveedores",
@@ -70,5 +84,9 @@ export const productoRoutes = [
   {
     path: "/editProveedor/:id",
     element: <EditProveedor />,
+  },
+  {
+    path: "/productos_por_proveedor/:id",
+    element: <ProductosPorProveedor />,
   },
 ];

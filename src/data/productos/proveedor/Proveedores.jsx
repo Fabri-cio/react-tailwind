@@ -23,7 +23,11 @@ function Proveedores() {
     {
       key: "imagen",
       label: "Imagen",
-      render: (item) => <Image src={item.imagen} alt={item.nombre} />,
+      render: (item) => (
+        <Link to={`/productos_por_proveedor/${item.id}`}>
+          <Image src={item.imagen} alt={item.nombre} />
+        </Link>
+      ),
     },
     { key: "marca", label: "Marca" },
     { key: "contacto", label: "Nombre de Contacto" },

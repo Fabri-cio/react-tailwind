@@ -32,7 +32,6 @@ export default function CreateProduct() {
     categoria: "",
     estado: false,
     imagen: "",
-    documento: "",
   };
 
   const camposExtras = (formValues) => ({
@@ -40,7 +39,6 @@ export default function CreateProduct() {
     categoria: Number(formValues.categoria),
     precio: parseFloat(formValues.precio).toFixed(2),
     imagen: formValues.imagen || null,
-    documento: formValues.documento || null,
   });
 
   const paraEnvio = (formValues) => ({
@@ -139,14 +137,6 @@ export default function CreateProduct() {
         </div>
       ),
     },
-    // {
-    //   component: InputField,
-    //   label: "Documento",
-    //   name: "documento",
-    //   type: "file",
-    //   required: false,
-    //   onChange: manejarEntradas.handleInputChange,
-    // },
   ];
 
   const paraNavegacion = {

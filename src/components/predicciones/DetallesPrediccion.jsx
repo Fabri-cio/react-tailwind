@@ -16,7 +16,7 @@ import {
 } from "../shared";
 import ventasEjemplo from "./ventasEjemplo.json";
 import Loading from "../shared/Loading";
-import ErrorMessage from "../shared/ErrorMessaje";
+import ErrorMessage from "../shared/Error";
 import { useFormEntity } from "../../utils/useFormEntity";
 
 ChartJS.register(...registerables);

@@ -9,6 +9,8 @@ import {
   ProductosAPI,
   CategoriasAPI,
   ProveedoresAPI,
+  ProductosPorCategoriaAPI,
+  ProductosPorProveedorAPI,
 } from "../api/producto.api";
 import {
   UsuariosAPI,
@@ -79,6 +81,14 @@ export const useProduct = (id) =>
 //para mutaciones de productos
 export const useProductMutations = () =>
   useEntityMutations(ProductosAPI, "Producto");
+
+//productos por categoria
+export const useProductByCategory = (id) =>
+  useData(ProductosPorCategoriaAPI, "productos_por_categoria", id, {}, 1000 * 60 * 5, !!id);
+
+//productos por proveedor
+export const useProductByProveedor = (id) =>
+  useData(ProductosPorProveedorAPI, "productos_por_proveedor", id, {}, 1000 * 60 * 5, !!id);
 
 //categorias
 export const useCategorias = (

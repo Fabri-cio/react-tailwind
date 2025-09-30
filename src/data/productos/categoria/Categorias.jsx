@@ -1,5 +1,13 @@
 import { useCategorias } from "../../../hooks/useEntities";
-import { FaPlus, FaBox, FaEdit, FaHistory, FaTrash, FaEye, FaProductHunt } from "react-icons/fa";
+import {
+  FaPlus,
+  FaBox,
+  FaEdit,
+  FaHistory,
+  FaTrash,
+  FaEye,
+  FaProductHunt,
+} from "react-icons/fa";
 import { StatusBadge, EntityList, Image } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { Link } from "react-router-dom";
@@ -18,31 +26,30 @@ function Categorias() {
             title="Editar"
             estilos="hover:bg-blue-600 hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
-          <ActionButton
+          {/* <ActionButton
             to={`/historialCategoria/${item.id}`}
             icon={FaHistory}
             title="Historial"
             estilos="hover:bg-yellow-600 hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
-          />
-          <ActionButton
+          /> */}
+          {/* <ActionButton
             to={`/deleteCategoria/${item.id}`}
             icon={FaTrash}
             title="Eliminar"
             estilos="hover:bg-red-600 hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
-          />
-          <ActionButton
+          /> */}
+          {/* <ActionButton
             to={`/verCategoria/${item.id}`}
             icon={FaEye}
             title="Ver Categoria"
             estilos="hover:bg-black hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
-          />
+          /> */}
           <ActionButton
-            to={`/verProductos/${item.id}`}
+            to={`/productos_por_categoria/${item.id}`}
             icon={FaProductHunt}
             title="Ver Productos"
             estilos="hover:bg-green-600 hover:text-white text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
           />
-
         </div>
       ),
     },

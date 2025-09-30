@@ -163,33 +163,6 @@ export default function EditProduct() {
         </div>
       ),
     },
-    // {
-    //   name: 'documento',
-    //   component: () => (
-    //     <div className="space-y-2">
-    //       {formValues.documento && (
-    //         <div className="mb-2">
-    //           <span className="block text-sm font-medium text-gray-700 mb-1">Documento actual:</span>
-    //           <a 
-    //             href={formValues.documento} 
-    //             target="_blank" 
-    //             rel="noopener noreferrer"
-    //             className="text-blue-600 hover:underline text-sm"
-    //           >
-    //             Ver documento actual
-    //           </a>
-    //         </div>
-    //       )}
-    //       <InputField
-    //         label={formValues.documento ? "Cambiar documento" : "Subir documento"}
-    //         name="documento"
-    //         type="file"
-    //         accept=".pdf,.doc,.docx"
-    //         onChange={manejarEntradas.handleInputChange}
-    //       />
-    //     </div>
-    //   ),
-    // },
   ];
 
   const paraNavegacion = {

@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useVenta } from "../../../hooks/useEntities";
 import Loading from "../../../components/shared/Loading";
-import ErrorMessage from "../../../components/shared/ErrorMessaje";
+import ErrorMessage from "../../../components/shared/Error";
 import { FormattedDate, Navigation } from "../../../components/shared";
 
 function DetallesVenta() {
