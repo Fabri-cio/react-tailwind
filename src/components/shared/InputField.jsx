@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export function InputField({
   label,
   type = "text",
@@ -9,8 +11,12 @@ export function InputField({
   list,
   onKeyDown,
   labelPosition = "top", // 'top' o 'left', default arriba
+  validate, // nueva prop opcional
+  onChange, // tu handler externo
   ...props
 }) {
+  const [error, setError] = useState("");
+
   // Determinar valor del input según tipo
   const inputValue =
     type === "file" ? undefined : type === "number" ? value ?? "" : value ?? "";
@@ -23,6 +29,16 @@ export function InputField({
   // Clases de layout según labelPosition
   const containerClasses =
     labelPosition === "top" ? "flex flex-col" : "flex items-center space-x-2";
+
+  // Manejar cambio de valor
+  const handleChange = (e) => {
+    onChange?.(e); // mantiene tu funcionalidad original
+
+    if (validate) {
+      const validationError = validate(e.target.value);
+      setError(validationError || "");
+    }
+  };
 
   return (
     <div
@@ -44,11 +60,13 @@ export function InputField({
         autoFocus={autoFocus}
         list={list}
         onKeyDown={onKeyDown}
+        onChange={handleChange} // reemplazamos por handleChange
         {...props}
         className={`p-2 text-sm border border-gray-300 rounded ${
           labelPosition === "left" ? "flex-1" : "w-full"
         }`}
       />
+      {error && <span className="text-red-500 text-xs mt-1">{error}</span>}
     </div>
   );
 }

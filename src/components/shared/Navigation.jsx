@@ -15,13 +15,16 @@ export function Navigation({ title, actions = [], subTitle = "", icon: Icon }) {
 
         {/* Botones de acciones */}
         <div className="flex flex-wrap md:flex-nowrap items-center gap-2 md:justify-end pt-3 border-t border-gray-300 md:pt-0 md:border-0">
-          {actions.map(({ to, label, icon, estilos }, index) => (
+          {actions.map(({ to, label, icon, estilos, onClick, disabled, title }, index) => (
             <ActionButton
               key={index}
               to={to}
               label={label}
               icon={icon}
               estilos={estilos}
+              onClick={onClick}
+              disabled={disabled}
+              title={title}
             />
           ))}
         </div>

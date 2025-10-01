@@ -17,7 +17,7 @@ import { FaEye, FaPlus } from "react-icons/fa";
 
 export default function CreateUsuario() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
-  const { data: rolesData } = useRoles({all_data: true});
+  const { data: rolesData } = useRoles({ all_data: true });
 
   const almacenOptions = () =>
     paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre");
@@ -95,6 +95,13 @@ export default function CreateUsuario() {
       required: true,
       autoComplete: "password",
       onChange: manejarEntradas.handleInputChange,
+      validate: (value) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+        if (!regex.test(value)) {
+          return "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.";
+        }
+        return null;
+      },
     },
     {
       component: InputField,
@@ -104,6 +111,12 @@ export default function CreateUsuario() {
       required: true,
       autoComplete: "confirm-password",
       onChange: manejarEntradas.handleInputChange,
+      validate: (value) => {
+        if (value !== formValues.password) {
+          return "Las contraseñas no coinciden.";
+        }
+        return null;
+      },
     },
     {
       component: SelectField,
@@ -138,7 +151,7 @@ export default function CreateUsuario() {
       },
       labelLeft: "Roles Disponibles",
       labelRight: "Roles Seleccionados",
-      itemLabel: "name",  // campo de la data de permisos nombre
+      itemLabel: "name", // campo de la data de permisos nombre
       label: "Roles",
       name: "roles",
       actionButtons: [
