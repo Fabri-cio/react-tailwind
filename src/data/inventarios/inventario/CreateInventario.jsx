@@ -107,13 +107,6 @@ export default function CreateInventario() {
       required: true,
       onChange: manejarEntradas.handleInputChange,
     },
-    {
-      component: InputField,
-      label: "Comentario de Modificación",
-      name: "comentario_modificacion",
-      required: false,
-      onChange: manejarEntradas.handleInputChange,
-    },
   ];
 
   const paraNavegacion = {
