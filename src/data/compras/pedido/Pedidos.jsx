@@ -22,12 +22,14 @@ function Pedidos() {
       label: "Acciones",
       render: (item) => (
         <div className="flex gap-2">
-          <ActionButton
-            to={`/editPedido/${item.id}`}
-            icon={FaEdit}
-            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center p-1"
-            title="Editar Pedido"
-          />
+          {item.estado === "Recepcionado" ? null : (
+            <ActionButton
+              to={`/editPedido/${item.id}`}
+              icon={FaEdit}
+              estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center p-1"
+              title="Editar Pedido"
+            />
+          )}
           <ActionButton
             to={`/createPedido/${item.id}`}
             icon={item.estado === "Pendiente" ? FaHourglassHalf : FaCheckCircle}
@@ -48,7 +50,9 @@ function Pedidos() {
     {
       key: "fecha_creacion",
       label: "Fecha de Creación",
-      render: (item) => <FormattedDate date={item.fecha_creacion} showWeekday />,
+      render: (item) => (
+        <FormattedDate date={item.fecha_creacion} showWeekday />
+      ),
     },
     {
       key: "fecha_entrega",

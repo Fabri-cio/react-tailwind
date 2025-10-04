@@ -24,6 +24,7 @@ import {
   AlmacenesApi,
   MovimientosAPI,
   InventariosVentasAPI,
+  MetodoABC,
 } from "../api/inventario.api";
 import {
   ClientesAPI,
@@ -38,6 +39,7 @@ import {
   ComprasAPI,
   DetallesCompraAPI,
   PedidosRecepcionAPI,
+  DetallesCompraPedidoAPI,
 } from "../api/compra.api";
 import { useMutationWithToast } from "./useMutationWithToast";
 import { DashboardAPI } from "../api/reporte.api";
@@ -84,11 +86,25 @@ export const useProductMutations = () =>
 
 //productos por categoria
 export const useProductByCategory = (id) =>
-  useData(ProductosPorCategoriaAPI, "productos_por_categoria", id, {}, 1000 * 60 * 5, !!id);
+  useData(
+    ProductosPorCategoriaAPI,
+    "productos_por_categoria",
+    id,
+    {},
+    1000 * 60 * 5,
+    !!id
+  );
 
 //productos por proveedor
 export const useProductByProveedor = (id) =>
-  useData(ProductosPorProveedorAPI, "productos_por_proveedor", id, {}, 1000 * 60 * 5, !!id);
+  useData(
+    ProductosPorProveedorAPI,
+    "productos_por_proveedor",
+    id,
+    {},
+    1000 * 60 * 5,
+    !!id
+  );
 
 //categorias
 export const useCategorias = (
@@ -227,6 +243,27 @@ export const useInventario = (id) =>
   useData(InventariosAPI, "inventario", id, {}, 1000 * 60 * 5, !!id);
 export const useInventarioMutations = () =>
   useEntityMutations(InventariosAPI, "Inventario");
+
+//metodo abc
+export const useMetodoABC = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    MetodoABC,
+    "metodo-abc",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 
 //almacenes
 export const useAlmacenes = (
@@ -477,6 +514,36 @@ export const useDetallesCompra = (id) =>
   useData(DetallesCompraAPI, "detalle-compra", id, {}, 1000 * 60 * 5, !!id);
 export const useDetallesCompraMutations = () =>
   useEntityMutations(DetallesCompraAPI, "Detalle de la compra");
+
+//detalles compra pedido
+export const useDetallesCompraPedido = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    DetallesCompraPedidoAPI,
+    "detalles-compras-pedido",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+export const useDetalleCompraPedido = (id) =>
+  useData(
+    DetallesCompraPedidoAPI,
+    "detalle-compras-pedido",
+    id,
+    {},
+    1000 * 60 * 5,
+    !!id
+  );
 
 //predicciones
 export const useConfiguracionesModelos = (

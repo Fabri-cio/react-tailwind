@@ -33,7 +33,7 @@ export const menus = [
   {
     title: "Compras",
     icon: FaShoppingCart,
-    roleRequired: ["admin"],
+    roleRequired: ["admin", "Encargado de Tienda"],
     items: [
       { label: "Pedidos", path: "/pedidos" },
       { label: "Compras", path: "/compras" },

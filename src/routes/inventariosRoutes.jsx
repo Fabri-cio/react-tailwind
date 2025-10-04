@@ -12,13 +12,14 @@ const CreateTipoMovimiento = lazy(() => import ("../data/inventarios/tipoMovimie
 const EditTipoMovimiento = lazy(() => import ("../data/inventarios/tipoMovimiento/EditTipoMovimiento")) 
 const CreateMovimiento = lazy(() => import ("../data/inventarios/movimiento/CreateMovimiento")) 
 const EditMovimiento = lazy(() => import ("../data/inventarios/movimiento/EditMovimiento")) 
-
+const MetodoABC = lazy(() => import ("../data/inventarios/inventario/MetodoABC"))
 
 export const inventariosRoutes = [
     //inventario
     { path: "/inventarios", element: <Inventarios /> },
     { path: "/createInventario", element: <CrearInventario /> },
     { path: "/editInventario/:id", element: <EditInventario /> },
+    { path: "/inventarios/metodo-abc", element: <MetodoABC /> },
     //almacen
     { path: "/almacenes", element: <Almacenes /> },
     { path: "/createAlmacen", element: <CreateAlmacen /> },

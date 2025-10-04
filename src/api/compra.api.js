@@ -9,6 +9,7 @@ export const DetallesPedidoAPI = createCrudOperations(ApiCompras, "detalles-pedi
 export const ComprasAPI = createCrudOperations(ApiCompras, "compras");
 export const DetallesCompraAPI = createCrudOperations(ApiCompras, "detalles-compra");
 export const PedidosRecepcionAPI = createCrudOperations(ApiCompras, "pedidos-recepcion");
+export const DetallesCompraPedidoAPI = createCrudOperations(ApiCompras, "detalles-compra-pedido");
 
 
 
