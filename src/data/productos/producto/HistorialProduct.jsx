@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useProduct, useMovimientos } from "../../hooks/useEntities";
+import { useProduct, useMovimientos } from "../../../hooks/useEntities";
 import { FaBox, FaArrowRight, FaArrowDown } from "react-icons/fa";
 import { useFormEntity } from "../../utils/useFormEntity";
 
