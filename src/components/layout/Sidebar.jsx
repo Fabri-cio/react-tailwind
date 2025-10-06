@@ -33,7 +33,7 @@ const Sidebar = ({ isVisible }) => {
             {user?.fullName
               .split(" ")
               .slice(0, 2)
-              .map((n) => n[0].toUpperCase())
+              .map((n) => (n[0] ? n[0].toUpperCase() : ""))
               .join("")}
           </div>
         </div>
