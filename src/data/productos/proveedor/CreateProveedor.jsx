@@ -11,7 +11,7 @@ import ImagePreview from "../../../components/shared/ImagePreview";
 export default function CreateProveedor() {
   const estadoInicial = {
     marca: "",
-    nombre_contacto: "",
+    contacto: "",
     telefono: "",
     estado: false,
     imagen: "",
@@ -37,7 +37,7 @@ export default function CreateProveedor() {
     {
       component: InputField,
       label: "Nombre de Contacto",
-      name: "nombre_contacto",
+      name: "contacto",
       required: false,
       onChange: manejarEntradas.handleInputChange,
     },

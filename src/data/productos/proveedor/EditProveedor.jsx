@@ -13,7 +13,7 @@ import { FaEdit } from "react-icons/fa";
 export default function EditProveedor() {
   const configuracionFormulario = (entidad) => ({
     marca: entidad?.data?.marca || "",
-    nombre_contacto: entidad?.data?.nombre_contacto || "",
+    contacto: entidad?.data?.contacto || "",
     telefono: entidad?.data?.telefono || "",
     estado: entidad?.data?.estado || false,
     imagen: entidad?.data?.imagen || null,
@@ -42,7 +42,7 @@ export default function EditProveedor() {
     {
       component: InputField,
       label: "Nombre de Contacto",
-      name: "nombre_contacto",
+      name: "contacto",
       required: false,
       onChange: manejarEntradas.handleInputChange,
     },
