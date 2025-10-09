@@ -9,3 +9,4 @@ export const InventariosAPI = createCrudOperations(ApiAlmacenes, "inventarios");
 export const MovimientosAPI = createCrudOperations(ApiAlmacenes, "movimientos");
 export const InventariosVentasAPI = createCrudOperations(ApiAlmacenes, "inventarios-ventas");
 export const MetodoABC = createCrudOperations(ApiAlmacenes, "inventarios-abc");
+export const InventariosCarritoAPI = createCrudOperations(ApiAlmacenes, "inventarios-carrito");

@@ -25,6 +25,7 @@ import {
   MovimientosAPI,
   InventariosVentasAPI,
   MetodoABC,
+  InventariosCarritoAPI,
 } from "../api/inventario.api";
 import {
   ClientesAPI,
@@ -258,6 +259,27 @@ export const useMetodoABC = (
   return useData(
     MetodoABC,
     "metodo-abc",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//inventarios venta
+export const useInventarioCarrito = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    InventariosCarritoAPI,
+    "inventarios-carrito",
     null,
     mergedParams,
     staleTime,

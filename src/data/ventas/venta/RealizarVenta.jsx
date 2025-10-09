@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { useInventarios, useClientes } from "../../../hooks/useEntities";
+import { useInventarioCarrito, useClientes,useVentaMutations } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
 import {
   Modal,
@@ -8,14 +8,13 @@ import {
   Table,
 } from "../../../components/shared";
 import { FaTrash, FaPlus, FaSync, FaTimes, FaCheck } from "react-icons/fa";
-import { useVentaMutations } from "../../../hooks/useEntities";
 import { useFormEntity } from "../../../utils/useFormEntity";
 import { toast } from "react-hot-toast";
 
 function RealizarVenta() {
   const { manejarEnvio } = useFormEntity();
   const { crear: createMutation } = useVentaMutations();
-  const { data: productos = [] } = useInventarios({ all_data: true });
+  const { data: productos = [] } = useInventarioCarrito({ all_data: true });
 
   const productosMap = useMemo(() => {
     const map = {};
