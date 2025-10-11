@@ -18,7 +18,7 @@ const ImagePreview = ({
         return image;
       }
       // Si es una ruta relativa, la unimos con el backend
-      return `${API_BASE_URL}${image.startsWith("/") ? "" : "/"}${image}`;
+      return `${API_BASE_URL}/media/${image.startsWith("/") ? image.slice(1) : image}`;
     }
 
     // Si es un archivo local (File o Blob)
