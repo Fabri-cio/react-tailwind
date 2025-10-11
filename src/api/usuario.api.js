@@ -3,6 +3,7 @@ import { createCrudOperations} from "./api.crud";
 import { createApiInstance, request} from "./api.Base";
 
 const ApiUsers = createApi("usuarios");
+const ApiBaseURL = import.meta.env.VITE_API_BASE_URL;
 
 // Crear operaciones CRUD específicas para los usuarios
 export const UsuariosAPI = createCrudOperations(ApiUsers, "usuarios");
@@ -15,7 +16,7 @@ export const RegistroApi = createCrudOperations(ApiUsers, "register");
 export const logoutAll = () => request(ApiUsers, "post", "logoutall/");
 
 // 🔹 API de restablecimiento de contraseña (Corrección de rutas)
-const PasswordResetBaseURL = createApiInstance("http://localhost:8000/api/password_reset/");
+const PasswordResetBaseURL = createApiInstance(`${ApiBaseURL}/password_reset/`);
 
 export const PasswordResetAPI = {
   requestReset: (email) => request(PasswordResetBaseURL, "post", "", { email }),  // ← Ruta corregida
