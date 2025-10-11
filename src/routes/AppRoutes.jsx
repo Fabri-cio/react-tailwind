@@ -4,6 +4,8 @@ import { ErrorBoundary } from "react-error-boundary";
 import ProtectedRoute from "./ProtectedRoute";
 import MainLayout from "../components/layout/MainLayout";
 import PublicLayout from "../components/layout/PublicLayout";
+
+// Importa todas las rutas
 import { authRoutes } from "../routes/authRoutes";
 import { homeRoutes } from "./homeRoutes";
 import { prediccionesRoutes } from "./prediccionesRoutes";
@@ -14,8 +16,11 @@ import { usuariosRoutes } from "./usuariosRoutes";
 import { reportesRoutes } from "./reportesRoutes";
 import { comprasRoutes } from "./comprasRoutes";
 
+// Fallback general
 const FallbackComponent = () => <div>Hubo un error al cargar la página</div>;
+const SuspenseFallback = ({ message = "Cargando..." }) => <div>{message}</div>;
 
+// Unifica rutas privadas y públicas
 const rutasPublicas = [...authRoutes];
 const rutasPrivadas = [
   ...homeRoutes,
@@ -28,31 +33,33 @@ const rutasPrivadas = [
   ...comprasRoutes,
 ];
 
+const wrapWithSuspense = (element) => (
+  <Suspense fallback={<SuspenseFallback />}>{element}</Suspense>
+);
+
 const AppRoutes = () => {
   return (
     <ErrorBoundary FallbackComponent={FallbackComponent}>
-      <Suspense
-        fallback={<div className="spinner">Cargando Pagina Espere</div>}
-      >
-        <Routes>
-          {/* Rutas publicas */}
-          <Route element={<PublicLayout />}>
-            {rutasPublicas.map(({ path, element }) => (
-              <Route key={path} path={path} element={element} />
+      <Routes>
+        {/* Rutas públicas */}
+        <Route element={<PublicLayout />}>
+          {rutasPublicas.map(({ path, element }) => (
+            <Route key={path} path={path} element={wrapWithSuspense(element)} />
+          ))}
+        </Route>
+
+        {/* Rutas protegidas */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            {rutasPrivadas.map(({ path, element }) => (
+              <Route key={path} path={path} element={wrapWithSuspense(element)} />
             ))}
           </Route>
-          {/* Rutas protegidas */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<MainLayout />}>
-              {rutasPrivadas.map(({ path, element }) => (
-                <Route key={path} path={path} element={element} />
-              ))}
-            </Route>
-          </Route>
-          {/* Ruta para manejar páginas no encontradas */}
-          <Route path="*" element={<div>Página no encontrada</div>} />
-        </Routes>
-      </Suspense>
+        </Route>
+
+        {/* Ruta fallback 404 */}
+        <Route path="*" element={<div>Página no encontrada</div>} />
+      </Routes>
     </ErrorBoundary>
   );
 };
