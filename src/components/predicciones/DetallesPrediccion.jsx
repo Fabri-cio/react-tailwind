@@ -1,75 +1,71 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { format } from "date-fns";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 import {
   useInventarioVenta,
   useConfiguracionesModelos,
+  useVentasPorInventario,
 } from "../../hooks/useEntities";
 import {
   ActionButton,
+  FormattedDate,
   InputField,
   Navigation,
   SelectField,
   Table,
 } from "../shared";
-import ventasEjemplo from "./ventasEjemplo.json";
 import Loading from "../shared/Loading";
 import ErrorMessage from "../shared/Error";
 import { useFormEntity } from "../../utils/useFormEntity";
+import { FaSearch } from "react-icons/fa";
 
 ChartJS.register(...registerables);
 
 function DetallesProducto() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const [modeloSeleccionado, setModeloSeleccionado] = useState(null);
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
-  const [horizon, setHorizon] = useState(7); // Predicción por defecto 7 días
+  const [horizon, setHorizon] = useState(7); // Horizonte predicción
+  const [paramsVentas, setParamsVentas] = useState({
+    all_data: false,
+    page: 1,
+    filters: { inventario_id: id },
+  });
 
-  const { id } = useParams();
+  // Datos del inventario
   const { data: inventario = {}, isLoading, isError } = useInventarioVenta(id);
 
-  const navigate = useNavigate();
+  // Consumir API de ventas por inventario
+  const {
+    data: ventasData = { results: [] },
+    isLoading: loadingVentas,
+    refetch: refetchVentas,
+  } = useVentasPorInventario(paramsVentas);
 
-  // Datos de prueba
-  const producto = "Producto de Ejemplo";
-  const ventas = ventasEjemplo;
-
-  // Transformación de los datos (seguro, no es hook)
+  // Opciones de modelos
   const modelosOptions = paraSelectsdestructuringYMap(
     useConfiguracionesModelos,
     "id",
     "nombre"
   );
 
-  // Agrupar ventas por fecha
-  const ventasAgrupadas = ventas.reduce((acc, venta) => {
-    const fecha = format(new Date(venta.fecha), "yyyy-MM-dd");
-    const cantidad = venta.cantidad;
-    acc[fecha] = (acc[fecha] || 0) + cantidad;
-    return acc;
-  }, {});
+  // Normalizar ventasData para que siempre sea un array
+  const ventasArray = Array.isArray(ventasData)
+    ? ventasData // all_data=true ya es array
+    : ventasData.results || []; // paginado
 
-  const ventasParaTabla = Object.entries(ventasAgrupadas).map(
-    ([fecha, cantidad], index) => ({
-      index: index + 1,
-      fecha,
-      cantidad,
-    })
-  );
+  // Preparar ventas para tabla y gráfico
+  const ventasFiltradas = ventasArray.map((v, index) => ({
+    index: index + 1,
+    fecha: v.fecha,
+    cantidad: v.cantidad,
+  }));
 
-  // Filtrar ventas según fechas seleccionadas
-  const ventasFiltradas = ventasParaTabla.filter((v) => {
-    const fecha = new Date(v.fecha);
-    const inicio = fechaInicio ? new Date(fechaInicio) : null;
-    const fin = fechaFin ? new Date(fechaFin) : null;
-    return (!inicio || fecha >= inicio) && (!fin || fecha <= fin);
-  });
-
-  // Configuración del gráfico
   const dataLine = {
     labels: ventasFiltradas.map((v) => v.fecha),
     datasets: [
@@ -106,21 +102,27 @@ function DetallesProducto() {
     },
   };
 
+  // Función de filtrado por fechas
+  const aplicarFiltroFechas = () => {
+    if (!fechaInicio || !fechaFin) return;
+
+    setParamsVentas({
+      all_data: true,
+      page: 1,
+      filters: {
+        inventario_id: id,
+        fecha_inicio: fechaInicio,
+        fecha_fin: fechaFin,
+      },
+    });
+  };
+
   const enviarCSVyObtenerPrediccion = async () => {
     if (!modeloSeleccionado) {
       alert("Selecciona un modelo antes de predecir");
       return;
     }
 
-    // Filtrar ventas según fechas seleccionadas
-    const ventasFiltradas = ventasParaTabla.filter((v) => {
-      const fecha = new Date(v.fecha);
-      const inicio = fechaInicio ? new Date(fechaInicio) : null;
-      const fin = fechaFin ? new Date(fechaFin) : null;
-      return (!inicio || fecha >= inicio) && (!fin || fecha <= fin);
-    });
-
-    const formData = new FormData();
     const csvRows = ['"ds","y"'];
     ventasFiltradas.forEach((venta) => {
       csvRows.push(`"${venta.fecha}",${venta.cantidad}`);
@@ -128,9 +130,13 @@ function DetallesProducto() {
 
     const csvString = csvRows.join("\n");
     const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-    formData.append("file", blob, `${producto}_ventas_diarias.csv`);
+    const formData = new FormData();
+    formData.append(
+      "file",
+      blob,
+      `${inventario.producto_nombre}_ventas_diarias.csv`
+    );
 
-    // Incluir la configuración del modelo con horizon y toggles
     formData.append(
       "config",
       JSON.stringify({
@@ -140,8 +146,9 @@ function DetallesProducto() {
     );
 
     try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
       const response = await fetch(
-        "http://localhost:8000/api/v1/predicciones/prediccion/csv/",
+        `${API_BASE_URL}/predicciones/prediccion/csv/`,
         { method: "POST", body: formData }
       );
       const data = await response.json();
@@ -164,10 +171,10 @@ function DetallesProducto() {
     }
   };
 
-  if (isLoading)
+  if (isLoading || loadingVentas)
     return <Loading message="Cargando detalles del inventario..." />;
   if (isError)
-    return <ErrorMessage message="Error al cargar detalles del inventario." />;
+    return <ErrorMessage message="Error al cargar datos del inventario." />;
   if (!inventario)
     return <ErrorMessage message="No se encontraron datos del inventario." />;
 
@@ -179,50 +186,46 @@ function DetallesProducto() {
         actions={[]}
       />
 
-      {/* Rango de fechas + Modelo + Horizon + Toggles + Botón */}
+      {/* Rango de fechas + Modelo + Horizon + Botón Filtrar + Predecir */}
       <div className="flex flex-wrap items-end gap-4 w-full md:w-full">
-        <div className="flex items-center gap-2">
-          <InputField
-            type="date"
-            value={fechaInicio}
-            onChange={(e) => setFechaInicio(e.target.value)}
-            label="Inicio"
-            labelPosition="left"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <InputField
-            type="date"
-            value={fechaFin}
-            onChange={(e) => setFechaFin(e.target.value)}
-            label="Fin"
-            labelPosition="left"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <InputField
-            type="number"
-            min={1}
-            value={horizon}
-            onChange={(e) => setHorizon(Number(e.target.value))}
-            label="Horizonte"
-            labelPosition="left"
-          />
-        </div>
-        <div className="flex items-center gap-2 flex-1">
-          <SelectField
-            label="Modelo"
-            name="modelo"
-            value={modeloSeleccionado?.id || ""}
-            onChange={(e) => {
-              const modelo = modelosOptions.find(
-                (m) => m.id === Number(e.target.value)
-              );
-              setModeloSeleccionado(modelo);
-            }}
-            options={modelosOptions}
-          />
-        </div>
+        <InputField
+          type="date"
+          value={fechaInicio}
+          onChange={(e) => setFechaInicio(e.target.value)}
+          label="Inicio"
+          labelPosition="left"
+        />
+        <InputField
+          type="date"
+          value={fechaFin}
+          onChange={(e) => setFechaFin(e.target.value)}
+          label="Fin"
+          labelPosition="left"
+        />
+        <ActionButton
+          onClick={aplicarFiltroFechas}
+          icon={FaSearch}
+          estilos="bg-gray-400 text-white p-2 rounded-md hover:bg-gray-500"
+        />
+        <InputField
+          type="number"
+          min={1}
+          value={horizon}
+          onChange={(e) => setHorizon(Number(e.target.value))}
+          label="Horizonte"
+          labelPosition="left"
+        />
+        <SelectField
+          name="modelo"
+          value={modeloSeleccionado?.id || ""}
+          onChange={(e) => {
+            const modelo = modelosOptions.find(
+              (m) => m.id === Number(e.target.value)
+            );
+            setModeloSeleccionado(modelo);
+          }}
+          options={modelosOptions}
+        />
         <ActionButton
           onClick={enviarCSVyObtenerPrediccion}
           label="Predecir"
@@ -241,7 +244,11 @@ function DetallesProducto() {
               items={ventasFiltradas}
               fields={[
                 { label: "N°", key: "index" },
-                { label: "Fecha", key: "fecha" },
+                {
+                  label: "Fecha",
+                  key: "fecha",
+                  render: (item) => <FormattedDate date={item.fecha} />,
+                },
                 { label: "Cantidad", key: "cantidad" },
               ]}
             />

@@ -33,6 +33,7 @@ import {
   VentasReporteAPI,
   DetallesVentaAPI,
   ComprobantesVentaAPI,
+  VentasPorInventarioAPI,
 } from "../api/venta.api";
 import {
   PedidosAPI,
@@ -449,6 +450,27 @@ export const useCliente = (id) =>
   useData(ClientesAPI, "cliente", id, {}, 1000 * 60 * 5, !!id);
 export const useClienteMutations = () =>
   useEntityMutations(ClientesAPI, "Cliente");
+
+//ventas por inventario
+export const useVentasPorInventario = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    VentasPorInventarioAPI,
+    "ventas-por-inventario",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 
 //recepcion
 export const usePedidoRecepcion = (id) =>
