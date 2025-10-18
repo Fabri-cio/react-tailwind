@@ -36,9 +36,9 @@ function ProductList() {
       label: "Precio Bs.",
     },
     {
-      key: "imagen",
+      key: "image_url",
       label: "Imagen",
-      render: (item) => <Image src={item.imagen} alt={item.nombre} />,
+      render: (item) => <Image src={item.image_url} alt={item.nombre} />,
     },
   ];
 

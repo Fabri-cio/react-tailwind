@@ -1,4 +1,4 @@
-import { useProveedores } from "../../../hooks/useEntities";
+import { useProveedoresList } from "../../../hooks/useEntities";
 import { FaPlus, FaBox, FaEdit } from "react-icons/fa";
 import { StatusBadge, EntityList, Image } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
@@ -21,11 +21,11 @@ function Proveedores() {
       ),
     },
     {
-      key: "imagen",
+      key: "image_url",
       label: "Imagen",
       render: (item) => (
         <Link to={`/productos_por_proveedor/${item.id}`}>
-          <Image src={item.imagen} alt={item.nombre} />
+          <Image src={item.image_url} alt={item.marca} />
         </Link>
       ),
     },
@@ -47,7 +47,7 @@ function Proveedores() {
     subTitle: "",
     loadingMessage: "Cargando proveedores...",
     errorMessage: "Error al obtener los proveedores",
-    fetchDataHook: useProveedores,
+    fetchDataHook: useProveedoresList,
     itemKey: "id", //id_producto.  Es muy necesario para la tabla el itemKey
     entityFields: campos,
     actions: [

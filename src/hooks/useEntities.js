@@ -13,6 +13,7 @@ import {
   ProductosPorCategoriaAPI,
   ProductosPorProveedorAPI,
   CategoriasListAPI,
+  ProveedoresListAPI,
 } from "../api/producto.api";
 import {
   UsuariosAPI,
@@ -158,6 +159,27 @@ export const useCategoriaMutations = () =>
   useEntityMutations(CategoriasAPI, "Categoria");
 
 //proveedores
+
+export const useProveedoresList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    ProveedoresListAPI,
+    "proveedores-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
 export const useProveedores = (
   params = {},
   enabled = true,
