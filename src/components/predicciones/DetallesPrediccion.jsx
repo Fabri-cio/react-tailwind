@@ -47,10 +47,9 @@ function DetallesProducto() {
     refetch: refetchVentas,
   } = useVentasPorInventario(paramsVentas);
 
-  const { data: configModelosData = [], isLoading: loadingModelos } =
     useConfigModelSelectID();
   const modelosOptions = paraSelectsdestructuringYMap(
-    configModelosData,
+    useConfigModelSelectID,
     "id",
     "nombre"
   );
