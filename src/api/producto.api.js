@@ -8,3 +8,4 @@ export const CategoriasAPI = createCrudOperations(ApiProductos, "categorias");
 export const ProveedoresAPI = createCrudOperations(ApiProductos, "proveedores");
 export const ProductosPorCategoriaAPI = createCrudOperations(ApiProductos, "productos_por_categoria");
 export const ProductosPorProveedorAPI = createCrudOperations(ApiProductos, "productos_por_proveedor");
+export const CategoriasListAPI = createCrudOperations(ApiProductos, "categorias-list");

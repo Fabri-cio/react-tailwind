@@ -1,9 +1,5 @@
-import { useCategorias } from "../../../hooks/useEntities";
-import {
-  FaPlus,
-  FaBox,
-  FaEdit,
-} from "react-icons/fa";
+import { useCategoriasList } from "../../../hooks/useEntities";
+import { FaPlus, FaBox, FaEdit } from "react-icons/fa";
 import { StatusBadge, EntityList, Image } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { Link } from "react-router-dom";
@@ -26,11 +22,11 @@ function Categorias() {
       ),
     },
     {
-      key: "imagen",
+      key: "image_url",
       label: "Imagen",
       render: (item) => (
         <Link to={`/productos_por_categoria/${item.id}`}>
-          <Image src={item.imagen} alt={item.nombre} />
+          <Image src={item.image_url} alt={item.nombre} />
         </Link>
       ),
     },
@@ -50,7 +46,7 @@ function Categorias() {
     subTitle: "",
     loadingMessage: "Cargando categorias...",
     errorMessage: "Error al obtener las categorias",
-    fetchDataHook: useCategorias,
+    fetchDataHook: useCategoriasList,
     itemKey: "id", //id_categoria.  Es muy necesario para la tabla el itemKey
     entityFields: productFields,
     actions: [

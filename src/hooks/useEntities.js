@@ -4,6 +4,7 @@ import {
   ConfiguracionesModelosApi,
   DetallesPrediccionesApi,
   PrediccionesApi,
+  ConfigModelSelectIDApi,
 } from "../api/prediccion.api";
 import {
   ProductosAPI,
@@ -11,6 +12,7 @@ import {
   ProveedoresAPI,
   ProductosPorCategoriaAPI,
   ProductosPorProveedorAPI,
+  CategoriasListAPI,
 } from "../api/producto.api";
 import {
   UsuariosAPI,
@@ -34,6 +36,7 @@ import {
   DetallesVentaAPI,
   ComprobantesVentaAPI,
   VentasPorInventarioAPI,
+  VentasListAPI
 } from "../api/venta.api";
 import {
   PedidosAPI,
@@ -108,6 +111,27 @@ export const useProductByProveedor = (id) =>
     !!id
   );
 
+
+//categorias list
+export const useCategoriasList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    CategoriasListAPI,
+    "categorias-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 //categorias
 export const useCategorias = (
   params = {},
@@ -362,6 +386,20 @@ export const useTipoMovimiento = (id) =>
   useData(TipMovsApi, "tipos-movimiento", id, {}, 1000 * 60 * 5, !!id);
 export const useTipoMovimientoMutations = () =>
   useEntityMutations(TipMovsApi, "tipos-movimiento");
+
+//ventas list
+export const useVentasList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(VentasListAPI, "ventas-list", null, mergedParams, staleTime, enabled);
+};
 
 //ventas
 export const useVentas = (
@@ -620,6 +658,26 @@ export const useConfiguracionModelo = (id) =>
   );
 export const useConfiguracionModeloMutations = () =>
   useEntityMutations(ConfiguracionesModelosApi, "Configuracion de modelo");
+
+export const useConfigModelSelectID = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    ConfigModelSelectIDApi,
+    "config-model-select-id",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 
 //detalles de predicciones
 export const useDetallesPredicciones = (

@@ -5,22 +5,22 @@ export default function Image({
   alt = "",
   width = "w-20",
   height = "h-20",
-  className = "rounded-lg",
+  className = "",
   rounded = true,
   noImageText = "No hay imagen",
   ...props
 }) {
-  const [imgError, setImgError] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    // Si cambia la src, reseteamos el error
-    setImgError(false);
+    setLoaded(false);
+    setError(false);
   }, [src]);
 
   const roundedClass = rounded ? "rounded-lg" : "";
 
-  // Si no hay src o hubo error en la carga, mostramos texto simple
-  if (!src || imgError) {
+  if (!src || error) {
     return (
       <div
         className={`flex items-center justify-center text-gray-500 bg-gray-200 select-none
@@ -31,15 +31,23 @@ export default function Image({
     );
   }
 
-  // Si hay src y no error, mostramos la imagen sin animaciones ni loader
   return (
-    <img
-      src={src}
-      alt={alt}
-      // loading="lazy"
-      onError={() => setImgError(true)}
-      className={`object-cover ${width} ${height} ${roundedClass} ${className} hover:scale-150 transition duration-300`}
-      {...props}
-    />
+    <div
+      className={`${width} ${height} ${roundedClass} overflow-hidden relative bg-gray-200`}
+    >
+      {!loaded && (
+        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+      )}
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        className={`object-cover w-full h-full transition-transform duration-300
+          ${loaded ? "opacity-100" : "opacity-0"} hover:scale-105`}
+        {...props}
+      />
+    </div>
   );
 }

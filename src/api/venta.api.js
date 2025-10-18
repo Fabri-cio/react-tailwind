@@ -10,4 +10,5 @@ export const VentasReporteAPI = createCrudOperations(ApiVentas, "ventas-reporte"
 export const DetallesVentaAPI = createCrudOperations(ApiVentas, "detalles-venta");
 export const ComprobantesVentaAPI = createCrudOperations(ApiVentas, "comprobantes-venta");
 export const VentasPorInventarioAPI = createCrudOperations(ApiVentas, "ventas-por-inventario");
+export const VentasListAPI = createCrudOperations(ApiVentas, "ventas-list");
 

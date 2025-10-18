@@ -1,9 +1,7 @@
 import { FaSalesforce } from "react-icons/fa";
-import { useVentas } from "../../../hooks/useEntities";
+import { useVentasList } from "../../../hooks/useEntities";
 import EntityList from "../../../components/shared/EntityList";
-import FormattedDate from "../../../components/shared/FormattedDate";
-import { Link } from "react-router-dom";
-import { ActionButton } from "../../../components/shared/ActionButton";
+import { FormattedDate, ActionButton } from "../../../components/shared";
 import { FaEye } from "react-icons/fa";
 
 function Ventas() {
@@ -40,7 +38,7 @@ function Ventas() {
     subTitle: "Listado de Ventas",
     loadingMessage: "Cargando ventas...",
     errorMessage: "Error al obtener ventas",
-    fetchDataHook: useVentas,
+    fetchDataHook: useVentasList,
     all_data: false,
     itemKey: "id",
     entityFields: ventasFields,

@@ -31,12 +31,24 @@ function ConfiguracionesModelos() {
       label: "Nombre",
     },
     {
-      key: "descripcion",
-      label: "Descripción",
+      key: "crecimiento",
+      label: "Crecimiento",
+    },
+    {
+      key: "dataset",
+      label: "Datos",
+    },
+    {
+      key: "modo_est",
+      label: "Estacionalidad",
+    },
+    {
+      key: "frecuencia",
+      label: "Frecuencia",
     },
     {
       key: "int_confianza",
-      label: "Intervalo de confianza",
+      label: "Confianza",
     },
   ];
 

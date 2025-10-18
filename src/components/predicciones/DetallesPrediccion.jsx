@@ -4,7 +4,7 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 import {
   useInventarioVenta,
-  useConfiguracionesModelos,
+  useConfigModelSelectID,
   useVentasPorInventario,
 } from "../../hooks/useEntities";
 import {
@@ -47,9 +47,10 @@ function DetallesProducto() {
     refetch: refetchVentas,
   } = useVentasPorInventario(paramsVentas);
 
-  // Opciones de modelos
+  const { data: configModelosData = [], isLoading: loadingModelos } =
+    useConfigModelSelectID();
   const modelosOptions = paraSelectsdestructuringYMap(
-    useConfiguracionesModelos,
+    configModelosData,
     "id",
     "nombre"
   );

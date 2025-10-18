@@ -37,7 +37,7 @@ function DetallesVenta() {
             <FormattedDate date={venta.fecha_creacion} showWeekday />
           </p>
           <p>
-            <span className="font-medium">Usuario: </span>
+            <span className="font-medium">Cajero: </span>
             {venta.usuario_creacion}
           </p>
           <p>
