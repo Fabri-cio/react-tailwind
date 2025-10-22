@@ -5,6 +5,8 @@ import Dropdown from "../shared/Dropdown";
 import { ActionButton } from "../shared/ActionButton";
 import { toast } from "react-hot-toast";
 
+const isDev = import.meta.env.MODE === "development";
+
 const Navbar = ({ toggleSidebar }) => {
   const logoutUser = useLogout();
   const [notificaciones, setNotificaciones] = useState([]);
@@ -14,12 +16,13 @@ const Navbar = ({ toggleSidebar }) => {
   useEffect(() => {
     const fetchNotificaciones = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/v1/inventarios/notificaciones/");
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+        const res = await fetch(`${API_BASE_URL}/inventarios/notificaciones/`);
         const data = await res.json();
         // algunos endpoints DRF traen "results", otros no
         setNotificaciones(data.results || data);
       } catch (err) {
-        console.error("Error cargando notificaciones:", err);
+        if (isDev) console.error("Error cargando notificaciones:", err);
       }
     };
     fetchNotificaciones();
@@ -27,14 +30,16 @@ const Navbar = ({ toggleSidebar }) => {
 
   // 🔹 Conectar WebSocket para nuevas notificaciones
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8000/ws/notificaciones/");
+    const WS_BASE_URL = import.meta.env.VITE_WS_URL;
+    const ws = new WebSocket(`${WS_BASE_URL}/ws/notificaciones/`);
 
-    ws.onopen = () =>
-      console.log("✅ Conectado al WebSocket de notificaciones");
+    ws.onopen = () => {
+      if (isDev) console.log("✅ Conectado al WebSocket de notificaciones");
+    };
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("📩 Nueva notificación:", data);
+      if (isDev) console.log("📩 Nueva notificación:", data);
 
       toast(`${data.titulo}: ${data.mensaje}`);
 
@@ -44,8 +49,12 @@ const Navbar = ({ toggleSidebar }) => {
       ]);
     };
 
-    ws.onclose = () => console.log("🔌 Desconectado del WebSocket");
-    ws.onerror = (err) => console.error("❌ Error WebSocket:", err);
+    ws.onclose = () => {
+      if (isDev) console.log("🔌 Desconectado del WebSocket");
+    };
+    ws.onerror = (err) => {
+      if (isDev) console.error("❌ Error WebSocket:", err);
+    };
 
     return () => ws.close();
   }, []);
@@ -58,8 +67,9 @@ const Navbar = ({ toggleSidebar }) => {
     }
 
     try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
       const res = await fetch(
-        `http://localhost:8000/api/v1/inventarios/notificaciones/${id}/marcar-como-leida/`,
+        `${API_BASE_URL}/inventarios/notificaciones/${id}/marcar-como-leida/`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -67,7 +77,8 @@ const Navbar = ({ toggleSidebar }) => {
       );
 
       if (!res.ok) {
-        console.error("❌ Error al marcar como leída:", res.statusText);
+        if (isDev)
+          console.error("❌ Error al marcar como leída:", res.statusText);
         return;
       }
 
@@ -75,7 +86,7 @@ const Navbar = ({ toggleSidebar }) => {
         prev.map((n) => (n.id === id ? { ...n, leida: true } : n))
       );
     } catch (error) {
-      console.error("Error al marcar como leída:", error);
+      if (isDev) console.error("Error al marcar como leída:", error);
     }
   };
 

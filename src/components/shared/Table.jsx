@@ -15,7 +15,7 @@ const Table = ({ items, fields, currentPage, itemsPerPage, itemKey = "id", foote
     <div className="overflow-hidden shadow-sm border border-gray-200">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 text-[12px]">
-          <thead className="bg-gray-50 sticky top-0 z-10">
+          <thead className="bg-gray-50 top-0 z-10">
             <tr>{headers}</tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
