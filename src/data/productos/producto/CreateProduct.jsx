@@ -7,8 +7,8 @@ import {
 } from "../../../components/shared";
 import { useFormEntity } from "../../../utils/useFormEntity";
 import {
-  useProveedores,
-  useCategorias,
+  useProveedoresSelect,
+  useCategoriasSelect,
   useProductMutations,
 } from "../../../hooks/useEntities";
 import { FaEye, FaPlus } from "react-icons/fa";
@@ -18,10 +18,10 @@ export default function CreateProduct() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const proveedoresOptions = () =>
-    paraSelectsdestructuringYMap(useProveedores, "id", "marca");
+    paraSelectsdestructuringYMap(useProveedoresSelect, "id", "marca");
 
   const categoriasOptions = () =>
-    paraSelectsdestructuringYMap(useCategorias, "id", "nombre");
+    paraSelectsdestructuringYMap(useCategoriasSelect, "id", "nombre");
 
   // Estado inicial del formulario
   const estadoInicial = {

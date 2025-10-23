@@ -7,6 +7,8 @@ export const PrediccionesApi = createCrudOperations(ApiPredicciones, "prediccion
 export const ConfiguracionesModelosApi = createCrudOperations(ApiPredicciones, "configuraciones-modelo");
 export const DetallesPrediccionesApi = createCrudOperations(ApiPredicciones, "detalles-predicciones");
 export const ConfigModelSelectIDApi = createCrudOperations(ApiPredicciones, "config-model-select-id");
+export const ConfigModelListApi = createCrudOperations(ApiPredicciones, "config-model-list");
+
 
 
 

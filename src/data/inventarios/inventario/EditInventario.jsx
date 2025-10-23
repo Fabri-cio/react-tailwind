@@ -1,7 +1,7 @@
 import {
   useInventarioMutations,
-  useAlmacenes,
-  useProducts,
+  useAlmacenesSelect,
+  useProductsSelect,
   useInventario,
 } from "../../../hooks/useEntities";
 import { InputField, SelectField } from "../../../components/shared";
@@ -13,10 +13,10 @@ export default function EditInventario() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const productosOptions = () =>
-    paraSelectsdestructuringYMap(useProducts, "id", "nombre");
+    paraSelectsdestructuringYMap(useProductsSelect, "id", "nombre");
 
   const almacenesOptions = () =>
-    paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre");
+    paraSelectsdestructuringYMap(useAlmacenesSelect, "id", "nombre");
 
   const selects = {
     productosOptions,

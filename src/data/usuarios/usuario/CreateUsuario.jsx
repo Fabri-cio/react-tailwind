@@ -1,7 +1,7 @@
 import { useFormEntity } from "../../../utils/useFormEntity";
 import {
-  useAlmacenes,
-  useRoles,
+  useAlmacenesSelect,
+  useRolSelectDual,
   useUsuarioMutations,
 } from "../../../hooks/useEntities";
 import {
@@ -17,10 +17,10 @@ import { FaEye, FaPlus } from "react-icons/fa";
 
 export default function CreateUsuario() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
-  const { data: rolesData } = useRoles({ all_data: true });
+  const { data: rolesData } = useRolSelectDual({ all_data: true });
 
   const almacenOptions = () =>
-    paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre");
+    paraSelectsdestructuringYMap(useAlmacenesSelect, "id", "nombre");
 
   const selects = {
     almacenOptions,
@@ -154,18 +154,6 @@ export default function CreateUsuario() {
       itemLabel: "name", // campo de la data de permisos nombre
       label: "Roles",
       name: "roles",
-      actionButtons: [
-        {
-          to: "/createRol",
-          icon: FaPlus,
-          estilos: "text-green-600 hover:bg-green-600 hover:text-white p-1",
-        },
-        {
-          to: "/roles",
-          icon: FaEye,
-          estilos: "text-blue-600 hover:bg-blue-600 hover:text-white p-1",
-        },
-      ],
     },
     {
       component: ToggleSwitch,

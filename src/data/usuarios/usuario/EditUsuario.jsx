@@ -1,6 +1,6 @@
 import {
-  useAlmacenes,
-  useRoles,
+  useAlmacenesSelect,
+  useRolList,
   useUsuarioMutations,
   useUsuario,
 } from "../../../hooks/useEntities";
@@ -17,11 +17,11 @@ import { FaEdit, FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
 import { useFormEntity } from "../../../utils/useFormEntity";
 
 export default function EditUsuario() {
-  const { data: rolesData } = useRoles({ all_data: true });
+  const { data: rolesData } = useRolList({ all_data: true });
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const almacenOptions = () =>
-    paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre");
+    paraSelectsdestructuringYMap(useAlmacenesSelect, "id", "nombre");
 
   const selects = {
     almacenOptions,
@@ -134,26 +134,6 @@ export default function EditUsuario() {
       itemLabel: "name", // campo de la data de permisos nombre
       label: "Roles",
       name: "roles",
-      actionButtons: [
-        {
-          to: `/editRol/${formValues.id}`,
-          icon: FaPencilAlt,
-          estilos:
-            "text-yellow-600 hover:bg-yellow-600 hover:text-white rounded-lg p-1",
-        },
-        {
-          to: "/createRol",
-          icon: FaPlus,
-          estilos:
-            "text-green-600 hover:bg-green-600 hover:text-white rounded-lg p-1",
-        },
-        {
-          to: "/roles",
-          icon: FaEye,
-          estilos:
-            "text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg p-1",
-        },
-      ],
     },
     {
       component: ToggleSwitch,

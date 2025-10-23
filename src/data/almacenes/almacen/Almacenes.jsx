@@ -1,4 +1,4 @@
-import { useAlmacenes } from "../../../hooks/useEntities";
+import { useAlmacenesList } from "../../../hooks/useEntities";
 import { EntityList, ActionButton, StatusBadge } from "../../../components/shared";
 import { FaBox, FaPlus, FaEdit } from "react-icons/fa";
 
@@ -38,7 +38,7 @@ export default function Almacenes() {
     subTitle: "Lista de almacenes",
     loadingMessage: "Cargando almacenes...",
     errorMessage: "Error al obtener los almacenes",
-    fetchDataHook: useAlmacenes,
+    fetchDataHook: useAlmacenesList,
     itemKey: "id_almacen",
     entityFields: almacenesFields,
     actions: [

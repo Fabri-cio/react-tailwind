@@ -1,8 +1,8 @@
 import {
   useMovimientoMutations,
   useMovimiento,
-  useInventarios,
-  useTiposMovimientos,
+  useInventariosSelect,
+  useTiposMovimientosSelect,
 } from "../../../hooks/useEntities";
 import { InputField } from "../../../components/shared/InputField";
 import { SelectField } from "../../../components/shared/SelectField";
@@ -14,10 +14,10 @@ export default function EditMovimiento() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const inventariosOptions = () =>
-    paraSelectsdestructuringYMap(useInventarios, "id", "producto_nombre");
+    paraSelectsdestructuringYMap(useInventariosSelect, "id", "producto_nombre");
 
   const tiposMovimientosOptions = () =>
-    paraSelectsdestructuringYMap(useTiposMovimientos, "id", "nombre");
+    paraSelectsdestructuringYMap(useTiposMovimientosSelect, "id", "nombre");
 
   const selects = {
     inventariosOptions,

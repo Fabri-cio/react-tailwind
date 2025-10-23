@@ -6,8 +6,8 @@ import {
 } from "../../../components/shared";
 import { useFormEntity } from "../../../utils/useFormEntity";
 import {
-  useInventarios,
-  useTiposMovimientos,
+  useInventariosSelect,
+  useTiposMovimientosSelect,
   useMovimientoMutations,
 } from "../../../hooks/useEntities";
 import { FaPlus } from "react-icons/fa";
@@ -16,11 +16,11 @@ export default function CreateMovimiento() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const inventariosOptions = () =>
-    paraSelectsdestructuringYMap(useInventarios, "id", "producto_nombre");
+    paraSelectsdestructuringYMap(useInventariosSelect, "id", "producto_nombre");
 
   const tiposMovimientosOptions = () =>
     paraSelectsdestructuringYMap(
-      useTiposMovimientos,
+      useTiposMovimientosSelect,
       "id",
       "nombre"
     );

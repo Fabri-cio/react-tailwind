@@ -6,8 +6,8 @@ import {
 } from "../../../components/shared";
 import { useFormEntity } from "../../../utils/useFormEntity";
 import {
-  useAlmacenes,
-  useProducts,
+  useAlmacenesSelect,
+  useProductsSelect,
   useInventarioMutations,
 } from "../../../hooks/useEntities";
 import { FaEye, FaPencilAlt, FaPlus } from "react-icons/fa";
@@ -16,10 +16,10 @@ export default function CreateInventario() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const almacenesOptions = () =>
-    paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre");
+    paraSelectsdestructuringYMap(useAlmacenesSelect, "id", "nombre");
 
   const productosOptions = () =>
-    paraSelectsdestructuringYMap(useProducts, "id", "nombre");
+    paraSelectsdestructuringYMap(useProductsSelect, "id", "nombre");
 
   // Estado inicial del formulario
   const estadoInicial = {

@@ -10,7 +10,7 @@ import { FaTimes, FaCheck, FaPlus, FaSync } from "react-icons/fa";
 import {
   useInventarios,
   usePedidoRecepcion,
-  useProveedores,
+  useProveedoresPedidos,
   useCompraMutations,
 } from "../../../hooks/useEntities";
 import toast from "react-hot-toast";
@@ -51,7 +51,7 @@ export default function Pedido() {
   const proveedorRefs = useRef([]);
   const productoRefs = useRef([]);
 
-  const { data: proveedores = [] } = useProveedores(
+  const { data: proveedores = [] } = useProveedoresPedidos(
     { all_data: true },
     cargarProveedores
   );
@@ -80,7 +80,7 @@ export default function Pedido() {
         setProveedorSeleccionado({
           id: pedido.proveedor,
           marca: pedido.nombre_proveedor,
-          imagen: pedido.imagen_proveedor,
+          image_url: pedido.image_url_proveedor,
         });
         setProveedorBusqueda(pedido.nombre_proveedor);
       }
@@ -585,7 +585,7 @@ export default function Pedido() {
                 {proveedorSeleccionado ? (
                   <div className="flex items-center gap-2 border rounded px-2 h-10 bg-gray-100 flex-1 min-w-[120px]">
                     <img
-                      src={proveedorSeleccionado.imagen}
+                      src={proveedorSeleccionado.image_url}
                       alt={proveedorSeleccionado.marca}
                       className="w-6 h-6 rounded"
                     />
@@ -626,7 +626,7 @@ export default function Pedido() {
                             }`}
                           >
                             <img
-                              src={p.imagen}
+                              src={p.image_url}
                               alt={p.marca}
                               className="w-8 h-8 rounded"
                             />

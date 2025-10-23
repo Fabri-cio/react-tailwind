@@ -1,4 +1,4 @@
-import { useMovimientos } from "../../../hooks/useEntities";
+import { useMovimientosList } from "../../../hooks/useEntities";
 import { FaPlus, FaBox, FaEdit } from "react-icons/fa";
 import { EntityList, FormattedDate } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
@@ -41,7 +41,7 @@ function Movimientos() {
     subTitle: "",
     loadingMessage: "Cargando movimientos...",
     errorMessage: "Error al obtener los movimientos",
-    fetchDataHook: useMovimientos,
+    fetchDataHook: useMovimientosList,
     itemKey: "id", //id_producto.  Es muy necesario para la tabla el itemKey
     entityFields: campos,
     actions: [

@@ -1,6 +1,6 @@
 import { FaTruckMoving } from "react-icons/fa";
 import EntityList from "../../components/shared/EntityList";
-import { useMovimientos } from "../../hooks/useEntities";
+import { useMovimientosList } from "../../hooks/useEntities";
 
 function MovimientosList() {
   const movimientosFields = () => [
@@ -18,7 +18,7 @@ function MovimientosList() {
     subTitle: "Listado de Movimientos",
     loadingMessage: "Cargando movimientos...",
     errorMessage: "Error al obtener movimientos",
-    fetchDataHook: useMovimientos,
+    fetchDataHook: useMovimientosList,
     all_data: false,
     itemKey: "id_movimiento",
     entityFields: movimientosFields,

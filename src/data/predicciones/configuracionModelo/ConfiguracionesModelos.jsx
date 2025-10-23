@@ -1,5 +1,5 @@
-import { useConfiguracionesModelos } from "../../../hooks/useEntities";
-import { FaPlus, FaBox, FaEdit, FaTrash } from "react-icons/fa";
+import { useConfigModelList } from "../../../hooks/useEntities";
+import { FaPlus, FaBox, FaEdit} from "react-icons/fa";
 import { EntityList } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
 import { Link } from "react-router-dom";
@@ -57,7 +57,7 @@ function ConfiguracionesModelos() {
     subTitle: "",
     loadingMessage: "Cargando configuraciones de modelos...",
     errorMessage: "Error al obtener las configuraciones de modelos",
-    fetchDataHook: useConfiguracionesModelos,
+    fetchDataHook: useConfigModelList,
     itemKey: "id", //id_producto.  Es muy necesario para la tabla el itemKey
     entityFields: campos,
     actions: [

@@ -1,4 +1,4 @@
-import { useProducts } from "../../../hooks/useEntities";
+import { useProductsList } from "../../../hooks/useEntities";
 import { FaPlus, FaBox, FaEdit, FaHistory } from "react-icons/fa";
 import { StatusBadge, EntityList, Image } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
@@ -29,8 +29,8 @@ function ProductList() {
       key: "nombre",
       label: "Nombre",
     },
-    { key: "marca", label: "Proveedor" },
-    { key: "categoria", label: "Categoría" },
+    { key: "marca_proveedor", label: "Proveedor" },
+    { key: "categoria_nombre", label: "Categoría" },
     {
       key: "precio",
       label: "Precio Bs.",
@@ -47,7 +47,7 @@ function ProductList() {
     subTitle: "",
     loadingMessage: "Cargando productos...",
     errorMessage: "Error al obtener los productos",
-    fetchDataHook: useProducts,
+    fetchDataHook: useProductsList,
     itemKey: "id", //id_producto.  Es muy necesario para la tabla el itemKey
     entityFields: productFields,
     actions: [
@@ -82,8 +82,6 @@ function ProductList() {
       { name: "-nombre", label: "Nombre (Z-A)" },
       { name: "precio", label: "Precio ascendente" },
       { name: "-precio", label: "Precio descendente" },
-      { name: "fecha_creacion", label: "Fecha más antigua" },
-      { name: "-fecha_creacion", label: "Fecha más reciente" },
     ],
   };
   return <EntityList entityData={entityData} />;

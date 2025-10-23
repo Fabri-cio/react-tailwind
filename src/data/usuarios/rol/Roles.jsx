@@ -1,7 +1,7 @@
 import { FaUser, FaPlus, FaEdit } from "react-icons/fa";
 import { EntityList } from "../../../components/shared";
 import { ActionButton } from "../../../components/shared/ActionButton";
-import { useRoles } from "../../../hooks/useEntities";
+import { useRolList } from "../../../hooks/useEntities";
 
 function Roles() {
   const rolesFields = () => [
@@ -26,7 +26,7 @@ function Roles() {
     subTitle: "Lista de roles de usuarios",
     loadingMessage: "Cargando roles...",
     errorMessage: "Error al obtener roles",
-    fetchDataHook: useRoles,
+    fetchDataHook: useRolList,
     itemKey: "id",
     entityFields: rolesFields,
     icon: FaUser,

@@ -1,7 +1,7 @@
 import {
   useProductMutations,
-  useCategorias,
-  useProveedores,
+  useCategoriasSelect,
+  useProveedoresSelect,
   useProduct,
 } from "../../../hooks/useEntities";
 import { InputField } from "../../../components/shared/InputField";
@@ -23,14 +23,14 @@ export default function EditProduct() {
 
   const categoriasOptions = () =>
     paraSelectsdestructuringYMap(
-      useCategorias,
+      useCategoriasSelect,
       "id",
       "nombre"
     );
 
   const proveedoresOptions = () =>
     paraSelectsdestructuringYMap(
-      useProveedores,
+      useProveedoresSelect,
       "id",
       "marca"
     );

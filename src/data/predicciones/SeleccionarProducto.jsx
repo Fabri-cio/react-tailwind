@@ -1,4 +1,4 @@
-import { useInventarios } from "../../hooks/useEntities";
+import { useInventariosList } from "../../hooks/useEntities";
 import { FaPlus, FaBox, FaEdit, FaSearch } from "react-icons/fa";
 import { EntityList, Image, ActionButton } from "../../components/shared";
 import { Link } from "react-router-dom";
@@ -72,7 +72,7 @@ function InventarioList() {
     subTitle: "",
     loadingMessage: "Cargando inventarios...",
     errorMessage: "Error al obtener los inventarios",
-    fetchDataHook: useInventarios,
+    fetchDataHook: useInventariosList,
     itemKey: "id", //id_inventario.  Es muy necesario para la tabla el itemKey
     entityFields: inventarioCampos,
     actions: [

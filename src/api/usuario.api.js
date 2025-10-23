@@ -9,6 +9,9 @@ const ApiBaseURL = import.meta.env.VITE_API_BASE_URL;
 export const UsuariosAPI = createCrudOperations(ApiUsers, "usuarios");
 export const RolesApi = createCrudOperations(ApiUsers, "grupos");
 export const PermisosApi = createCrudOperations(ApiUsers, "permisos");
+export const UsuariosListApi = createCrudOperations(ApiUsers, "usuarios-list");
+export const RolSelectDualApi = createCrudOperations(ApiUsers, "rol-select-dual");
+export const RolListApi = createCrudOperations(ApiUsers, "roles-list");
 
 // Funciones específicas para el login y registro
 export const login = (email, password) => request(ApiUsers, "post", "login/", { email, password });

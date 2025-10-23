@@ -4,7 +4,7 @@ import {
   ActionButton,
   FormattedDate,
 } from "@/components/shared";
-import { useUsuarios } from "../../../hooks/useEntities";
+import { useUsuariosList } from "../../../hooks/useEntities";
 
 import { FaEdit, FaHistory, FaPlus, FaUber } from "react-icons/fa";
 
@@ -34,7 +34,7 @@ function UserList() {
     {
       key: "roles",
       label: "Roles",
-      render: (item) => item.roles.map((role) => role.name).join(", "),
+      render: (item) => item.roles.join(" - "),
     }, //esto en un array [{id, name}]
     { key: "name_work", label: "Lugar de Trabajo" },
 
@@ -55,7 +55,7 @@ function UserList() {
     subTitle: "Listado de usuarios del sistema",
     loadingMessage: "Cargando usuarios...",
     errorMessage: "Error al obtener los usuarios",
-    fetchDataHook: useUsuarios,
+    fetchDataHook: useUsuariosList,
     itemKey: "id",
     entityFields: userFields,
     actions: [

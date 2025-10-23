@@ -5,6 +5,7 @@ import {
   DetallesPrediccionesApi,
   PrediccionesApi,
   ConfigModelSelectIDApi,
+  ConfigModelListApi,
 } from "../api/prediccion.api";
 import {
   ProductosAPI,
@@ -14,12 +15,20 @@ import {
   ProductosPorProveedorAPI,
   CategoriasListAPI,
   ProveedoresListAPI,
+  CategoriasSelectAPI,
+  ProveedoresSelectAPI,
+  ProveedoresPedidosAPI,
+  ProductosListAPI,
+  ProductosSelectAPI,
 } from "../api/producto.api";
 import {
   UsuariosAPI,
   RolesApi,
   PasswordResetAPI,
   PermisosApi,
+  UsuariosListApi,
+  RolSelectDualApi,
+  RolListApi
 } from "../api/usuario.api";
 import {
   InventariosAPI,
@@ -29,6 +38,12 @@ import {
   InventariosVentasAPI,
   MetodoABC,
   InventariosCarritoAPI,
+  InventariosListAPI,
+  AlmacenesListAPI,
+  MovimientosListAPI,
+  AlmacenesSelectAPI,
+  InventarioSelectAPI,
+  TiposMovimientoSelectAPI
 } from "../api/inventario.api";
 import {
   ClientesAPI,
@@ -37,7 +52,7 @@ import {
   DetallesVentaAPI,
   ComprobantesVentaAPI,
   VentasPorInventarioAPI,
-  VentasListAPI
+  VentasListAPI,
 } from "../api/venta.api";
 import {
   PedidosAPI,
@@ -63,6 +78,47 @@ const DEFAULT_PARAMS = {
 //reportes
 export const useDashboard = () => useData(DashboardAPI, "dashboard", null, {});
 
+//productos select
+export const useProductsSelect = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    ProductosSelectAPI,
+    "productos-select",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//productos list
+export const useProductsList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    ProductosListAPI,
+    "productos-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 //productos
 export const useProducts = (
   params = {},
@@ -112,6 +168,68 @@ export const useProductByProveedor = (id) =>
     !!id
   );
 
+//categorias select
+export const useCategoriasSelect = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    CategoriasSelectAPI,
+    "categorias-select",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//proveedores para pedidos
+export const useProveedoresPedidos = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    ProveedoresPedidosAPI,
+    "proveedores-pedidos",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//proveedores select
+export const useProveedoresSelect = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    ProveedoresSelectAPI,
+    "proveedores-select",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 
 //categorias list
 export const useCategoriasList = (
@@ -204,6 +322,27 @@ export const useProveedor = (id) =>
 export const useProveedorMutations = () =>
   useEntityMutations(ProveedoresAPI, "Proveedor");
 
+//users list
+export const useUsuariosList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    UsuariosListApi,
+    "usuarios-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
 //users
 export const useUsuarios = (
   params = {},
@@ -228,6 +367,48 @@ export const useUsuario = (id) =>
   useData(UsuariosAPI, "usuario", id, {}, 1000 * 60 * 5, !!id);
 export const useUsuarioMutations = () =>
   useEntityMutations(UsuariosAPI, "Usuario");
+
+//rol select dual
+export const useRolSelectDual = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    RolSelectDualApi,
+    "rol-select-dual",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//rol list
+export const useRolList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    RolListApi,
+    "rol-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 
 //roles
 export const useRoles = (
@@ -260,6 +441,27 @@ export const usePermisos = (
   return useData(
     PermisosApi,
     "permisos",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//inventarios list
+export const useInventariosList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    InventariosListAPI,
+    "inventarios-list",
     null,
     mergedParams,
     staleTime,
@@ -327,6 +529,111 @@ export const useInventarioCarrito = (
   return useData(
     InventariosCarritoAPI,
     "inventarios-carrito",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//almacenes select
+export const useAlmacenesSelect = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    AlmacenesSelectAPI,
+    "almacenes-select",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//almacenes list
+export const useAlmacenesList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    AlmacenesListAPI,
+    "almacenes-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//movimientos list
+export const useMovimientosList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    MovimientosListAPI,
+    "movimientos-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//inventarios select
+export const useInventariosSelect = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    InventarioSelectAPI,
+    "inventarios-select",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//tipos movimientos select
+export const useTiposMovimientosSelect = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    TiposMovimientoSelectAPI,
+    "tipos-movimientos-select",
     null,
     mergedParams,
     staleTime,
@@ -420,7 +727,14 @@ export const useVentasList = (
   const mergedParams =
     //params sobreescribe defaultParams si hay campos repetidos
     { ...defaultParams, ...params };
-  return useData(VentasListAPI, "ventas-list", null, mergedParams, staleTime, enabled);
+  return useData(
+    VentasListAPI,
+    "ventas-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
 };
 
 //ventas
@@ -648,6 +962,27 @@ export const useDetalleCompraPedido = (id) =>
     1000 * 60 * 5,
     !!id
   );
+
+//ConfigModels List
+export const useConfigModelList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    ConfigModelListApi,
+    "config-model-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 
 //predicciones
 export const useConfiguracionesModelos = (
