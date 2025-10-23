@@ -8,7 +8,7 @@ import {
 } from "../../../components/shared";
 import { FaTimes, FaCheck, FaPlus, FaSync } from "react-icons/fa";
 import {
-  useInventarios,
+  useInventariosPedidos,
   usePedidoRecepcion,
   useProveedoresPedidos,
   useCompraMutations,
@@ -27,7 +27,7 @@ export default function Pedido() {
   const { manejarEnvio } = useFormEntity();
   const { crear: createMutationPedido } = usePedidoMutations();
   const { crear: createMutationCompra } = useCompraMutations();
-  const { data: productosInventario = [] } = useInventarios({ all_data: true });
+  const { data: productosInventario = [] } = useInventariosPedidos({ all_data: true });
 
   const [fechaEntrega, setFechaEntrega] = useState("");
   const [proveedorSeleccionado, setProveedorSeleccionado] = useState(null);
@@ -267,11 +267,11 @@ export default function Pedido() {
   // -------- TABLA --------
   const fields = [
     {
-      key: "imagen",
+      key: "imagen_url",
       label: "Imagen",
       render: (item) => (
         <img
-          src={item.imagen}
+          src={item.imagen_url}
           alt={item.producto_nombre}
           className="w-12 h-12 rounded"
         />
@@ -366,12 +366,12 @@ export default function Pedido() {
   // -------- TABLA MODAL CONFIRMACION --------
   const fieldsModalConfirmacion = [
     {
-      key: "imagen",
+      key: "imagen_url",
       label: "Imagen",
       render: (item) =>
-        item.imagen ? (
+        item.imagen_url ? (
           <img
-            src={`${item.imagen}?t=${new Date().getTime()}`}
+            src={`${item.imagen_url}?t=${new Date().getTime()}`}
             alt={item.producto_nombre}
             className="w-12 h-12 rounded object-cover"
           />
@@ -526,7 +526,7 @@ export default function Pedido() {
                 }`}
               >
                 <img
-                  src={p.imagen}
+                  src={p.imagen_url}
                   alt={p.producto_nombre}
                   className="w-8 h-8 rounded"
                 />

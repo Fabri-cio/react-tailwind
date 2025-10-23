@@ -43,7 +43,8 @@ import {
   MovimientosListAPI,
   AlmacenesSelectAPI,
   InventarioSelectAPI,
-  TiposMovimientoSelectAPI
+  TiposMovimientoSelectAPI,
+  InventarioPedidosAPI
 } from "../api/inventario.api";
 import {
   ClientesAPI,
@@ -1140,3 +1141,25 @@ export const useInventarioVenta = (id) =>
     1000 * 60 * 5,
     !!id
   );
+
+//inventarios pedidos
+export const useInventariosPedidos = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    InventarioPedidosAPI,
+    "inventarios-pedidos",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
