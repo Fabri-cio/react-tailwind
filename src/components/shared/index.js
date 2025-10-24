@@ -9,7 +9,6 @@ export { default as FormattedDate } from "./FormattedDate";
 export { default as Image } from "./Image";
 export { default as Loading } from "./Loading";
 export { default as Pagination } from "./Pagination";
-export { default as Reporte } from "./Reporte";
 export { default as Row } from "./Row";
 export { default as Table } from "./Table";
 export { ActionButton } from "./ActionButton";

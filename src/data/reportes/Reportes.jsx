@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Line, Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
-import { Navigation } from "./Navigation";
+import { Navigation } from "../../components/shared/Navigation";
+import FormattedDate from "../../components/shared/FormattedDate";
 import {
   FaChartLine,
   FaFilePdf,
@@ -9,11 +10,11 @@ import {
   FaFileExcel,
 } from "react-icons/fa";
 import { useFormEntity } from "../../utils/useFormEntity";
-import { useAlmacenes, useVentasReporte } from "../../hooks/useEntities";
+import { useVentasReporte, useAlmacenesSelect } from "../../hooks/useEntities";
 
 ChartJS.register(...registerables);
 
-const ReporteVentas = () => {
+const Reportes = () => {
   const { paraSelectsdestructuringYMap, todosDatosOpaginacion } =
     useFormEntity();
 
@@ -23,46 +24,51 @@ const ReporteVentas = () => {
   const [vista, setVista] = useState("dia");
   const [tipoGrafico, setTipoGrafico] = useState("line");
 
-  // Preparar filtros para la API
-  const filtros = {};
-  if (fechaInicio) filtros.fechaInicio = fechaInicio;
-  if (fechaFin) filtros.fechaFin = fechaFin;
-  if (almacen) filtros.almacen = almacen;
+  // 🧠 useMemo evita renders innecesarios y activa refetch automático en React Query
+  const filtros = useMemo(() => {
+    const f = {};
+    if (fechaInicio) f.fecha_inicio = fechaInicio;
+    if (fechaFin) f.fecha_fin = fechaFin;
+    if (almacen) f.almacen = almacen;
+    return f;
+  }, [fechaInicio, fechaFin, almacen]);
 
-  // Saber si hay filtros aplicados
-  const hayFiltros = fechaInicio || fechaFin || almacen;
+  // ⚡ Hook de ventas reportes
+  const ventas = useVentasReporte(
+    {
+      filters: filtros,
+      all_data: !!(fechaInicio || fechaFin || almacen),
+      page: 1,
+      per_page: 10,
+    },
+    true // enabled = true
+  );
 
-  // Traer ventas con filtros
-  const ventas = todosDatosOpaginacion(useVentasReporte, {
-    filters: filtros,
-    all_data: hayFiltros ? true : false, // 👈 clave
-    page: 1,
-    per_page: 10,
-  }) || { items: [], isLoading: true };
-
-  // Traer almacenes
+  // 🔹 Hook de almacenes
   const almacenes =
-    paraSelectsdestructuringYMap(useAlmacenes, "id", "nombre") || [];
+    paraSelectsdestructuringYMap(useAlmacenesSelect, "id", "nombre") || [];
 
-  // Transformar datos
-  const ventasReales = Array.isArray(ventas.items)
-    ? ventas.items.map((v) => ({
+  // 🧾 Datos de ventas
+  const ventasItems = ventas?.data?.results || ventas?.data || [];
+
+  const ventasReales = Array.isArray(ventasItems)
+    ? ventasItems.map((v) => ({
         fecha: v.fecha?.slice(0, 10) || "Sin fecha",
         almacen: v.almacen || "Sin dato",
-        cantidad: parseFloat(v.total_venta || 0),
+        cantidad: parseFloat(v.cantidad || 0),
       }))
     : [];
 
-  // Filtrado adicional en cliente (opcional)
+  // Filtrado en cliente (por seguridad)
   const ventasFiltradas = ventasReales.filter((v) => {
     const fechaValida =
       (!fechaInicio || v.fecha >= fechaInicio) &&
       (!fechaFin || v.fecha <= fechaFin);
-    const almacenValido = !almacen || v.almacen === almacen;
+    const almacenValido = !almacen || v.almacen === Number(almacen);
     return fechaValida && almacenValido;
   });
 
-  // Agrupar por día, semana o mes
+  // Agrupar datos
   const agruparPor = (datos, tipo) => {
     return datos.reduce((acc, v) => {
       let key = "Desconocido";
@@ -131,8 +137,8 @@ const ReporteVentas = () => {
         ]}
       />
 
-      {/* Filtros */}
-      <div className="flex gap-4 bg-gray-50 px-2 rounded-md border my-2">
+      {/* 🔍 Filtros */}
+      <div className="flex flex-wrap gap-4 bg-gray-50 px-2 rounded-md border my-2 py-2">
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-gray-700">Inicio</label>
           <input
@@ -152,9 +158,7 @@ const ReporteVentas = () => {
           />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-700">
-            Almacén/Tienda
-          </label>
+          <label className="text-sm font-medium text-gray-700">Almacén</label>
           <select
             className="border rounded px-2 py-1 text-sm bg-white"
             value={almacen}
@@ -162,7 +166,7 @@ const ReporteVentas = () => {
           >
             <option value="">Todos</option>
             {almacenes?.map((a) => (
-              <option key={a.id} value={a.nombre}>
+              <option key={a.id} value={a.id}>
                 {a.nombre}
               </option>
             ))}
@@ -182,7 +186,7 @@ const ReporteVentas = () => {
         </div>
       </div>
 
-      {/* Layout */}
+      {/* 📊 Gráfico + Tabla */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-2">
         <div className="border rounded p-2">
           <div className="flex justify-end mb-2">
@@ -214,28 +218,28 @@ const ReporteVentas = () => {
             <thead className="bg-gray-100 border-b">
               <tr>
                 <th className="p-2 text-left">Fecha</th>
-                <th className="p-2 text-left">Almacén/Tienda</th>
                 <th className="p-2 text-left">Ventas</th>
               </tr>
             </thead>
             <tbody>
               {ventas.isLoading ? (
                 <tr>
-                  <td colSpan={3} className="p-4 text-center">
+                  <td colSpan={2} className="p-4 text-center">
                     Cargando...
                   </td>
                 </tr>
               ) : ventasFiltradas.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="p-4 text-center">
+                  <td colSpan={2} className="p-4 text-center">
                     No hay ventas
                   </td>
                 </tr>
               ) : (
                 ventasFiltradas.map((v, i) => (
                   <tr key={i} className="border-b hover:bg-gray-50">
-                    <td className="p-2">{v.fecha}</td>
-                    <td className="p-2">{v.almacen}</td>
+                    <td className="p-2">
+                      <FormattedDate date={v.fecha} showWeekday />
+                    </td>
                     <td className="p-2 font-semibold">{v.cantidad}</td>
                   </tr>
                 ))
@@ -248,7 +252,7 @@ const ReporteVentas = () => {
   );
 };
 
-// Extensión para semana del año
+// 📅 Función auxiliar para semanas
 Date.prototype.getWeek = function () {
   const date = new Date(this.getTime());
   date.setHours(0, 0, 0, 0);
@@ -257,4 +261,4 @@ Date.prototype.getWeek = function () {
   return Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
 };
 
-export default ReporteVentas;
+export default Reportes;
