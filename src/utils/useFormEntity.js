@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import usePagination from "./usePagination";
+import imageCompression from "browser-image-compression"; // 🧠 NUEVO
 
 export const useFormEntity = () => {
   const navigate = useNavigate();
@@ -11,34 +11,61 @@ export const useFormEntity = () => {
       nombre: item[keyNombre],
     }));
 
-  const crearEstadoFomulario = (campos) => {
-    const estadoInicial = {};
-    Object.keys(campos).forEach((campo) => {
-      estadoInicial[campo] = campos[campo];
-    });
-    return estadoInicial;
-  };
+  const crearEstadoFomulario = (campos) => ({ ...campos });
 
-  const manejarCambioDeEntrada = (setFormValues) => (e) => {
-    const { name, type, files, value } = e.target;
-    setFormValues((prevState) => ({
-      ...prevState,
-      [name]: type === "file" ? files[0] : value,
-    }));
-  };
+  const manejarCambioDeEntrada =
+    (setFormValues, maxFileSizeMB = 5) =>
+    async (e) => {
+      const { name, type, files, value } = e.target;
+
+      if (type === "file" && files?.[0]) {
+        const file = files[0];
+
+        try {
+          if (file.type.startsWith("image/")) {
+            // Ajuste dinámico de calidad según tamaño
+            const quality = file.size > 3 * 1024 * 1024 ? 0.7 : 0.9; // >3MB → 70%, si no → 90%
+            const maxWidthOrHeight = file.size > 3 * 1024 * 1024 ? 1280 : 1920;
+
+            const compressedFile = await imageCompression(file, {
+              maxSizeMB: 1,
+              maxWidthOrHeight,
+              useWebWorker: true,
+              initialQuality: quality,
+            });
+
+            const newFile = new File(
+              [compressedFile],
+              `${file.name.split(".")[0]}.webp`,
+              { type: "image/webp" }
+            );
+
+            setFormValues((prev) => ({ ...prev, [name]: newFile }));
+          } else {
+            const sizeMB = file.size / (1024 * 1024);
+            if (sizeMB > maxFileSizeMB) {
+              console.warn(
+                `⚠️ El archivo ${file.name} supera ${maxFileSizeMB}MB`
+              );
+            }
+            setFormValues((prev) => ({ ...prev, [name]: file }));
+          }
+        } catch (err) {
+          console.error("❌ Error al procesar el archivo:", err);
+        }
+      } else {
+        setFormValues((prev) => ({ ...prev, [name]: value }));
+      }
+    };
 
   const manejarCambioDeEstado = (setFormValues) => (fieldName) => (value) => {
-    setFormValues((prevState) => ({ ...prevState, [fieldName]: value }));
+    setFormValues((prev) => ({ ...prev, [fieldName]: value }));
   };
 
   const usarEfecto = (entidad, setFormValues, campos = {}) => {
     useEffect(() => {
       if (entidad) {
-        setFormValues((prevState) => ({
-          ...prevState,
-          ...entidad,
-          ...campos,
-        }));
+        setFormValues((prev) => ({ ...prev, ...entidad, ...campos }));
       }
     }, [entidad, setFormValues]);
   };
@@ -52,15 +79,10 @@ export const useFormEntity = () => {
     entityId,
     params = {}
   ) => {
-    const { onSuccess: callbackExterno, onError: callbackError } = params; //es de ventas
-
-    const dataToSend = {
-      ...formValues,
-      ...params,
-    };
+    const { onSuccess: callbackExterno, onError: callbackError } = params;
 
     const filteredData = {};
-    Object.entries(dataToSend).forEach(([key, value]) => {
+    Object.entries({ ...formValues, ...params }).forEach(([key, value]) => {
       if (
         value instanceof File ||
         (typeof Blob !== "undefined" && value instanceof Blob)
@@ -70,45 +92,33 @@ export const useFormEntity = () => {
         typeof value === "string" &&
         (value.startsWith("http") || value.startsWith("blob:"))
       ) {
-        // omitimos
+        // omitimos URLs temporales
       } else if (value !== null && value !== undefined) {
         filteredData[key] = value;
       }
     });
 
-    let data;
     const contieneArchivo = Object.values(filteredData).some(
-      (value) =>
-        value instanceof File ||
-        (typeof Blob !== "undefined" && value instanceof Blob)
+      (v) =>
+        v instanceof File || (typeof Blob !== "undefined" && v instanceof Blob)
     );
 
-    if (contieneArchivo) {
-      data = new FormData();
-      Object.entries(filteredData).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          data.append(key, value);
-        }
-      });
-    } else {
-      data = filteredData;
-    }
+    const data = contieneArchivo
+      ? Object.entries(filteredData).reduce((formData, [key, val]) => {
+          if (val !== null && val !== undefined) formData.append(key, val);
+          return formData;
+        }, new FormData())
+      : filteredData;
 
     const mutation = entityId ? updateMutation : createMutation;
     mutation.mutate(
       { id: entityId || undefined, data },
       {
         onSuccess: (response) => {
-          // llamar callback externo
           if (callbackExterno) callbackExterno(response);
-
-          // lógica interna de navegar
           if (response?.link !== undefined) {
-            if (response.link === -1) {
-              navigate(-1);
-            } else if (typeof response.link === "string") {
-              navigate(response.link);
-            }
+            if (response.link === -1) navigate(-1);
+            else if (typeof response.link === "string") navigate(response.link);
           } else if (entityName) {
             navigate(entityName);
           }
@@ -120,21 +130,13 @@ export const useFormEntity = () => {
     );
   };
 
-  const destructuring = (hook) => {
-    const data = hook() || {};
-    return data || [];
-  };
+  const destructuring = (hook) => hook() || [];
 
   const paraSelectsdestructuringYMap = (hook, keyId, keyNombre) => {
     const response = hook({ all_data: true }) || {};
     const lista = Array.isArray(response.data) ? response.data : [];
-    return lista.map((item) => ({
-      id: item[keyId],
-      nombre: item[keyNombre],
-    }));
+    return lista.map((item) => ({ id: item[keyId], nombre: item[keyNombre] }));
   };
-
-  // Solo el cambio de la función que ya tienes dentro de useFormEntity.js
 
   const todosDatosOpaginacion = (fetchDataHook, params = {}) => {
     const {
@@ -145,7 +147,6 @@ export const useFormEntity = () => {
       filters = {},
       ordering = "",
     } = params;
-
     const pageToUse = all_data ? 1 : page;
 
     const {
@@ -161,38 +162,37 @@ export const useFormEntity = () => {
       ordering,
     }) || {};
 
-    if (all_data) {
-      const items = response || [];
-      return { items, isLoading, isError, hasPagination: false };
-    } else {
-      const {
-        total_pages,
-        per_page: perPageResponse,
-        total,
-        next = null,
-        previous = null,
-        results,
-        ...rest
-      } = response || {};
-
-      const items = results || rest || [];
-      const totalItems = total;
-      const hasPagination = Boolean(next || previous);
-
+    if (all_data)
       return {
-        currentPage: page,
-        handlePageChange: () => {}, // Será manejado externamente
+        items: response || [],
         isLoading,
         isError,
-        items,
-        totalItems,
-        hasPagination,
-        next,
-        previous,
-        per_page: perPageResponse,
-        total_pages,
+        hasPagination: false,
       };
-    }
+
+    const {
+      total_pages,
+      per_page: perPageResponse,
+      total,
+      next = null,
+      previous = null,
+      results,
+      ...rest
+    } = response || {};
+    const items = results || rest || [];
+    return {
+      currentPage: page,
+      handlePageChange: () => {},
+      isLoading,
+      isError,
+      items,
+      totalItems: total,
+      hasPagination: Boolean(next || previous),
+      next,
+      previous,
+      per_page: perPageResponse,
+      total_pages,
+    };
   };
 
   return {

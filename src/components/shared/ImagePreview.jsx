@@ -59,7 +59,7 @@ const ImagePreview = ({
           e.target.src =
             "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QwZDBkMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xOC44OCAxMi44MzJjLS44MjYtMS4zMzktMi4wMTQtMi4xNDctMy4zOC0yLjE2YTIuOTkzIDIuOTkzIDAgMCAwLTIuNjQgMS44NWMtLjkzNCLSuNTYtMi4wMS0uODYtMy4zOS0uMzMtMS40NS41Ni0yLjQzIDEuODUtMi40MyAzLjM5IDAgMi40MSAxLjc0IDMuODkgMy4xNiA1LjY3LjM2LjQ2LjczLjkzIDEuMTQgMS40MS4yLjIyLjQ0LjQyLjY3LjY2LjE5LjE5LjQ3LjE5LjY2IDAgLjIzLS4yNC40Ny0uNDQuNjctLjY2LjQxLS40OC43OC0uOTUgMS4xNC0xLjQxIDEuNDItMS43OCAzLjE2LTQuMjYgMy4xNi01LjY3IDAtMS45OS0xLjQ5LTMuODEtMy4zNy00LjE2eiI+PC9wYXRoPjxwYXRoIGQ9Ik04IDEyYTIgMiAwIDEgMSAwLTQgMiAyIDAgMCAxIDAgNHoiPjwvcGF0aD48L3N2Zz4=";
         }}
-        className="w-full h-full object-cover rounded-lg border border-gray-200"
+        className="w-full h-full object-contain rounded-lg border border-gray-200"
       />
     </div>
   );
