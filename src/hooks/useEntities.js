@@ -63,6 +63,7 @@ import {
   PedidosRecepcionAPI,
   DetallesCompraPedidoAPI,
   PedidosListAPI,
+  ComprasListAPI
 } from "../api/compra.api";
 import { useMutationWithToast } from "./useMutationWithToast";
 import { DashboardAPI } from "../api/reporte.api";
@@ -914,6 +915,28 @@ export const useDetallesPedido = (id) =>
   useData(DetallesPedidoAPI, "detalle-pedido", id, {}, 1000 * 60 * 5, !!id);
 export const useDetallesPedidoMutations = () =>
   useEntityMutations(DetallesPedidoAPI, "Detalle de la pedido");
+
+//compras list
+export const useComprasList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    ComprasListAPI,
+    "compras-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
 //compras
 export const useCompras = (
   params = {},

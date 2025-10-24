@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useInventarioCarrito, useClientes,useVentaMutations } from "../../../hooks/useEntities";
 import CreateCliente from "../cliente/CreateCliente";
 import {
@@ -78,7 +78,7 @@ function RealizarVenta() {
           precio: parseFloat(prod.precio),
           descuento: 0,
           stockDisponible: prod.cantidad,
-          imagen: prod.imagen,
+          imagen_url: prod.imagen_url,
         },
       ];
     });
@@ -187,7 +187,7 @@ function RealizarVenta() {
           precio: parseFloat(prod.precio),
           descuento: 0,
           stockDisponible: prod.cantidad,
-          imagen: prod.imagen,
+          imagen_url: prod.imagen_url,
         },
       ];
     });
@@ -280,12 +280,12 @@ function RealizarVenta() {
   // -----------------------
   const fields = [
     {
-      key: "imagen",
+      key: "imagen_url",
       label: "Imagen",
       render: (item) =>
-        item.imagen ? (
+        item.imagen_url ? (
           <img
-            src={`${item.imagen}?t=${new Date().getTime()}`}
+            src={`${item.imagen_url}?t=${new Date().getTime()}`}
             alt={item.nombre}
             className="w-12 h-12 rounded object-cover"
           />
@@ -351,12 +351,12 @@ function RealizarVenta() {
 
   const fieldsModalVenta = [
     {
-      key: "imagen",
+      key: "imagen_url",
       label: "Imagen",
       render: (item) =>
-        item.imagen ? (
+        item.imagen_url ? (
           <img
-            src={`${item.imagen}?t=${new Date().getTime()}`}
+            src={`${item.imagen_url}?t=${new Date().getTime()}`}
             alt={item.nombre}
             className="w-12 h-12 rounded object-cover"
           />

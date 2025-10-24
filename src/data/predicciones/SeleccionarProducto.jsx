@@ -28,9 +28,9 @@ function InventarioList() {
       ),
     },
     {
-      key: "imagen",
+      key: "imagen_url",
       label: "Imagen",
-      render: (item) => <Image src={item.imagen} alt={item.producto_nombre} />,
+      render: (item) => <Image src={item.imagen_url} alt={item.producto_nombre} />,
     },
     {
       key: "producto_nombre",

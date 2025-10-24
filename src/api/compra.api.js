@@ -11,6 +11,8 @@ export const DetallesCompraAPI = createCrudOperations(ApiCompras, "detalles-comp
 export const PedidosRecepcionAPI = createCrudOperations(ApiCompras, "pedidos-recepcion");
 export const DetallesCompraPedidoAPI = createCrudOperations(ApiCompras, "detalles-compra-pedido");
 export const PedidosListAPI = createCrudOperations(ApiCompras, "pedidos-list");
+export const ComprasListAPI = createCrudOperations(ApiCompras, "compras-list");
+
 
 
 

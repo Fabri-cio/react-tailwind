@@ -1,6 +1,6 @@
-import { useCompras } from "../../../hooks/useEntities";
+import { useComprasList } from "../../../hooks/useEntities";
 import { FaPlus, FaBox, FaEdit, FaEye } from "react-icons/fa";
-import { EntityList, ActionButton } from "../../../components/shared";
+import { EntityList, ActionButton, FormattedDate } from "../../../components/shared";
 import { Link } from "react-router-dom";
 
 function Compras() {
@@ -25,6 +25,7 @@ function Compras() {
         </div>
       ),
     },
+    { key: "fecha_creacion", label: "Fecha de creación", render: (item) => <FormattedDate date={item.fecha_creacion} showWeekday /> },
     {
       key: "nombre_proveedor",
       label: "Proveedor",
@@ -32,8 +33,8 @@ function Compras() {
     { key: "descuento", label: "Descuento" },
     { key: "total_compra", label: "Total Bs." },
     {
-      key: "observaciones",
-      label: "Observaciones",
+      key: "nombre_almacen",
+      label: "Almacén",
     },
   ];
 
@@ -42,7 +43,7 @@ function Compras() {
     subTitle: "Para realizar un compra se debe realizar un pedido previo",
     loadingMessage: "Cargando compras...",
     errorMessage: "Error al obtener las compras",
-    fetchDataHook: useCompras,
+    fetchDataHook: useComprasList,
     itemKey: "id", //id_producto.  Es muy necesario para la tabla el itemKey
     entityFields: campos,
     actions: [
