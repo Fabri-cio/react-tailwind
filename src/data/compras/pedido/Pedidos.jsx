@@ -1,12 +1,9 @@
-import { usePedidos } from "../../../hooks/useEntities";
+import { usePedidosList } from "../../../hooks/useEntities";
 import {
   FaPlus,
   FaBox,
   FaEdit,
-  FaShoppingCart,
   FaCheckCircle,
-  FaAccusoft,
-  FaHourglass,
   FaHourglassHalf,
 } from "react-icons/fa";
 import { EntityList } from "../../../components/shared";
@@ -78,7 +75,7 @@ function Pedidos() {
     subTitle: "",
     loadingMessage: "Cargando pedidos...",
     errorMessage: "Error al obtener los pedidos",
-    fetchDataHook: usePedidos,
+    fetchDataHook: usePedidosList,
     itemKey: "id", //id_pedido.  Es muy necesario para la tabla el itemKey
     entityFields: productFields,
     actions: [

@@ -62,6 +62,7 @@ import {
   DetallesCompraAPI,
   PedidosRecepcionAPI,
   DetallesCompraPedidoAPI,
+  PedidosListAPI,
 } from "../api/compra.api";
 import { useMutationWithToast } from "./useMutationWithToast";
 import { DashboardAPI } from "../api/reporte.api";
@@ -850,6 +851,27 @@ export const useVentasPorInventario = (
 //recepcion
 export const usePedidoRecepcion = (id) =>
   useData(PedidosRecepcionAPI, "pedido-recepcion", id, {}, 1000 * 60 * 5, !!id);
+
+//pedidos list
+export const usePedidosList = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    PedidosListAPI,
+    "pedidos-list",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
 
 //pedidos
 export const usePedidos = (

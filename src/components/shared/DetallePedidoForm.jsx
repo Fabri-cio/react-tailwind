@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
-import { useInventarios } from "../../hooks/useEntities";
+import { useInventariosSelect } from "../../hooks/useEntities";
 
 // Función simple para comparar arrays de objetos (solo primer nivel)
 function shallowEqualArray(arr1, arr2) {
@@ -27,7 +27,7 @@ export default function DetallePedidoForm({ value = [], onChange, isCompra = fal
 
   const lastNotifiedDetalles = useRef(null);
 
-  const { data: inventarios } = useInventarios({ all_data: true });
+  const { data: inventarios } = useInventariosSelect({ all_data: true });
 
   // Sincroniza el estado interno solo si es diferente
   useEffect(() => {

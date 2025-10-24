@@ -90,7 +90,7 @@ export default function Pedido() {
         const productoPrefill = pedido.detalles.map((d) => ({
           id: d.producto,
           producto_nombre: d.producto_nombre,
-          imagen: d.producto_imagen,
+          imagen_url: d.imagen_url,
           cantidad: parseFloat(d.cantidad_solicitada),
         }));
         setProductosSeleccionados(productoPrefill);

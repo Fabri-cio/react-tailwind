@@ -1,7 +1,7 @@
 import {
   usePedidoMutations,
   usePedido,
-  useProveedores,
+  useProveedoresSelect,
 } from "../../../hooks/useEntities";
 import { InputField } from "../../../components/shared/InputField";
 import { SelectField } from "../../../components/shared/SelectField";
@@ -14,7 +14,7 @@ export default function EditPedido() {
   const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const proveedoresOptions = () =>
-    paraSelectsdestructuringYMap(useProveedores, "id", "marca");
+    paraSelectsdestructuringYMap(useProveedoresSelect, "id", "marca");
 
   const selects = {
     proveedoresOptions,
