@@ -12,11 +12,6 @@ function Compras() {
       render: (item) => (
         <div className="flex gap-2">
           <ActionButton
-            to={`/editCompra/${item.id}`}
-            icon={FaEdit}
-            estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center gap-2 transition duration-200 p-1"
-          />
-          <ActionButton
             to={`/detallesCompra/${item.id}`}
             icon={FaEye}
             estilos="hover:bg-gray-600 hover:text-gray-100 text-gray-500 rounded-md flex items-center p-1"

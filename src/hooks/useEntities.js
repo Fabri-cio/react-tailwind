@@ -44,7 +44,8 @@ import {
   AlmacenesSelectAPI,
   InventarioSelectAPI,
   TiposMovimientoSelectAPI,
-  InventarioPedidosAPI
+  InventarioPedidosAPI,
+  InventarioReporteAPI
 } from "../api/inventario.api";
 import {
   ClientesAPI,
@@ -445,6 +446,27 @@ export const usePermisos = (
   return useData(
     PermisosApi,
     "permisos",
+    null,
+    mergedParams,
+    staleTime,
+    enabled
+  );
+};
+
+//inventario reporte
+export const useInventarioReporte = (
+  params = {},
+  enabled = true,
+  staleTime = DEFAULT_STALE_TIME
+) => {
+  const defaultParams = DEFAULT_PARAMS;
+
+  const mergedParams =
+    //params sobreescribe defaultParams si hay campos repetidos
+    { ...defaultParams, ...params };
+  return useData(
+    InventarioReporteAPI,
+    "inventario-reporte",
     null,
     mergedParams,
     staleTime,

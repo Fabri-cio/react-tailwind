@@ -24,5 +24,8 @@ export const TiposMovimientoSelectAPI = createCrudOperations(ApiAlmacenes, "tipo
 
 export const InventarioPedidosAPI = createCrudOperations(ApiAlmacenes, "inventarios-pedidos");
 
+export const InventarioReporteAPI = createCrudOperations(ApiAlmacenes, "inventarios-reporte");
+
+
 
 
