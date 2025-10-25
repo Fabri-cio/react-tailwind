@@ -10,21 +10,25 @@ import {
   FaFileExcel,
 } from "react-icons/fa";
 import { useFormEntity } from "../../utils/useFormEntity";
-import { useVentasReporte, useAlmacenesSelect } from "../../hooks/useEntities";
+import {
+  useVentasReporte,
+  useComprasReporte,
+  useAlmacenesSelect,
+} from "../../hooks/useEntities";
 
 ChartJS.register(...registerables);
 
 const Reportes = () => {
-  const { paraSelectsdestructuringYMap, todosDatosOpaginacion } =
-    useFormEntity();
+  const { paraSelectsdestructuringYMap } = useFormEntity();
 
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [almacen, setAlmacen] = useState("");
   const [vista, setVista] = useState("dia");
   const [tipoGrafico, setTipoGrafico] = useState("line");
+  const [tipoReporte, setTipoReporte] = useState("ventas"); // nuevo: ventas o compras
 
-  // 🧠 useMemo evita renders innecesarios y activa refetch automático en React Query
+  // 🧠 Filtros memoizados
   const filtros = useMemo(() => {
     const f = {};
     if (fechaInicio) f.fecha_inicio = fechaInicio;
@@ -33,34 +37,44 @@ const Reportes = () => {
     return f;
   }, [fechaInicio, fechaFin, almacen]);
 
-  // ⚡ Hook de ventas reportes
-  const ventas = useVentasReporte(
-    {
-      filters: filtros,
-      all_data: !!(fechaInicio || fechaFin || almacen),
-      page: 1,
-      per_page: 10,
-    },
-    true // enabled = true
-  );
+  // ⚡ Hook dinámico según tipo de reporte
+  const reporteData =
+    tipoReporte === "ventas"
+      ? useVentasReporte(
+          {
+            filters: filtros,
+            all_data: !!(fechaInicio || fechaFin || almacen),
+            page: 1,
+            per_page: 10,
+          },
+          true
+        )
+      : useComprasReporte(
+          {
+            filters: filtros,
+            all_data: !!(fechaInicio || fechaFin || almacen),
+            page: 1,
+            per_page: 10,
+          },
+          true
+        );
 
   // 🔹 Hook de almacenes
   const almacenes =
     paraSelectsdestructuringYMap(useAlmacenesSelect, "id", "nombre") || [];
 
-  // 🧾 Datos de ventas
-  const ventasItems = ventas?.data?.results || ventas?.data || [];
-
-  const ventasReales = Array.isArray(ventasItems)
-    ? ventasItems.map((v) => ({
+  // 🧾 Normalizar datos para gráfico y tabla
+  const items = reporteData?.data?.results || reporteData?.data || [];
+  const datosReales = Array.isArray(items)
+    ? items.map((v) => ({
         fecha: v.fecha?.slice(0, 10) || "Sin fecha",
         almacen: v.almacen || "Sin dato",
         cantidad: parseFloat(v.cantidad || 0),
       }))
     : [];
 
-  // Filtrado en cliente (por seguridad)
-  const ventasFiltradas = ventasReales.filter((v) => {
+  // Filtrado en cliente
+  const datosFiltrados = datosReales.filter((v) => {
     const fechaValida =
       (!fechaInicio || v.fecha >= fechaInicio) &&
       (!fechaFin || v.fecha <= fechaFin);
@@ -84,7 +98,7 @@ const Reportes = () => {
     }, {});
   };
 
-  const agrupadas = agruparPor(ventasFiltradas, vista);
+  const agrupadas = agruparPor(datosFiltrados, vista);
   const labels = Object.keys(agrupadas).sort();
   const valores = Object.values(agrupadas);
 
@@ -92,7 +106,7 @@ const Reportes = () => {
     labels,
     datasets: [
       {
-        label: "Ventas",
+        label: tipoReporte === "ventas" ? "Ventas" : "Compras",
         data: valores,
         backgroundColor: [
           "#22c55e",
@@ -112,8 +126,8 @@ const Reportes = () => {
   return (
     <main className="max-w-6xl mx-auto bg-white">
       <Navigation
-        title="Reporte de Ventas"
-        subTitle="Visualiza y filtra las ventas de tu negocio"
+        title={`Reporte de ${tipoReporte === "ventas" ? "Ventas" : "Compras"}`}
+        subTitle={`Visualiza y filtra ${tipoReporte} de tu negocio`}
         icon={FaChartLine}
         actions={[
           {
@@ -139,6 +153,19 @@ const Reportes = () => {
 
       {/* 🔍 Filtros */}
       <div className="flex flex-wrap gap-4 bg-gray-50 px-2 rounded-md border my-2 py-2">
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-gray-700">
+            Tipo de Reporte
+          </label>
+          <select
+            className="border rounded px-2 py-1 text-sm bg-white"
+            value={tipoReporte}
+            onChange={(e) => setTipoReporte(e.target.value)}
+          >
+            <option value="ventas">Ventas</option>
+            <option value="compras">Compras</option>
+          </select>
+        </div>
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-gray-700">Inicio</label>
           <input
@@ -200,10 +227,10 @@ const Reportes = () => {
               <option value="pie">Torta</option>
             </select>
           </div>
-          {ventas.isLoading ? (
-            <p className="p-4 text-center">Cargando ventas...</p>
-          ) : ventasReales.length === 0 ? (
-            <p className="p-4 text-center">No hay ventas para mostrar</p>
+          {reporteData.isLoading ? (
+            <p className="p-4 text-center">Cargando {tipoReporte}...</p>
+          ) : datosReales.length === 0 ? (
+            <p className="p-4 text-center">No hay {tipoReporte} para mostrar</p>
           ) : (
             <>
               {tipoGrafico === "line" && <Line data={chartData} />}
@@ -218,24 +245,26 @@ const Reportes = () => {
             <thead className="bg-gray-100 border-b">
               <tr>
                 <th className="p-2 text-left">Fecha</th>
-                <th className="p-2 text-left">Ventas</th>
+                <th className="p-2 text-left">
+                  {tipoReporte === "ventas" ? "Ventas" : "Compras"}
+                </th>
               </tr>
             </thead>
             <tbody>
-              {ventas.isLoading ? (
+              {reporteData.isLoading ? (
                 <tr>
                   <td colSpan={2} className="p-4 text-center">
                     Cargando...
                   </td>
                 </tr>
-              ) : ventasFiltradas.length === 0 ? (
+              ) : datosFiltrados.length === 0 ? (
                 <tr>
                   <td colSpan={2} className="p-4 text-center">
-                    No hay ventas
+                    No hay {tipoReporte}
                   </td>
                 </tr>
               ) : (
-                ventasFiltradas.map((v, i) => (
+                datosFiltrados.map((v, i) => (
                   <tr key={i} className="border-b hover:bg-gray-50">
                     <td className="p-2">
                       <FormattedDate date={v.fecha} showWeekday />
