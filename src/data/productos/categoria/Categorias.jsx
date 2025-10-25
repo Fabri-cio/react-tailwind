@@ -57,6 +57,10 @@ function Categorias() {
       },
     ],
     icon: FaBox,
+    ordenes: [
+      { name: "nombre", label: "Nombre (A-Z)" },
+      { name: "-nombre", label: "Nombre (Z-A)" },
+    ],
   };
   return <EntityList entityData={entityData} />;
 }

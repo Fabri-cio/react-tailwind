@@ -59,7 +59,14 @@ function Proveedores() {
     ],
     icon: FaBox,
     filtros: [],
-    ordenes: [],
+    ordenes: [
+      { name: "marca", label: "Marca (A-Z)" },
+      { name: "-marca", label: "Marca (Z-A)" },
+      { name: "contacto", label: "Contacto (A-Z)" },
+      { name: "-contacto", label: "Contacto (Z-A)" },
+      { name: "telefono", label: "Telefono (A-Z)" },
+      { name: "-telefono", label: "Telefono (Z-A)" },
+    ],
   };
   return <EntityList entityData={entityData} />;
 }
