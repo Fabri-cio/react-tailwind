@@ -28,7 +28,7 @@ function Ventas() {
         <FormattedDate date={item.fecha_creacion} showWeekday />
       ),
     },
-    { key: "usuario_creacion", label: "Cajero" },
+    { key: "nombre_cajero", label: "Cajero" },
     { key: "nombre_tienda", label: "Tienda" },
     { key: "metodo_pago", label: "Pago" },
   ];
