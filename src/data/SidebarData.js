@@ -13,12 +13,12 @@ export const menus = [
     title: "Ventas",
     icon: FaCashRegister,
     items: [
-      { label: "Realizar Venta", path: "/realizarVenta" },
-      { label: "Ventas", path: "/ventas", roleRequired: ["Cajero", "admin"] },
-      { label: "Clientes", path: "/clientes", roleRequired: ["Cajero", "admin"] },
+      { label: "Realizar Venta", path: "/realizarVenta", roleRequired: ["Cajero", "admin", "Encargado de Tienda"] },
+      { label: "Ventas", path: "/ventas", roleRequired: ["Encargado de Tienda", "admin"] },
+      { label: "Clientes", path: "/clientes", roleRequired: ["Encargado de Tienda", "admin"] },
       // { label: "Productos Vendidos", path: "/ventas/detalleVentas" , },
     ],
-    roleRequired: ["Cajero", "admin"],
+    roleRequired: ["Cajero", "admin", "Encargado de Tienda"],
   },
   {
     title: "Predicción",
@@ -45,9 +45,10 @@ export const menus = [
     items: [
       { label: "Inventarios", path: "/inventarios" },
       { label: "Movimientos", path: "/movimientos" },
-      { label: "Tipo de Movimientos", path: "/tiposMovimientos" },
-      { label: "Almacenes", path: "/almacenes"},
+      { label: "Tipo de Movimientos", path: "/tiposMovimientos", roleRequired: ["admin"] },
+      { label: "Almacenes", path: "/almacenes", roleRequired: ["admin"] },
     ],
+    roleRequired: ["admin", "Encargado de Tienda"],
   },
   {
     title: "Productos",
@@ -62,6 +63,7 @@ export const menus = [
   {
     title: "Reportes",
     icon: FaRegFilePowerpoint,
+    roleRequired: ["admin"],
     items: [
       { label: "Reportes", path: "/reportes" },
     ],
