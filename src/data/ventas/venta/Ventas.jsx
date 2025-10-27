@@ -43,6 +43,16 @@ function Ventas() {
     itemKey: "id",
     entityFields: ventasFields,
     icon: FaSalesforce,
+    ordenes: [
+      { name: "fecha_venta", label: "Fecha (Ascendente)" },
+      { name: "-fecha_venta", label: "Fecha (Descendente)" },
+      { name: "nombre_cajero", label: "Cajero (Ascendente)" },
+      { name: "-nombre_cajero", label: "Cajero (Descendente)" },
+      { name: "nombre_tienda", label: "Tienda (Ascendente)" },
+      { name: "-nombre_tienda", label: "Tienda (Descendente)" },
+      { name: "metodo_pago", label: "Pago (Ascendente)" },
+      { name: "-metodo_pago", label: "Pago (Descendente)" },
+    ],
   };
 
   return <EntityList entityData={entityData} />;

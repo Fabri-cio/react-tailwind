@@ -1,10 +1,14 @@
 import React from "react";
 import { Pie, Line } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
+import { useInventariosNotificaciones } from "../hooks/useEntities";
 
 ChartJS.register(...registerables);
 
 const HomeMinimalista = () => {
+  const { data: notificaciones } = useInventariosNotificaciones({
+    all_data: true,
+  });
   // 🔹 Datos ficticios
   const kpis = [
     { title: "Total Ventas", value: 12500, color: "green" },
@@ -148,16 +152,16 @@ const HomeMinimalista = () => {
               </tr>
             </thead>
             <tbody>
-              {alertasStock.map((alerta, idx) => {
-                const estado = alerta.stock <= alerta.limite ? "Bajo" : "OK";
+              {notificaciones?.map((alerta, idx) => {
+                const estado = alerta.inventario <= 10 ? "Bajo" : "OK"; // ajusta límite si quieres
                 const color =
                   estado === "Bajo" ? "text-red-600" : "text-green-600";
 
                 return (
                   <tr key={idx} className="border-t">
-                    <td className="p-2">{alerta.producto}</td>
-                    <td className="p-2">{alerta.almacen}</td>
-                    <td className="p-2 font-bold">{alerta.stock}</td>
+                    <td className="p-2">{alerta.titulo}</td>
+                    <td className="p-2">{alerta.tipo}</td>
+                    <td className="p-2 font-bold">{alerta.inventario}</td>
                     <td className={`p-2 font-semibold ${color}`}>{estado}</td>
                   </tr>
                 );

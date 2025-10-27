@@ -26,6 +26,8 @@ export const InventarioPedidosAPI = createCrudOperations(ApiAlmacenes, "inventar
 
 export const InventarioReporteAPI = createCrudOperations(ApiAlmacenes, "inventarios-reporte");
 
+export const InventarioNotificacionesAPI = createCrudOperations(ApiAlmacenes, "notificaciones");
+
 
 
 
