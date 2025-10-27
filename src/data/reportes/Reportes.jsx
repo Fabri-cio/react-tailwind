@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react"; // <- agregamos useRef
 import { Line, Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Navigation } from "../../components/shared/Navigation";
@@ -8,6 +8,7 @@ import {
   FaFilePdf,
   FaRegFilePowerpoint,
   FaFileExcel,
+  FaFileImage, // <- icono para exportar gráfico
 } from "react-icons/fa";
 import { useFormEntity } from "../../utils/useFormEntity";
 import {
@@ -16,6 +17,7 @@ import {
   useInventarioReporte,
   useAlmacenesSelect,
 } from "../../hooks/useEntities";
+import * as XLSX from "xlsx";
 
 ChartJS.register(...registerables);
 
@@ -29,7 +31,9 @@ const Reportes = () => {
   const [tipoGrafico, setTipoGrafico] = useState("line");
   const [tipoReporte, setTipoReporte] = useState("ventas"); // ventas | compras | inventarios
 
-  // 🧠 Filtros memoizados
+  // 🔹 referencia para exportar gráfico
+  const chartRef = useRef(null);
+
   const filtros = useMemo(() => {
     const f = {};
     if (fechaInicio) f.fecha_inicio = fechaInicio;
@@ -38,7 +42,6 @@ const Reportes = () => {
     return f;
   }, [fechaInicio, fechaFin, almacen]);
 
-  // ⚡ Hook dinámico según tipo de reporte
   const reporteData =
     tipoReporte === "ventas"
       ? useVentasReporte(
@@ -61,20 +64,13 @@ const Reportes = () => {
           true
         )
       : useInventarioReporte(
-          {
-            filters: filtros,
-            all_data: !!almacen,
-            page: 1,
-            per_page: 10,
-          },
+          { filters: filtros, all_data: !!almacen, page: 1, per_page: 10 },
           true
         );
 
-  // 🔹 Hook de almacenes
   const almacenes =
     paraSelectsdestructuringYMap(useAlmacenesSelect, "id", "nombre") || [];
 
-  // 🧾 Normalizar datos para gráfico y tabla
   const items = reporteData?.data?.results || reporteData?.data || [];
 
   const datosReales =
@@ -94,7 +90,6 @@ const Reportes = () => {
         }))
       : [];
 
-  // Filtrado en cliente
   const datosFiltrados =
     tipoReporte === "inventarios"
       ? datosReales
@@ -106,7 +101,13 @@ const Reportes = () => {
           return fechaValida && almacenValido;
         });
 
-  // Agrupar datos (solo ventas/compras)
+  const datosParaTabla = datosFiltrados.map((v) => ({
+    ...v,
+    almacen: almacen
+      ? almacenes.find((a) => a.id === Number(almacen))?.nombre || "Desconocido"
+      : "Todos",
+  }));
+
   const agruparPor = (datos, tipo) => {
     return datos.reduce((acc, v) => {
       let key = "Desconocido";
@@ -153,6 +154,73 @@ const Reportes = () => {
     ],
   };
 
+  // 🔹 Exportar gráfico como PNG
+  const exportarGrafico = () => {
+    if (!chartRef.current) return;
+    const url = chartRef.current.toBase64Image();
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${tipoReporte}_grafico.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportarCSV = () => {
+    const data = tipoReporte === "inventarios" ? items : datosParaTabla;
+    if (data.length === 0) return;
+    const headers = Object.keys(data[0]).join(",");
+    const rows = data.map((row) =>
+      Object.values(row)
+        .map((v) => `"${v}"`)
+        .join(",")
+    );
+    const csvContent = [headers, ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${tipoReporte}_reporte.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportarPDF = async () => {
+    const { jsPDF } = await import("jspdf");
+    const autoTable = (await import("jspdf-autotable")).default;
+    const doc = new jsPDF();
+    doc.text(
+      `Reporte de ${
+        tipoReporte.charAt(0).toUpperCase() + tipoReporte.slice(1)
+      }`,
+      14,
+      15
+    );
+    const data = tipoReporte === "inventarios" ? items : datosParaTabla;
+    if (data.length === 0) {
+      doc.text("Sin datos para exportar", 14, 25);
+    } else {
+      const headers = Object.keys(data[0]).map((k) => k.toUpperCase());
+      const rows = data.map((row) => Object.values(row));
+      autoTable(doc, { head: [headers], body: rows, startY: 25 });
+    }
+    doc.save(`${tipoReporte}_reporte.pdf`);
+  };
+
+  const exportarExcel = () => {
+    const data = tipoReporte === "inventarios" ? items : datosParaTabla;
+    if (data.length === 0) return;
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Reporte");
+    XLSX.writeFile(wb, `${tipoReporte}_reporte.xlsx`);
+  };
+
+  const exportarPPT = () => {
+    alert("Exportar a PowerPoint próximamente 😉");
+  };
+
   return (
     <main className="max-w-6xl mx-auto bg-white">
       <Navigation
@@ -167,28 +235,35 @@ const Reportes = () => {
         icon={FaChartLine}
         actions={[
           {
-            to: "/reportes",
             icon: FaRegFilePowerpoint,
             estilos:
               "text-white hover:text-blue-600 bg-blue-500 hover:bg-blue-600 p-2",
+            onClick: exportarPPT,
           },
           {
-            to: "/reportes",
             icon: FaFilePdf,
             estilos:
               "text-white hover:text-red-600 bg-red-500 hover:bg-red-600 p-2",
+            onClick: exportarPDF,
           },
           {
-            to: "/reportes",
             icon: FaFileExcel,
             estilos:
               "text-white hover:text-green-600 bg-green-500 hover:bg-green-600 p-2",
+            onClick: exportarExcel,
           },
+          {
+            icon: FaFileImage,
+            estilos:
+              "text-white hover:text-purple-600 bg-purple-500 hover:bg-purple-600 p-2",
+            onClick: exportarGrafico,
+          }, // nuevo botón
         ]}
       />
 
       {/* 🔍 Filtros */}
       <div className="flex flex-wrap gap-4 bg-gray-50 px-2 rounded-md border my-2 py-2">
+        {/* filtros existentes */}
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-gray-700">
             Tipo de Reporte
@@ -203,8 +278,6 @@ const Reportes = () => {
             <option value="inventarios">Inventarios</option>
           </select>
         </div>
-
-        {/* Filtros solo para ventas y compras */}
         {tipoReporte !== "inventarios" && (
           <>
             <div className="flex items-center gap-2">
@@ -229,7 +302,6 @@ const Reportes = () => {
             </div>
           </>
         )}
-
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-gray-700">Almacén</label>
           <select
@@ -245,7 +317,6 @@ const Reportes = () => {
             ))}
           </select>
         </div>
-
         {tipoReporte !== "inventarios" && (
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-gray-700">Vista</label>
@@ -285,16 +356,22 @@ const Reportes = () => {
               </p>
             ) : (
               <>
-                {tipoGrafico === "line" && <Line data={chartData} />}
-                {tipoGrafico === "bar" && <Bar data={chartData} />}
-                {tipoGrafico === "pie" && <Pie data={chartData} />}
+                {tipoGrafico === "line" && (
+                  <Line ref={chartRef} data={chartData} />
+                )}
+                {tipoGrafico === "bar" && (
+                  <Bar ref={chartRef} data={chartData} />
+                )}
+                {tipoGrafico === "pie" && (
+                  <Pie ref={chartRef} data={chartData} />
+                )}
               </>
             )}
           </div>
         )}
 
-        {/* Tabla dinámica */}
         <div className="border rounded h-[calc(100vh-250px)] overflow-y-auto">
+          {/* tabla existente */}
           {tipoReporte === "inventarios" ? (
             <table className="w-full text-sm">
               <thead className="bg-gray-100 border-b">
@@ -348,28 +425,30 @@ const Reportes = () => {
                   <th className="p-2 text-left">
                     {tipoReporte === "ventas" ? "Ventas" : "Compras"}
                   </th>
+                  <th className="p-2 text-left">Almacén</th>
                 </tr>
               </thead>
               <tbody>
                 {reporteData.isLoading ? (
                   <tr>
-                    <td colSpan={2} className="p-4 text-center">
+                    <td colSpan={3} className="p-4 text-center">
                       Cargando...
                     </td>
                   </tr>
-                ) : datosFiltrados.length === 0 ? (
+                ) : datosParaTabla.length === 0 ? (
                   <tr>
-                    <td colSpan={2} className="p-4 text-center">
+                    <td colSpan={3} className="p-4 text-center">
                       No hay {tipoReporte}
                     </td>
                   </tr>
                 ) : (
-                  datosFiltrados.map((v, i) => (
+                  datosParaTabla.map((v, i) => (
                     <tr key={i} className="border-b hover:bg-gray-50">
                       <td className="p-2">
                         <FormattedDate date={v.fecha} showWeekday />
                       </td>
                       <td className="p-2 font-semibold">{v.cantidad}</td>
+                      <td className="p-2">{v.almacen}</td>
                     </tr>
                   ))
                 )}

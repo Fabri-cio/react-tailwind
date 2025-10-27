@@ -63,7 +63,7 @@ function DetallesProducto() {
   const ventasFiltradas = ventasArray.map((v, index) => ({
     index: index + 1,
     fecha: v.fecha,
-    cantidad: v.cantidad,
+    cantidad: v.cantidad != null ? v.cantidad : 0,
   }));
 
   const dataLine = {
