@@ -235,11 +235,11 @@ const Reportes = () => {
         icon={FaChartLine}
         actions={[
           {
-            icon: FaRegFilePowerpoint,
+            icon: FaFileImage,
             estilos:
               "text-white hover:text-blue-600 bg-blue-500 hover:bg-blue-600 p-2",
-            onClick: exportarPPT,
-          },
+            onClick: exportarGrafico,
+          }, // nuevo botón
           {
             icon: FaFilePdf,
             estilos:
@@ -252,12 +252,6 @@ const Reportes = () => {
               "text-white hover:text-green-600 bg-green-500 hover:bg-green-600 p-2",
             onClick: exportarExcel,
           },
-          {
-            icon: FaFileImage,
-            estilos:
-              "text-white hover:text-purple-600 bg-purple-500 hover:bg-purple-600 p-2",
-            onClick: exportarGrafico,
-          }, // nuevo botón
         ]}
       />
 

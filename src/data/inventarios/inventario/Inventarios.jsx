@@ -23,7 +23,9 @@ function InventarioList() {
     {
       key: "imagen_url",
       label: "Imagen",
-      render: (item) => <Image src={item.imagen_url} alt={item.producto_nombre} />,
+      render: (item) => (
+        <Image src={item.imagen_url} alt={item.producto_nombre} />
+      ),
     },
     {
       key: "producto_nombre",
@@ -81,8 +83,13 @@ function InventarioList() {
       },
     ],
     icon: FaBox,
-    filtros: [],
-    ordenes: [],
+    ordenes: [
+      { label: "Cantidad", name: "cantidad" },
+      { label: "Stock mínimo", name: "stock_minimo" },
+      { label: "Stock máximo", name: "stock_maximo" },
+      { label: "Producto", name: "producto__nombre" },
+      { label: "Almacén", name: "almacen__nombre" },
+    ],
   };
   return <EntityList entityData={entityData} />;
 }
