@@ -76,11 +76,6 @@ function InventarioList() {
         icon: FaPlus,
         estilos: "text-white bg-green-600 rounded-full p-2",
       },
-      {
-        to: "/inventarios/metodo-abc",
-        label: "ABC",
-        estilos: "text-white bg-blue-600 rounded-full p-2",
-      },
     ],
     icon: FaBox,
     ordenes: [
